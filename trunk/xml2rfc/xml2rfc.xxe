@@ -369,6 +369,23 @@
     </macro>
   </command>
 
+  <command name="xml2rfc.webform">
+    <class>com.att.research.fenner.xmleditapp.xml2rfc.WebForm</class>
+  </command>
+
+  <command name="xml2rfc.convertViaWebForm">
+    <macro trace="true">
+      <sequence>
+        <command name="xml2rfc.draftname"/>
+
+	<!-- todo: saveFileURL %p and have WebForm save using xxe primitives -->
+        <command name="selectFile" parameter="saveFile %p/%_.%0"/>
+
+        <command name="xml2rfc.webform" parameter="'%D' %0 '%_'"/>
+      </sequence>
+    </macro>
+  </command>
+
   <menu label="XML2RFC" mnemonic="X">
     <!--On UNIX, preview requires to have Mozilla or Netscape in $PATH.-->
 
@@ -383,6 +400,19 @@
     <item command="xml2rfc.addRFCInclude" label="Insert &lt;?rfc include=''?&gt;" />
 
     <menu label="Convert">
+      <menu label="...using xml.resource.org">
+	<item command="xml2rfc.convertViaWebForm" label="Convert to Text"
+	      parameter="txt"/>
+
+	<item command="xml2rfc.convertViaWebForm" label="Convert to HTML"
+	      parameter="html"/>
+
+	<item command="xml2rfc.convertViaWebForm" label="Convert to nroff"
+	      parameter="nr"/>
+
+	<item command="xml2rfc.convertViaWebForm" label="Convert to &quot;canonical&quot; XML"
+	      parameter="xml"/>
+      </menu>
       <item command="xml2rfc.convertToSomething" label="Convert to Text"
             parameter="rfc txt"/>
 
@@ -546,6 +576,10 @@
     <reference anchor="Anchor" xmlns=""><front><title>
     </title><author><organization> </organization></author><date
     year="2004"/></front></reference>
+  </elementTemplate>
+
+  <elementTemplate name="vspace" selectable="override">
+    <vspace blankLines="1"/>
   </elementTemplate>
 
 </configuration>
