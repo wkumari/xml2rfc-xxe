@@ -1,5 +1,6 @@
 release:
 	mkdir -p dist
+	rm -rf dist/xml2rfc
 	mkdir -p dist/xml2rfc
 	cd help; make
 	cp help/xml2rfc_help.jar dist/xml2rfc
