@@ -314,6 +314,39 @@
     </macro>
   </command>
 
+  <command name="xml2rfc.checkIetfReferences">
+    <process>
+      <copyDocument to="__doc.xml"/>
+
+      <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd"/>
+
+      <transform file="__doc.xml" stylesheet="xsl/expand-pi-rfc-include.xslt"
+                 to="__doc2.xml"/>
+
+      <transform file="__doc2.xml" stylesheet="xsl/check-ietf-references.xslt"
+      		 to="reference-check.txt"/>
+
+      <shell command="open reference-check.txt" platform="Mac"/>
+
+      <shell command="start &quot;&quot; reference-check.txt" platform="Windows"/>
+
+      <shell command="xterm -e &quot;less reference-check.txt&quot;"
+             platform="GenericUnix"/>
+
+      <!-- sleep to delay the deletion until the app can launch -->
+
+      <shell command="sleep 10" platform="Unix"/>
+
+      <!-- the only way I can figure out how to pause on Windows :-( -->
+
+      <shell command="echo forgive this horrible hack" platform="Windows"/>
+
+      <shell command="ping -n 10 127.0.0.1 &gt; NUL:" platform="Windows"/>
+    </process>
+  </command>
+
+
+
   <command name="xml2rfc.doPDF">
     <process>
       <copyDocument to="__doc.xml"/>
@@ -492,6 +525,8 @@
     <item command="xml2rfc.addRFCInclude" label="Insert &lt;?rfc include=''?&gt;" />
 
     <item command="xml2rfc.externalEdit" label="Edit in..."/>
+
+    <item command="xml2rfc.checkIetfReferences" label="Check IETF References"/>
 
     <menu label="Convert">
       <menu label="...using xml.resource.org">
