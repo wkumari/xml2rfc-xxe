@@ -45,7 +45,7 @@
 
   <!-- Bindings =========================================================== -->
 
-  <!-- (basically copied from xhtml) -->
+  <!-- (initially copied from xhtml) -->
 
   <!-- Inside a t, attempt to behave like a word-processor. -->
 
@@ -395,6 +395,39 @@
     </macro>
   </command>
 
+  <command name="xml2rfc.os">
+    <class>com.att.research.fenner.xmleditapp.xml2rfc.Os</class>
+  </command>
+
+  <command name="xml2rfc.externalEdit">
+    <macro>
+      <sequence>
+	<!-- to do: use the os return value to decide on a file that has the pick list -->
+	<!-- (mostly for user modification convenience; we already need to do a per-OS startup method) -->
+	<command name="XXE.save" parameter="[ifNeeded]" />
+	<choice>
+	  <sequence>
+	    <command name="xml2rfc.os" parameter="windows" />
+	    <command name="pick" parameter="Application false Notepad XMLSpy" />
+	    <command name="start" parameter='start "%_" "%D"' />
+	  </sequence>
+	  <sequence>
+	    <command name="xml2rfc.os" parameter="mac" />
+	    <command name="pick" parameter="Application false TextEdit TextWrangler BBEdit" />
+	    <command name="start" parameter='open -a "%_" "%D"' />
+	  </sequence>
+	  <sequence>
+	    <command name="xml2rfc.os" parameter="genericunix" />
+	    <command name="pick" parameter="Application false vi emacs" />
+	    <command name="start" parameter='xterm -e "&apos;%_&apos; &apos;%D&apos;"' />
+	  </sequence>
+	</choice>
+	<command name="alert" parameter="Click OK when done editing and saved." />
+	<command name="XXE.open" parameter="[reopenIfNewer]" />
+      </sequence>
+    </macro>
+  </command>
+
   <menu label="XML2RFC" mnemonic="X">
     <!--On UNIX, preview requires to have Mozilla or Netscape in $PATH.-->
 
@@ -407,6 +440,8 @@
     <item command="xml2rfc.previewXSL" label="HTML Preview using XSL"/>
 
     <item command="xml2rfc.addRFCInclude" label="Insert &lt;?rfc include=''?&gt;" />
+
+    <item command="xml2rfc.externalEdit" label="Edit in..."/>
 
     <menu label="Convert">
       <menu label="...using xml.resource.org">
@@ -584,7 +619,7 @@
   <elementTemplate name="reference" selectable="override">
     <reference anchor="Anchor" xmlns=""><front><title>
     </title><author><organization> </organization></author><date
-    year="2004"/></front></reference>
+    year="2005"/></front></reference>
   </elementTemplate>
 
   <elementTemplate name="vspace" selectable="override">
