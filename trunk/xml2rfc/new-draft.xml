@@ -104,33 +104,7 @@
 
   <back>
     <references title="Normative References">
-      <reference anchor="RFC2119">
-        <front>
-          <title abbrev="RFC Key Words">Key words for use in RFCs to Indicate
-          Requirement Levels</title>
-
-          <author fullname="Scott Bradner" initials="S." surname="Bradner">
-            <organization>Harvard University</organization>
-          </author>
-
-          <date month="March" year="1997" />
-        </front>
-
-        <seriesInfo name="BCP" value="14" />
-
-        <seriesInfo name="RFC" value="2119" />
-
-        <format octets="4723" target="ftp://ftp.isi.edu/in-notes/rfc2119.txt"
-                type="TXT" />
-
-        <format octets="14486"
-                target="http://xml.resource.org/public/rfc/html/rfc2119.html"
-                type="HTML" />
-
-        <format octets="5661"
-                target="http://xml.resource.org/public/rfc/xml/rfc2119.xml"
-                type="XML" />
-      </reference>
+      <?rfc include="reference.RFC.2119"?>
     </references>
 
     <references title="Informative References">
