@@ -8,9 +8,21 @@
 
   <help location="xml2rfc_help.jar"/>
 
+  <!-- Claim an XML document if:
+       - it has a DOCTYPE referring to the rfc2629.dtd
+       - its root element is <rfc> with no namespace
+  -->
   <detect>
-    <dtdSystemId>rfc2629.dtd</dtdSystemId>
+    <or>
+      <dtdSystemId>rfc2629.dtd</dtdSystemId>
+      <and>
+	<rootElementLocalName>rfc</rootElementLocalName>
+	<rootElementNamespace xsi:nil='true' />
+      </and>
+    </or>
   </detect>
+
+  <dtd systemId="dtd/rfc2629.dtd"/>
 
   <css location="css/xml2rfc.css" name="xml2rfc"/>
 
@@ -195,9 +207,6 @@
       </sequence>
     </macro>
   </command>
-
-  <!-- I don't have xxe pro, so I can't test the PDF creation.
-       Figured I'd try it anyway. -->
 
   <command name="xml2rfc.toPDFUsingXSL">
     <macro>
