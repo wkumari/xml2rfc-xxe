@@ -45,7 +45,7 @@
       <xsl:variable name="id" select="concat('RFC',substring('000',string-length($no)),$no)" />
       <xsl:value-of select="$id" />
       <xsl:text>: </xsl:text>
-      <xsl:variable name="stat" select="document('rfc-index.xml')/*/rfced:rfc-entry[rfced:doc-id=$id]" />
+      <xsl:variable name="stat" select="document('xml2rfc-rfcindex:rfc-index.xml')/*/rfced:rfc-entry[rfced:doc-id=$id]" />
       <xsl:if test="$stat/rfced:publication-status">
         <xsl:text>[</xsl:text><xsl:value-of select="$stat/rfced:publication-status"/><xsl:text>] </xsl:text>
       </xsl:if> 
@@ -70,7 +70,7 @@
       <xsl:variable name="name" select="seriesInfo[(@name='ID' or @name='Internet-Draft') and starts-with(@value,'draft-')]/@value" />
       <xsl:value-of select="$name" />
       <xsl:text>: </xsl:text>
-      <xsl:variable name="stat" select="document('ietf-id-status.xml')/*/id[@name=$name]" />
+      <xsl:variable name="stat" select="document('xml2rfc-ietfidstatus:ietf-id-status.xml')/*/id[@name=$name]" />
       <xsl:choose>
         <xsl:when test="$stat[@status='active' or @status='IESG']">
           <xsl:value-of select="concat('[',$stat/@date,' ',$stat/@status,'] ok')"/>
