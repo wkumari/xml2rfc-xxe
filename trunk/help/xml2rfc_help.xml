@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id$ -->
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<article>
+  <title>XMLmind XML Editor - xml2rfc Support</title>
+
+  <section>
+    <title>Overview</title>
+
+    <para>This xxe plugin attempts to support most of the rfc2629bis DTD, as
+    of November 10, 2004. The following items are not yet supported:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>texttable. This requires some extra help (probably a custom java
+        widget) to style the table for xmlmind.</para>
+      </listitem>
+
+      <listitem>
+        <para>&lt;?rfc ?&gt; processing instructions in general. &lt;?rfc
+        include= in particular.</para>
+      </listitem>
+
+      <listitem>
+        <para>The RFC's description of &lt;list&gt; specifies that style is
+        inherited from nearest parent; DTD says that it defaults to empty. The
+        editor currently uses the DTD definition; java might be able to help
+        implement the other way.</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Planned features:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Toolbar helpers for common features (e.g., lists)</para>
+      </listitem>
+
+      <listitem>
+        <para>Text preview</para>
+      </listitem>
+
+      <listitem>
+        <para>HTML and Text conversions</para>
+
+        <para>(use xsl instead of tcl for the HTML output, since xxe has
+        native xsl support?)</para>
+      </listitem>
+    </itemizedlist>
+
+    <para></para>
+
+    <section>
+      <title></title>
+
+      <para></para>
+    </section>
+  </section>
+
+  <section>
+    <title>Usage</title>
+
+    <para>Until I figure out more about building a toolbar, the only
+    format-specific optimization is that enter and backspace can be used as
+    you might expect a word processor to behave when you're editing paragraphs
+    or lists. To insert sections, paragraphs, figures, cross-references, etc.,
+    use the XXE insert pane; you'll commonly use "Insert" and "Insert
+    After".</para>
+  </section>
+</article>
