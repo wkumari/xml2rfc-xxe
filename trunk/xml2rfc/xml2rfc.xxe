@@ -169,7 +169,7 @@
       <!-- the call to mozilla needs work (this might be the advantage
            of the Preview java class) -->
 
-      <shell command="mozilla -remote &quot;openFile(preview.html)&quot; &gt;/dev/null 2&gt;&amp;1"
+      <shell command="mozilla -remote &quot;openFile(file://`pwd`/preview.html)&quot; &gt;/dev/null 2&gt;&amp;1"
              platform="GenericUnix"/>
 
       <!-- sleep to delay the deletion until the app can launch -->
@@ -270,7 +270,7 @@
       <!-- the call to mozilla needs work (this might be the advantage
            of the Preview java class) -->
 
-      <shell command="mozilla -remote &quot;openFile(preview.html)&quot; &gt;/dev/null 2&gt;&amp;1"
+      <shell command="mozilla -remote &quot;openFile(file://`pwd`/preview.html)&quot; &gt;/dev/null 2&gt;&amp;1"
              platform="GenericUnix"/>
 
       <!-- sleep to delay the deletion until the app can launch -->
