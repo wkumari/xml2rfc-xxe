@@ -100,9 +100,13 @@ public class WebForm implements Command {
 			dos.writeBytes(lineEnd);
 			
 			// Write the document in the edit buffer to the web server.
-			// todo: set any options on the DocumentWriter?
 			DocumentWriter writer = new DocumentWriter();
 			writer.setEncoding("US-ASCII");	// xml2rfc only supports entities, not UTF-8.
+			writer.setPreserveInclusions(0);	// if we've loaded included files already,
+												// send them along instead of turning them back
+												// into entities or XIncludes.
+			// could setCdataSectionElements but CDATA is really for presentation
+			//  and this isn't presentation.
 			writer.writeDocument(document, dos);
 						
 			// Finish the MIME part
@@ -114,13 +118,13 @@ public class WebForm implements Command {
 		}
 		catch (MalformedURLException ex)
 		{
-			CommonDialog.showInfo(component, "Internal Error" + ex);
+			CommonDialog.showError(component, "Internal Error" + ex);
 			return null;
 		}
 		
 		catch (IOException ioe)
 		{
-			CommonDialog.showInfo(component, "Communication Error" + ioe);
+			CommonDialog.showError(component, "Upload Error" + ioe);
 			return null;
 		}
 		
@@ -166,9 +170,10 @@ public class WebForm implements Command {
 		}
 		catch (IOException ioe)
 		{
-			CommonDialog.showInfo(component, "Communication Error" + ioe);
+			CommonDialog.showError(component, "Download Error" + ioe);
 			return null;
 		}
+		CommonDialog.showStatus("Conversion using " + urlString + " complete.");
 		CommonDialog.showInfo(component, "Conversion Completed, output in " + outfile);
 		return null;
 		
