@@ -151,7 +151,7 @@ date {
 *::attribute(anchor) {
 	attribute-content-left: "[a:";
 	attribute-content-middle: text-field(attribute, anchor, columns, 10);
-	attribute-content-right: "] ";
+	attribute-content-right: xpath('if(//xref[@target=current()/@anchor], "", "[not referenced] ")') "] ";
 	show-attribute: when-added;
 	color: purple;
 	font-size: 80%;
@@ -231,11 +231,14 @@ eref::attribute(target) {
  * - If there's a title (a section or an appendix or ...?), render it.
  * - If there's a front/title (a reference), render that.
  * - If the node exists, render "ok".
+ * - If there's an <?rfc include=?> with this target, render "included"
+ *   - 2 parts: if the target begins with RFC, check for reference.RFC.n
+ *   - else, check for reference.@target
  * - Else, render "(not found)".
  */
 xref:after {
 	display: inline;
-	content: attributes() " [" xpath("if(//*[@anchor=current()/@target]/@title, //*[@anchor=current()/@target]/@title, if(//*[@anchor=current()/@target]/front/title, //*[@anchor=current()/@target]/front/title, if(//*[@anchor=current()/@target], 'ok', '(not found)')))") "]";
+	content: attributes() " [" xpath("if(//*[@anchor=current()/@target]/@title, //*[@anchor=current()/@target]/@title, if(//*[@anchor=current()/@target]/front/title, //*[@anchor=current()/@target]/front/title, if(//*[@anchor=current()/@target], 'ok', if(//processing-instruction('rfc')[starts-with(normalize-space(.),'include=') and substring(normalize-space(.), 10, 10)='reference.' and ((starts-with(current()/@target, 'RFC') and substring-after(substring(normalize-space(.), 20, string-length(normalize-space(.))-20), 'RFC.')=substring-after(current()/@target, 'RFC')) or (starts-with(current()/@target, 'RFC')=false and substring(normalize-space(.), 20, string-length(normalize-space(.))-20)=current()/@target))], 'included', '(not found)'))))") "]";
 	color: purple;
 }
 eref:after {
@@ -352,9 +355,13 @@ list[style=letters] > t:before {
 	content: counter(n, lower-alpha) ".";
 }
 /* to do: java to support style=format */
+list[style^=format] > t {
+	/* to do: find better unit for this */
+	margin-left: concatenate(xpath("(string-length(../@style)-5)*0.6"), "em");
+}
 list[style^=format] > t:before {
 	display: marker;
-	content: "???";
+	content: "?" xpath('substring-after(../@style, "format ")') "?";
 	color: red;
 }
 list[style=empty] > t:before {
