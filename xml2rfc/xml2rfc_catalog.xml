@@ -10,7 +10,7 @@
               rewritePrefix="http://xml.resource.org/public/rfc/bibxml3/" />
 
   <rewriteURI uriStartString="xml2rfc-rfcindex:"
-              rewritePrefix="http://www.rfc-editor.org/rfc/" />
+              rewritePrefix="ftp://ftp.isi.edu/in-notes/" />
   <rewriteURI uriStartString="xml2rfc-ietfidstatus:"
               rewritePrefix="http://rtg.ietf.org/~fenner/ietf/" />
 
