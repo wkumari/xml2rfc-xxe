@@ -427,7 +427,15 @@
     </code><country> </country></postal>
   </elementTemplate>
 
-  <!-- looks like the xpath subset doesn't include attributes? 
+  <elementTemplate name="reference" selectable="override">
+    <reference anchor="Anchor" xmlns=""><front><title>
+    </title><author><organization>
+    </organization></author><date year="2004"/></front></reference>
+  </elementTemplate>
+
+  <!-- the xpath subset doesn't include attributes, so this one
+       can't work.  We want to include hangText only on <t>
+       inside hanging lists.
   <elementTemplate name="hanging" selectable="override"
    parent="list[@style='hanging']">
     <t hangText="???" xmlns=""> </t>
