@@ -93,21 +93,74 @@
     </macro>
   </command>
 
+  <!-- easy way to insert same element -->
+  <binding>
+    <keyPressed code="ENTER" modifiers="mod" />
+    <command name="xml2rfc.appendSame" />
+  </binding>
+
+  <binding>
+    <keyPressed code="ENTER" modifiers="mod shift" />
+    <command name="xml2rfc.prependSame" />
+  </binding>
+
+  <command name="xml2rfc.appendSame">
+    <macro>
+      <sequence>
+        <command name="selectNode" parameter="selfOrElement" />
+        <command name="insertNode" parameter="sameElementAfter" />
+      </sequence>
+    </macro>
+  </command>
+
+  <command name="xml2rfc.prependSame">
+    <macro>
+      <sequence>
+        <command name="selectNode" parameter="selfOrElement" />
+        <command name="insertNode" parameter="sameElementBefore" />
+      </sequence>
+    </macro>
+  </command>
+
   <!-- Menu ============================================================== -->
 
   <!--
-       I think this preview command could be rewritten as a process.
-       Right now it's based on the xhtml Preview.
+       Preview using xml2html using a process.
     -->
 
   <command name="xml2rfc.preview">
-    <class>com.att.research.fenner.xmleditapp.xml2rfc.Preview</class>
+    <process>
+      <copyDocument to="__doc.xml"/>
+
+      <shell command="xml2html __doc.xml preview.html"/>
+
+      <delete files="__doc.xml"/>
+
+      <shell command="open preview.html" platform="Mac"/>
+
+      <shell command="start &quot;&quot; preview.html" platform="Windows"/>
+
+      <!-- the call to mozilla needs work (this might be the advantage
+           of the Preview java class) -->
+
+      <shell command="mozilla -remote &quot;openFile(preview.html)&quot; &gt;/dev/null 2&gt;&amp;1"
+             platform="GenericUnix"/>
+
+      <!-- sleep to delay the deletion until the app can launch -->
+
+      <shell command="sleep 10" platform="Unix"/>
+
+      <!-- the only way I can figure out how to pause on Windows :-( -->
+
+      <shell command="echo forgive this horrible hack" platform="Windows"/>
+
+      <shell command="ping -n 10 127.0.0.1 &gt; NUL:" platform="Windows"/>
+    </process>
   </command>
 
   <!--
        Return the docName if present, otherwise the string "draft",
        for naming the results of a "Convert...".
-       To Do: use saveFileURL if it can take a suggested filename?
     -->
 
   <command name="xml2rfc.draftname">
