@@ -172,10 +172,12 @@ section::attribute(toc) {
  * as failing.  Too bad "counters" doesn't work. */
 section:before {
 	content: collapser() attributes() "Section " counter(n) ". " text-field(attribute, title);
-	font-size: 125%;
+	font-size: 150%;
+	text-indent: -1em;	/* this doesn't outdent like it does Address: */
 }
 section section:before {
 	content: collapser() attributes() "Section " counter(nn) ". " text-field(attribute, title);
+	font-size: 125%;
 }
 section section section:before {
 	content: collapser() attributes() "Section " counter(nnn) ". " text-field(attribute, title);
@@ -191,7 +193,6 @@ section section section section section section:before {
 }
 back section:before {
 	content: collapser() attributes() "Appendix " counter(n, upper-alpha) ". " text-field(attribute, title);
-	font-size: 125%;
 }
 back section section:before {
 	content: collapser() attributes() "Appendix " counter(n-, upper-alpha) "." counter(n) ". " text-field(attribute, title);
