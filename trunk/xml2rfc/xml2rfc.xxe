@@ -132,14 +132,14 @@
   </binding>
 
   <command name="xml2rfc.addRFCInclude">
-    <macro>
+    <macro undoable="true">
       <sequence>
         <choice>
-	  <command name="insertNode" parameter="piInto[implicitElement]" />
-	  <command name="insertNode" parameter="piAfter[implicitElement]" />
+	  <command name="insertNode" parameter="piInto[implicitElement] rfc" />
+	  <command name="insertNode" parameter="piAfter[implicitNode] rfc" />
+	  <command name="insertNode" parameter="piAfter[implicitElement] rfc" />
         </choice>
 	<command name="insertString" parameter="include='reference.'" />
-	<command name="editPITarget" parameter="[implicitNode] rfc" />
 	<!-- assuming the newly inserted element is selected -->
 	<set variable="dotOffset" expression="19" />
       </sequence>
