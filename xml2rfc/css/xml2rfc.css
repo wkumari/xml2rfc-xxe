@@ -334,7 +334,7 @@ list[style=hanging] > t {
 }
 list[style=hanging] > t:before {
 	display: marker;
-	content: attr(hangText) " ";
+	content: text-field(attribute, "hangText", columns, xpath("if(../@hangIndent,../@hangIndent, 6)")) " ";
 }
 list[style=numbers] > t:before {
 	display: marker;
