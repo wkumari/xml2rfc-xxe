@@ -13,7 +13,7 @@
  * Need to write a gadget to handle processing-instructions inside the
  * <rfc> (I've seen needLines, subcompact, and of course include)
 *:processing-instruction(rfc) {
-	content: "<?rfc " rfcgadget() "?>";
+	content: "<?rfc " gadget("com.att.research.fenner.xmleditapp.xml2rfc.RFCPI") "?>";
 }
  */
 
@@ -150,14 +150,16 @@ date {
 /*
  * Make all anchors editable if present.
  * Display "[not referenced]" if it's not the target of an xref.
- * Make it all red if it's a reference element that's not referenced.
+ * Display "[DUPLICATE ANCHOR]" if it's a duplicate of another anchor.
+ * Make it all red if it's a reference element that's not referenced, or
+ *  if it's a duplicate.
  */
 *::attribute(anchor) {
 	attribute-content-left: "[a:";
 	attribute-content-middle: text-field(attribute, anchor, columns, 10);
-	attribute-content-right: xpath('if(//xref[@target=current()/@anchor], "", "[not referenced] ")') "] ";
+	attribute-content-right: xpath('if(//xref[@target=current()/@anchor], "", "[not referenced] ")') xpath('if(count(//*[@anchor=current()/@anchor]) = 1, "", "[DUPLICATE ANCHOR] ")') "] ";
 	show-attribute: when-added;
-	color: concatenate(xpath('if(local-name(.)!="reference" or //xref[@target=current()/@anchor],"purple","red")'));
+	color: concatenate(xpath('if((local-name(.)!="reference" or //xref[@target=current()/@anchor]) and (count(//*[@anchor=current()/@anchor]) = 1),"purple","red")'));
 	font-size: 80%;
 }
 section {
@@ -313,10 +315,22 @@ spanx[style=verb] {
 	font-style: normal;
 }
 /* A handle for the list */
-/* todo: attributes like hangIndent based on the list type? */
+list::attribute(counter) {
+	attribute-content-left: " [(not supported) counter:";
+	color: red;
+}
+list::attribute(style) {
+	show-attribute: never;
+}
+list::attribute() {
+	attribute-content-left: " [" attribute-label() ":";
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "] ";
+	show-attribute: when-added;
+}
 /* todo: offer an easy way to convert[wrap] <t> if needed? */
 list:before {
-	content: icon(right) "[list style " attr(style) xpath('if(local-name(..) = "t", "", " NOTE: list must be inside <t>")') "]";
+	content: icon(right) "[list style " attr(style) attributes() xpath('if(local-name(..) = "t", "", " NOTE: list must be inside <t>")') "]";
 	font-size: 80%;
 	color: concatenate(xpath('if(local-name(..) = "t","#ff9900","red")'));
 }
@@ -473,9 +487,9 @@ texttable > c {
  texttable
   (can we do the "every count(ttcol) c's is a row" thing?)
   (probably needs java help)
- top-level <?rfc processing instructions
  <?rfc include= -- editable attribute
  list: can we inherit style from the closest parent as specified?
  additional validation: can we enforce things like the structure
   of the postal?
+ Do any of the xpath() rendering bits need to be label()s?
 */
