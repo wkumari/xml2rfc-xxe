@@ -15,6 +15,11 @@ import com.xmlmind.xmledit.styledview.CustomViewManager;
 import com.xmlmind.xmledit.xmlutil.*;
 import com.xmlmind.xmledit.doc.*;
 
+import java.util.TreeSet;
+import java.util.SortedSet;
+import java.util.Iterator;
+import java.util.HashMap;
+
 
 /**
  * Based on xxe developer documentation
@@ -93,6 +98,32 @@ public class StyleSheetExtension extends StyleSpecsBase {
 		return ret;
 	}
 	
+	private static HashMap listToSet = new HashMap();
+	
+	private static TreeSet setForList(Element list) {
+		// return the TreeSet for that counter, or null
+		String format = list.getTokenAttribute(STYLE, "empty");	// XXX NMTOKEN or TOKEN?
+		if (format.length() > 7 && "format ".equals(format.substring(0, 7))) {
+			format = format.substring(7);
+		} else {
+			format = null;
+		}
+		String counter = list.getNmtokenAttribute(COUNTER, format);
+		if (counter == null)
+			return null;
+
+		TreeSet set = (TreeSet) listToSet.get(counter);
+		if (set == null) {
+			set = new TreeSet();
+			listToSet.put(counter, set);
+		}
+		
+		// ensure that the set includes this list
+		set.add(list);
+		
+		return set;
+	}
+	
     private static int indexOfListItem(Element listItem) {
 		Element list = listItem.getParentElement();
 		if (list == null || list.getName() != LIST)
@@ -101,58 +132,33 @@ public class StyleSheetExtension extends StyleSpecsBase {
 		int index = list.indexOfChildElement(listItem);
 		int offset = 0;
 		
-		String format = list.getTokenAttribute(STYLE, "empty");	// XXX NMTOKEN or TOKEN?
-		if (format.length() > 7 && "format ".equals(format.substring(0, 7))) {
-			format = format.substring(7);
-		} else {
-			format = null;
-		}
-		String counter = list.getNmtokenAttribute(COUNTER, format);
-		
-		if (counter != null) {
-
-		/*
-		 * here begins the sample code that doesn't quite go.
-		 * the plan is to implement <list counter=".."> as follows:
-		 *  hashmap for counter name, returns an array
-		 *  array contains a structure that's the <list> element and
-		 *    a count so far
-		 *  so when a <list> element gets updated, you just redraw
-		 *    it and the ones after and you don't have to count
-		 *    the ones before.
-		 * Remember the implicit counter=format for <list style="format ___">
-		 * That means that the format discovery should be combined here?
-		String continuation = list.getNmtokenAttribute(CONTINUATION, 
-															  "restarts");
-		if ("continues".equals(continuation)) {
-			Element prevlist = null;
+		// to do: optimize when refreshing a set of lists, like
+		//  cache the previous list and its offset?
+		TreeSet set = setForList(list);
+		if (set != null && set.size() > 1) {
+			SortedSet head = set.headSet(list);
 			
-			if (list.getParentElement() != null) {
-				Node node = list.getPreviousSibling();
-				while (node != null) {
-					if ((node instanceof Element) &&
-						((Element) node).getName() == list) {
-						prevlist = (Element) node;
-						break;
-					}
-					
-					node = node.getPreviousSibling();
-				}
-			} // Otherwise, list is the root element.
-			
-			if (prevlist != null) {
-				Element last = prevlist.getLastChildElement();
+			Iterator i = head.iterator();
+			while (i.hasNext()) {
+				Element list2 = (Element) i.next();
+				Element last = list2.getLastChildElement();
 				if (last != null) {
-					offset = indexOfListItem(last) + 1;
-				} // Otherwise, prevlist is invalid.
+					offset += list2.indexOfChildElement(last) + 1;
+				}
 			}
-		}
-		*/
 		}
 
 		return (offset + index);
     }
 	
+	/*
+	 * This one's complex, because of the relationship between
+	 * style=format and counter.  Basically, we must figure
+	 * out which set this element may have belonged to before
+	 * it changed, and after, and see if anything has to
+	 * change.  Inserting a t inside a list just means to
+	 * re-render the list's tail set.
+	 */
 	/*
     private static class listObserver 
 		implements CustomViewManager.BasicElementObserver {
