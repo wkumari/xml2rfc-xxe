@@ -127,29 +127,113 @@
 
       <shell command="open preview.txt" platform="Mac"/>
 
-      <!-- sleep to delay the deletion until the app can launch -->
-
-      <shell command="sleep 10" platform="Mac"/>
-
       <shell command="start &quot;&quot; preview.txt" platform="Windows"/>
 
-      <shell platform="Unix" command="xterm -e &quot;less preview.txt&quot;"/>
+      <shell platform="GenericUnix" command="xterm -e &quot;less preview.txt&quot;"/>
+      <!-- sleep to delay the deletion until the app can launch -->
+
+      <shell command="sleep 10"/>
+
+    </process>
+  </command>
+
+  <command name="xml2rfc.previewXSL">
+    <process>
+      <copyDocument to="__doc.xml"/>
+
+      <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd" />
+
+      <transform file="__doc.xml" stylesheet="xsl/rfc2629.xslt"
+                 to="preview.html"/>
+
+      <delete files="__doc.xml"/>
+
+      <shell command="open preview.html" platform="Mac"/>
+
+      <shell command="start &quot;&quot; preview.html" platform="Windows"/>
+
+      <!-- the call to mozilla needs work (this might be the advantage
+	   of the Preview java class) -->
+      <shell platform="GenericUnix" command="mozilla -remote &quot;openFile(preview.html)&quot; >/dev/null 2>&amp;1"/>
+      <!-- sleep to delay the deletion until the app can launch -->
+
+      <shell command="sleep 10"/>
+
     </process>
   </command>
 
   <!--
-       Use Julian's xsl transform to convert document to HTML.
-       To Do: use docname from <rfc> element if present.
-       This doesn't work.
-       transform seems to want the document to be somewhere other
-       than copyDocument put it? -->
+       Use Julian's xsl transform to convert document to HTML or
+	PDF via FO.
+	-->
 
   <command name="xml2rfc.toHTMLUsingXSL">
+    <macro>
+      <sequence>
+        <command name="selectFile" parameter="saveDirectoryURL"/>
+
+        <set expression="&quot;%_&quot;" plainString="true" variable="dest"/>
+
+        <command name="xml2rfc.draftname"/>
+
+        <set expression="'%_'" plainString="true" variable="docname"/>
+
+        <get expression="concat($dest, &quot; &quot;, $docname)"/>
+
+        <command name="xml2rfc.doXSL" parameter="%_"/>
+      </sequence>
+    </macro>
+  </command>
+
+  <!-- I don't have xxe pro, so I can't test the PDF creation.
+       Figured I'd try it anyway. -->
+  <command name="xml2rfc.toPDFUsingXSL">
+    <macro>
+      <sequence>
+        <command name="selectFile" parameter="saveDirectoryURL"/>
+
+        <set expression="&quot;%_&quot;" plainString="true" variable="dest"/>
+
+        <command name="xml2rfc.draftname"/>
+
+        <set expression="'%_'" plainString="true" variable="docname"/>
+
+        <get expression="concat($dest, &quot; &quot;, $docname)"/>
+
+        <command name="xml2rfc.doPDF" parameter="%_"/>
+      </sequence>
+    </macro>
+  </command>
+
+  <command name="xml2rfc.doPDF">
     <process>
       <copyDocument to="__doc.xml"/>
+      <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd" />
+
+      <transform file="__doc.xml" stylesheet="xsl/rfc2629toFO.xslt"
+                 to="__doc.fo"/>
+      <processFO processor="XEP" file="__doc.fo" to="%1.pdf">
+        <parameter name="OUTPUT_FORMAT">pdf</parameter>
+        <parameter name="H4PS.LANGUAGE_LEVEL">2</parameter>
+        <!-- If XEP plug-in has not been installed, try FOP plug-in. -->
+        <processFO processor="FOP" file="__doc.fo" to="%1.pdf">
+          <parameter name="renderer">pdf</parameter>
+        </processFO>
+      </processFO>
+
+      <upload base="%0/">
+        <copyFiles files="*.*" toDir="."/>
+      </upload>
+    </process>
+  </command>
+
+  <command name="xml2rfc.doXSL">
+    <process>
+      <copyDocument to="__doc.xml"/>
+      <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd" />
 
       <transform file="__doc.xml" stylesheet="xsl/rfc2629.xslt"
-                 to="draft.html"/>
+                 to="%1.html"/>
 
       <upload base="%0/">
         <copyFiles files="*.*" toDir="."/>
@@ -184,12 +268,19 @@
 
     <item command="xml2rfc.previewTXT" label="Text Preview"/>
 
+    <item command="xml2rfc.previewXSL" label="HTML Preview using XSL"/>
+
     <menu label="Convert">
       <item command="xml2rfc.convertToSomething" label="Convert to Text"
             parameter="rfc txt"/>
 
       <item command="xml2rfc.convertToSomething" label="Convert to HTML"
             parameter="html html"/>
+
+      <item command="xml2rfc.toHTMLUsingXSL" label="Convert to HTML using XSL"
+            />
+
+      <item command="xml2rfc.toPDFUsingXSL" label="Convert to PDF using XSL"/>
     </menu>
   </menu>
 
