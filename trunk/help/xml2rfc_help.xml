@@ -545,6 +545,20 @@
 
     <variablelist>
       <varlistentry>
+        <term>0.4 - not yet released</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>&lt;artwork&gt; is now always saved as [CDATA[..]] to
+              assist external editing and ensure whitespace
+              preservation.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
         <term>0.3 - Dec 17, 2004</term>
 
         <listitem>
