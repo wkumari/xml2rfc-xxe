@@ -46,8 +46,8 @@
       <xsl:value-of select="$id" />
       <xsl:text>: </xsl:text>
       <xsl:variable name="stat" select="document('xml2rfc-rfcindex:rfc-index.xml')/*/rfced:rfc-entry[rfced:doc-id=$id]" />
-      <xsl:if test="$stat/rfced:publication-status">
-        <xsl:text>[</xsl:text><xsl:value-of select="$stat/rfced:publication-status"/><xsl:text>] </xsl:text>
+      <xsl:if test="$stat/rfced:current-status">
+        <xsl:text>[</xsl:text><xsl:value-of select="$stat/rfced:current-status"/><xsl:text>] </xsl:text>
       </xsl:if> 
       <xsl:if test="$stat/rfced:is-also">
         <xsl:text>(-> </xsl:text><xsl:value-of select="$stat/rfced:is-also/rfced:doc-id"/><xsl:text>) </xsl:text>
@@ -60,7 +60,8 @@
             <xsl:text> </xsl:text>
           </xsl:for-each>
         </xsl:when>
-        <xsl:otherwise>ok</xsl:otherwise>
+	<xsl:when test="$stat">ok</xsl:when>
+        <xsl:otherwise>can't find in rfc-index!</xsl:otherwise>
       </xsl:choose>
       <xsl:text>&#10;</xsl:text>    
     </xsl:for-each>
