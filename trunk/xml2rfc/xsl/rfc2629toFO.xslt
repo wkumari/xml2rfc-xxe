@@ -58,6 +58,10 @@
     2004-11-27  julian.reschke@greenbytes.de
     
     Irefs in artwork generate monospaced entries in index.
+    
+    2005-01-31  julian.reschke@greenbytes.de
+    
+    Fix TOC generation that was broken after changes in main XSLT.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -75,9 +79,7 @@
 
 <xsl:import href="rfc2629.xslt" />
 
-<xsl:output method="xml" version="1.0" />
-
-<xsl:output method="xml" encoding="UTF-8" />
+<xsl:output method="xml" version="1.0" encoding="UTF-8"/>
 
 <xsl:attribute-set name="h1-inline">
 	<xsl:attribute name="font-weight">bold</xsl:attribute>
@@ -1119,7 +1121,146 @@
   <xsl:apply-templates mode="toc" />
 </xsl:template>
 
-<xsl:template name="insertTocLine">
+<xsl:template match="back" mode="toc">
+
+  <!-- <xsl:apply-templates select="references" mode="toc" /> -->
+
+  <xsl:if test="//cref and $xml2rfc-comments='yes' and $xml2rfc-inline!='yes'">
+    <xsl:call-template name="insert-toc-line">
+      <xsl:with-param name="number" select="'&#167;'"/>
+      <xsl:with-param name="target" select="concat($anchor-prefix,'.comments')"/>
+      <xsl:with-param name="title" select="'Editorial Comments'"/>
+    </xsl:call-template>
+  </xsl:if>
+
+  <xsl:apply-templates select="/rfc/front" mode="toc" />
+  <xsl:apply-templates select="*[not(self::references)]" mode="toc" />
+
+  <!-- copyright statements -->
+  <xsl:if test="not($xml2rfc-private)">
+    <xsl:call-template name="insert-toc-line">
+      <xsl:with-param name="number" select="'&#167;'"/>
+      <xsl:with-param name="target" select="concat($anchor-prefix,'.ipr')"/>
+      <xsl:with-param name="title" select="'Intellectual Property and Copyright Statements'"/>
+    </xsl:call-template>
+  </xsl:if>
+  
+  <!-- insert the index if index entries exist -->
+  <xsl:if test="//iref">
+    <xsl:call-template name="insert-toc-line">
+      <xsl:with-param name="number" select="'&#167;'"/>
+      <xsl:with-param name="target" select="concat($anchor-prefix,'.index')"/>
+      <xsl:with-param name="title" select="'Index'"/>
+    </xsl:call-template>
+  </xsl:if>
+
+</xsl:template>
+
+<xsl:template match="front" mode="toc">
+
+  <xsl:variable name="title">
+    <xsl:if test="count(author)=1">Author's Address</xsl:if>
+    <xsl:if test="count(author)!=1">Author's Addresses</xsl:if>
+  </xsl:variable>
+  
+  <xsl:call-template name="insert-toc-line">
+    <xsl:with-param name="number" select="'&#167;'"/>
+    <xsl:with-param name="target" select="concat($anchor-prefix,'.authors')"/>
+    <xsl:with-param name="title" select="$title"/>
+  </xsl:call-template>
+
+</xsl:template>
+
+<xsl:template name="references-toc">
+
+  <!-- distinguish two cases: (a) single references element (process
+  as toplevel section; (b) multiple references sections (add one toplevel
+  container with subsection) -->
+
+  <xsl:choose>
+    <xsl:when test="count(/*/back/references) = 0">
+      <!-- nop -->
+    </xsl:when>
+    <xsl:when test="count(/*/back/references) = 1">
+      <xsl:for-each select="/*/back/references">
+        <xsl:variable name="title">
+          <xsl:choose>
+            <xsl:when test="@title!=''"><xsl:value-of select="@title" /></xsl:when>
+            <xsl:otherwise>References</xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+      
+        <xsl:call-template name="insert-toc-line">
+          <xsl:with-param name="number">
+            <xsl:call-template name="get-references-section-number"/>
+          </xsl:with-param>
+          <xsl:with-param name="target" select="concat($anchor-prefix,'.references')"/>
+          <xsl:with-param name="title" select="$title"/>
+        </xsl:call-template>
+      </xsl:for-each>
+    </xsl:when>
+    <xsl:otherwise>
+      <!-- insert pseudo container -->    
+      <xsl:call-template name="insert-toc-line">
+        <xsl:with-param name="number">
+          <xsl:call-template name="get-references-section-number"/>
+        </xsl:with-param>
+        <xsl:with-param name="target" select="concat($anchor-prefix,'.references')"/>
+        <xsl:with-param name="title" select="'References'"/>
+      </xsl:call-template>
+  
+      <!-- ...with subsections... -->    
+      <xsl:for-each select="/*/back/references">
+        <xsl:variable name="title">
+          <xsl:choose>
+            <xsl:when test="@title!=''"><xsl:value-of select="@title" /></xsl:when>
+            <xsl:otherwise>References</xsl:otherwise>
+          </xsl:choose>
+        </xsl:variable>
+      
+        <xsl:variable name="sectionNumber">
+          <xsl:call-template name="get-section-number" />
+        </xsl:variable>
+
+        <xsl:variable name="num">
+          <xsl:number/>
+        </xsl:variable>
+
+        <xsl:call-template name="insert-toc-line">
+          <xsl:with-param name="number" select="$sectionNumber"/>
+          <xsl:with-param name="target" select="concat($anchor-prefix,'.references','.',$num)"/>
+          <xsl:with-param name="title" select="$title"/>
+        </xsl:call-template>
+      </xsl:for-each>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template match="section" mode="toc">
+  <xsl:variable name="sectionNumber">
+    <xsl:call-template name="get-section-number" />
+  </xsl:variable>
+
+  <xsl:variable name="target">
+    <xsl:choose>
+      <xsl:when test="@anchor"><xsl:value-of select="@anchor" /></xsl:when>
+       <xsl:otherwise><xsl:value-of select="$anchor-prefix"/>.section.<xsl:value-of select="$sectionNumber" /></xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+
+  <xsl:call-template name="insert-toc-line">
+    <xsl:with-param name="number" select="$sectionNumber"/>
+    <xsl:with-param name="target" select="$target"/>
+    <xsl:with-param name="title" select="@title"/>
+    <xsl:with-param name="tocparam" select="@toc"/>
+  </xsl:call-template>
+  
+  <xsl:if test=".//section">
+    <xsl:apply-templates mode="toc" />
+  </xsl:if>
+</xsl:template>
+
+<xsl:template name="insert-toc-line">
   <xsl:param name="number" />
   <xsl:param name="target" />
   <xsl:param name="title" />
