@@ -350,6 +350,14 @@ list[style^=format] > t:before {
 	content: "???";
 	color: red;
 }
+list[style=empty] > t:before {
+	content: "";	/* override the catch-all */
+}
+/* Catch-all for formats that we haven't handled. */
+list > t:before {
+	display: marker;
+	content: "???";
+}
 
 /* A handle for a figure.  Also warn about document model change
  * deprecating <t><figure>.
