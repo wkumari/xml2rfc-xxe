@@ -105,12 +105,12 @@
     <process>
       <copyDocument to="__doc.xml"/>
 
-      <shell command="xml2%2 __doc.xml %1.%3"/>
+      <shell command="xml2%1 __doc.xml draft.%2"/>
 
       <delete files="__doc.xml"/>
 
-      <upload base="%0">
-        <copyFiles files="*.*" toDir="."/>
+      <upload base="file:///">	<!-- we always get a fully-qualified %0 -->
+        <copyFile file="draft.%2" to="%0"/>
       </upload>
     </process>
   </command>
@@ -187,15 +187,9 @@
   <command name="xml2rfc.toHTMLUsingXSL">
     <macro>
       <sequence>
-        <command name="selectFile" parameter="saveDirectoryURL"/>
-
-        <set expression="&quot;%_&quot;" plainString="true" variable="dest"/>
-
         <command name="xml2rfc.draftname"/>
 
-        <set expression="'%_'" plainString="true" variable="docname"/>
-
-        <get expression="concat($dest, &quot; &quot;, $docname)"/>
+        <command name="selectFile" parameter="saveFileURL %p/%_.html"/>
 
         <command name="xml2rfc.doXSL" parameter="%_"/>
       </sequence>
@@ -208,15 +202,9 @@
   <command name="xml2rfc.toPDFUsingXSL">
     <macro>
       <sequence>
-        <command name="selectFile" parameter="saveDirectoryURL"/>
-
-        <set expression="&quot;%_&quot;" plainString="true" variable="dest"/>
-
         <command name="xml2rfc.draftname"/>
 
-        <set expression="'%_'" plainString="true" variable="docname"/>
-
-        <get expression="concat($dest, &quot; &quot;, $docname)"/>
+        <command name="selectFile" parameter="saveFileURL %p/%_.pdf"/>
 
         <command name="xml2rfc.doPDF" parameter="%_"/>
       </sequence>
@@ -238,20 +226,20 @@
       <transform file="__doc.fo" stylesheet="xsl/xsl11toFop.xslt"
                  to="__doc.fop"/>
 
-      <processFO file="__doc.xep" processor="XEP" to="%1.pdf">
+      <processFO file="__doc.xep" processor="XEP" to="draft.pdf">
         <parameter name="OUTPUT_FORMAT">pdf</parameter>
 
         <parameter name="H4PS.LANGUAGE_LEVEL">2</parameter>
 
         <!-- If XEP plug-in has not been installed, try FOP plug-in. -->
 
-        <processFO file="__doc.fop" processor="FOP" to="%1.pdf">
+        <processFO file="__doc.fop" processor="FOP" to="draft.pdf">
           <parameter name="renderer">pdf</parameter>
         </processFO>
       </processFO>
 
-      <upload base="%0/">
-        <copyFiles files="*.*" toDir="."/>
+      <upload base="file:///">	<!-- we always get a fully-qualified %0 -->
+        <copyFile file="draft.pdf" to="%0"/>
       </upload>
     </process>
   </command>
@@ -262,10 +250,10 @@
 
       <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd"/>
 
-      <transform file="__doc.xml" stylesheet="xsl/rfc2629.xslt" to="%1.html"/>
+      <transform file="__doc.xml" stylesheet="xsl/rfc2629.xslt" to="draft.html"/>
 
-      <upload base="%0/">
-        <copyFiles files="*.*" toDir="."/>
+      <upload base="file:///">	<!-- we always get a fully-qualified %0 -->
+        <copyFile file="draft.html" to="%0"/>
       </upload>
     </process>
   </command>
@@ -273,15 +261,9 @@
   <command name="xml2rfc.convertToSomething">
     <macro>
       <sequence>
-        <command name="selectFile" parameter="saveDirectoryURL"/>
-
-        <set expression="&quot;%_&quot;" plainString="true" variable="dest"/>
-
         <command name="xml2rfc.draftname"/>
 
-        <set expression="'%_'" plainString="true" variable="docname"/>
-
-        <get expression="concat($dest, &quot; &quot;, $docname)"/>
+        <command name="selectFile" parameter="saveFileURL %p/%_.%1"/>
 
         <command name="xml2rfc.convertDoc" parameter="%_ %*"/>
       </sequence>
