@@ -306,13 +306,19 @@ spanx[style=verb] {
 }
 /* A handle for the list */
 /* todo: attributes like hangIndent based on the list type? */
+/* todo: offer an easy way to convert[wrap] <t> if needed? */
 list:before {
-	content: icon(right) "[list type " attr(style) "]";
+	content: icon(right) "[list style " attr(style) xpath('if(local-name(..) = "t", "", " NOTE: list must be inside <t>")') "]";
 	font-size: 80%;
-	color: #ff9900;
+	color: concatenate(xpath('if(local-name(..) = "t","#ff9900","red")'));
 }
 list t {
 	margin: 0.33em 2em;
+}
+/* Catch-all for formats that we don't handle. */
+list[style] > t:before {
+	display: marker;
+	content: "???";
 }
 /* 3 levels of symbols */
 list[style=symbols] > t:before {
@@ -352,11 +358,6 @@ list[style^=format] > t:before {
 }
 list[style=empty] > t:before {
 	content: "";	/* override the catch-all */
-}
-/* Catch-all for formats that we haven't handled. */
-list > t:before {
-	display: marker;
-	content: "???";
 }
 
 /* A handle for a figure.  Also warn about document model change
