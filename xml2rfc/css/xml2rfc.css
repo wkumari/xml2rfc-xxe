@@ -187,7 +187,7 @@ section section section section section:before {
 	content: collapser() attributes() "Section " counter(nnnnn) ". " text-field(attribute, title);
 }
 section section section section section section:before {
-	content: collapser() attributes() "Section (auto-numbering failed). " text-field(attribute, title);
+	content: collapser() attributes() "Section (auto-numbering failed)." counter(nnnnn) ". " text-field(attribute, title);
 }
 back section:before {
 	content: collapser() attributes() "Appendix " counter(n, upper-alpha) ". " text-field(attribute, title);
@@ -203,7 +203,7 @@ back section section section section:before {
 	content: collapser() attributes() "Appendix " counter(n---, upper-alpha) "." counter(nnn) ". " text-field(attribute, title);
 }
 back section section section section section:before {
-	content: collapser() attributes() "Appendix (auto-numbering failed). " text-field(attribute, title);
+	content: collapser() attributes() "Appendix (auto-numbering failed)." counter(nnnn) ". " text-field(attribute, title);
 }
 t {
 	margin-bottom: 1em;
