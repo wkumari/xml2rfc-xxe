@@ -377,9 +377,13 @@
       <command name="xml2rfc.addBlock" parameter="section"/>
     </button>
 
-    <!-- Increase section level: if no elements intervening, move this elemnt into previous section, else wrap with another section? -->
+    <button icon="icons/incrsectlevel.gif" toolTip="Increase section level">
+      <command name="incrSectionLevel" param="section - t" />
+    </button>
 
-    <!-- Decrease section level... -->
+    <button icon="icons/decrsectlevel.gif" toolTip="Decrease section level">
+      <command name="decrSectionLevel" param="section - t" />
+    </button>
 
     <separator/>
 
