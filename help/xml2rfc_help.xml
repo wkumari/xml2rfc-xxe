@@ -28,8 +28,8 @@
     <title>Overview</title>
 
     <para>This xxe plugin attempts to support most of the rfc2629bis DTD, as
-    of November 10, 2004. This documentation is $Revision$, and tries to
-    document plugin version %%VERSION%%. The plugin requires at least xxe
+    of November 10, 2004. This documentation is $Revision$, and tries
+    to document plugin version %%VERSION%%. The plugin requires at least xxe
     2.8p1 (released November 29, 2004).</para>
 
     <para>This plugin can create text or HTML output using xml2rfc, if
@@ -541,6 +541,8 @@
   </section>
 
   <section>
+    <?dbhtml filename="ChangeLog.html"?>
+
     <title>Change Log</title>
 
     <variablelist>
@@ -553,6 +555,11 @@
               <para>&lt;artwork&gt; is now always saved as [CDATA[..]] to
               assist external editing and ensure whitespace
               preservation.</para>
+            </listitem>
+
+            <listitem>
+              <para>The anchor of a &lt;reference&gt; that's not referenced in
+              the document turns red.</para>
             </listitem>
           </itemizedlist>
         </listitem>
