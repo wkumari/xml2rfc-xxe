@@ -73,10 +73,6 @@
 
         <itemizedlist>
           <listitem>
-            <para>Increase/decrease section level</para>
-          </listitem>
-
-          <listitem>
             <para>Increase/decrease list item level</para>
           </listitem>
         </itemizedlist>
@@ -215,6 +211,35 @@
         <varlistentry>
           <term><inlinemediaobject>
               <imageobject>
+                <imagedata fileref="icons/decrsectlevel.gif" />
+              </imageobject>
+            </inlinemediaobject>Decrease section level</term>
+
+          <listitem>
+            <para>Decrease the indentation of the explicitly selected section,
+            by making it a sibling of its parent. (e.g., turns 3.2.1 into 3.3
+            and if there was a 3.3 it becomes 3.4)</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/incrsectlevel.gif" />
+              </imageobject>
+            </inlinemediaobject>Increase section level</term>
+
+          <listitem>
+            <para>Increases the indentation of the explicitly selected
+            section, by creating an empty section inside which to enclose it.
+            Note that this never undoes the effect of the decrease
+            function.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
                 <imagedata fileref="icons/table.gif" />
               </imageobject>
             </inlinemediaobject>Add table</term>
@@ -233,6 +258,47 @@
 
           <listitem>
             <para>Adds a &lt;figure&gt; and related elements.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/navigate2.gif" />
+              </imageobject>
+            </inlinemediaobject>Swap xref ends</term>
+
+          <listitem>
+            <para>Flips back and forth between an xref and its target. When
+            going from the target back to xref, this flips to the first
+            reference to that target in the document; see the next two
+            commands.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/navigatePrevious2.gif" />
+              </imageobject>
+            </inlinemediaobject>Previous xref to same target</term>
+
+          <listitem>
+            <para>If there is another xref to the same target earlier in this
+            document, go to it.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/navigateNext2.gif" />
+              </imageobject>
+            </inlinemediaobject>Next xref to same target</term>
+
+          <listitem>
+            <para>If there is another xref to the same target later in this
+            document, go to it.</para>
           </listitem>
         </varlistentry>
 
@@ -341,11 +407,9 @@
           <term>Convert to HTML</term>
 
           <listitem>
-            <para>Asks for a directory to save the result in; then uses an
+            <para>Asks for the file to save the result in; then uses an
             externally-installed <literal>xml2html</literal> to convert the
-            XML to HTML and saves it in the resulting directory; named based
-            on the docname attribute of the rfc element or simply
-            '<filename>draft.html</filename>'.</para>
+            XML to HTML.</para>
           </listitem>
         </varlistentry>
 
@@ -353,11 +417,9 @@
           <term>Convert to Text</term>
 
           <listitem>
-            <para>Asks for a directory to save the result in; then uses an
+            <para>Asks for the file to save the result in; then uses an
             externally-installed <literal>xml2rfc</literal> to convert the XML
-            to text and saves it in the resulting directory; named based on
-            the docname attribute of the rfc element or simply
-            '<filename>draft.txt</filename>'.</para>
+            to text.</para>
           </listitem>
         </varlistentry>
 
@@ -365,11 +427,8 @@
           <term>Convert to HTML using XSL</term>
 
           <listitem>
-            <para>Asks for a directory to save the result in; then uses Julian
-            Reschke's XSL transform to convert the XML to HTML and saves it in
-            the resulting directory; named based on the docname attribute of
-            the rfc element or simply
-            '<filename>draft.html</filename>'.</para>
+            <para>Asks for the file to save the result in; then uses Julian
+            Reschke's XSL transform to convert the XML to HTML.</para>
           </listitem>
         </varlistentry>
 
@@ -377,13 +436,12 @@
           <term>Convert to PDF using XSL</term>
 
           <listitem>
-            <para>NOTE: This procedure is untested.</para>
+            <para>NOTE: This procedure requires xxe Professional Edition; it
+            will not work in the free Standard Edition.</para>
 
-            <para>Asks for a directory to save the result in; then uses Julian
+            <para>Asks for the file to save the result in; then uses Julian
             Reschke's XSL transform to convert the XML to XML-FO, then uses an
-            xxe XML-FO plugin (if installed) and saves it in the resulting
-            directory; named based on the docname attribute of the rfc element
-            or simply '<filename>draft.pdf</filename>'.</para>
+            xxe XML-FO plugin (if installed) to convert the FO to PDF.</para>
           </listitem>
         </varlistentry>
       </variablelist>
@@ -405,9 +463,9 @@
 
     <para>Although support for editing &lt;?rfc include=?&gt; processing
     instructions is planned, support for handling the file that is included is
-    not - meaning that, for example, cross-references to a reference in the
-    included file will show as broken, and the xxe validator will claim that
-    the document doesn't validate.</para>
+    not - meaning that, for example, although cross-references to a reference
+    in the included file now show as "included", the xxe validator will claim
+    that the document doesn't validate.</para>
 
     <para>xxe is by nature a "root element editor", not an XML file editor, so
     at this time has no ability to edit processing instructions that occur
@@ -421,6 +479,44 @@
     <title>Change Log</title>
 
     <variablelist>
+      <varlistentry>
+        <term>0.3 - Dec 17, 2004</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Switched to file picker, not directory picker, for the
+              results of conversions.</para>
+            </listitem>
+
+            <listitem>
+              <para>Added increase/decrease section level with xxe's
+              builtins.</para>
+            </listitem>
+
+            <listitem>
+              <para>Added link end swaps</para>
+            </listitem>
+
+            <listitem>
+              <para>PDF renderer via FOP verified to work (using the config
+              distributed with 0.2). This requires xxe Professional
+              Edition.</para>
+            </listitem>
+
+            <listitem>
+              <para>Display "included" after an xref that seems to refer to an
+              &lt;?rfc include=...?&gt;ed reference. This match triggers if a)
+              the target= starts with RFC and the processing instruction
+              includes "reference.RFC.N", or b) the target= starts with RFC
+              and the processing instruction includes
+              "reference.&lt;target&gt;". Boy did that make for a complex
+              xpath function.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
       <varlistentry>
         <term>0.2 - Nov 29, 2004</term>
 
