@@ -30,20 +30,43 @@
  -
  - Input for this stylesheet is an RFC 2629 XML document; output is
  - the same document, still in XML, but with <?rfc include="foo"?> PIs
- - expanded.  You may need to run this more than once if you have
- - multiple levels of inclusion; if you happen to be an XSLT wizard
- - and know how to fix this, please do so and share the fix.
+ - expanded.
+-->
+
+<!--
+ - Adapted for use with xxe by Bill Fenner, 2004-12-22
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
+  <xsl:template name="parse-include">
+    <xsl:param name="include" />
+    <xsl:variable name="elide">&#9;&#10;&#13;&#32;&#34;&#39;</xsl:variable>
+    <xsl:variable name="href"><xsl:value-of select="
+      translate(substring-after(.,'='), $elide, '')"/></xsl:variable>
+    <xsl:value-of select="$href"/>
+    <xsl:if test="not(contains($href,'.xml'))">.xml</xsl:if>
+  </xsl:template>
+
   <xsl:template match="processing-instruction('rfc')">
     <xsl:choose>
       <xsl:when test="contains(.,'include=')">
-        <xsl:variable name="elide">&#9;&#10;&#13;&#32;&#34;&#39;</xsl:variable>
-	<xsl:variable name="href"><xsl:value-of select="
-	  translate(substring-after(.,'='), $elide, '')"/>.xml</xsl:variable>
-	<xsl:copy-of select="document($href)"/>
+        <xsl:variable name="href">
+          <xsl:call-template name="parse-include">
+            <xsl:with-param name="include" select="." />
+          </xsl:call-template>
+        </xsl:variable>
+        <xsl:comment> Begin inclusion <xsl:value-of select="$href"/>. </xsl:comment>
+        <!-- XXX first try applying templates to document($href,.)
+          - to handle multiple levels of include, except we don't have
+          - the original directory so we're looking in the transform
+          - directory, which won't have the other xml files.  I don't
+          - think this fits into xxe's idea of a transform, since
+          - it wants you to copy the necessary files into the temp
+          - dir.  So, for now, assume that the only things being
+          - included are references and are in xml2rfc-include:. -->
+        <xsl:copy-of select="document(concat('xml2rfc-include:',$href))"/>
+        <xsl:comment> End inclusion <xsl:value-of select="$href"/>. </xsl:comment>
       </xsl:when>
       <xsl:otherwise>
         <xsl:copy/>
