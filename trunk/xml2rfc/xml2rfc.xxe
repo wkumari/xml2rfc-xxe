@@ -11,12 +11,18 @@
   <!-- Claim an XML document if:
        - it has a DOCTYPE referring to the rfc2629.dtd
        - its root element is <rfc> with no namespace
+       - its root element is <reference> with no namespace
+         (this is for editing the include files directly)
   -->
   <detect>
     <or>
       <dtdSystemId>rfc2629.dtd</dtdSystemId>
       <and>
 	<rootElementLocalName>rfc</rootElementLocalName>
+	<rootElementNamespace xsi:nil='true' />
+      </and>
+      <and>
+	<rootElementLocalName>reference</rootElementLocalName>
 	<rootElementNamespace xsi:nil='true' />
       </and>
     </or>
