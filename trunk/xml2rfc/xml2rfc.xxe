@@ -435,6 +435,8 @@
       <sequence>
         <command name="xml2rfc.webform" parameter="'%D' txt"/>
 	<set variable="tmpfile" expression="%_" plainString="true"/>
+	<!-- webform returns null when it fails -->
+	<test expression="$tmpfile != ''"/>
 	<choice>
 	  <sequence>
 	    <command name="xml2rfc.os" parameter="windows"/>
