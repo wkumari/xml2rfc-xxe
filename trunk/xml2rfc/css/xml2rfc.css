@@ -10,9 +10,8 @@
 }
 
 /*
- * Need to write a gadget
- * XXX Also need to figure out how to render the processing-instructions
- * that come before the <rfc>
+ * Need to write a gadget to handle processing-instructions inside the
+ * <rfc> (normally only include?)
 *::processing-instruction(rfc) {
 	content: "rfc:include " attr(include);
 }
@@ -212,8 +211,9 @@ xref, eref {
 	display: inline;
 	color: green;
 }
-xref::attribute(target) {
-	attribute-content-left: " [xref to:";
+xref::attribute(target),
+eref::attribute(target) {
+	attribute-content-left: " [" element-label() " to:";
 	attribute-content-middle: value-editor(attribute, attribute());
 	attribute-content-right: "]";
 	show-attribute: always;
@@ -230,21 +230,12 @@ xref::attribute(target) {
  */
 xref:after {
 	display: inline;
-	content: attributes() " [" xpath("if(//*[@anchor=current()/@target]/@title, //*[@anchor=current()/@target]/@title, if(//*[@anchor=current()/@target]/front/title, //*[@anchor=current()/@target]/front/title, if(//*[@anchor=current()/@target], 'ok', '(not found)')))") "] ";
+	content: attributes() " [" xpath("if(//*[@anchor=current()/@target]/@title, //*[@anchor=current()/@target]/@title, if(//*[@anchor=current()/@target]/front/title, //*[@anchor=current()/@target]/front/title, if(//*[@anchor=current()/@target], 'ok', '(not found)')))") "]";
 	color: purple;
-}
-eref::attribute(target) {
-	/* todo: combine this with xref::attribute(target)? */
-	attribute-content-left: " [eref to:";
-	attribute-content-middle: value-editor(attribute, attribute());
-	attribute-content-right: "]";
-	show-attribute: always;
-	color: purple;
-	font-size: 80%;
 }
 eref:after {
 	display: inline;
-	content: attributes() " ";
+	content: attributes();
 	color: purple;
 }
 /*
@@ -261,7 +252,7 @@ iref::attribute() {
 }
 iref {
 	display: inline;
-	content: " Index item: " attributes() " ";
+	content: "[ Index item: " attributes() " ]";
 	color: purple;
 }
 /*
@@ -310,6 +301,7 @@ spanx[style=verb] {
 	font-style: normal;
 }
 /* A handle for the list */
+/* todo: attributes like hangIndent based on the list type? */
 list:before {
 	content: icon(right) "[list type " attr(style) "]";
 	font-size: 80%;
@@ -330,9 +322,10 @@ list[style=symbols] list[style=symbols] list[style=symbols] > t:before {
 	content: icon(diamond);
 }
 /* hanging lists */
-/* XXX marker renders only in the margin, can't decide how to fit. */
+list[style=hanging][hangIndent] > t {
+	margin-left: concatenate(xpath("../@hangIndent"), "em");
+}
 list[style=hanging] > t {
-	/* hangIndent? */
 	margin-left: 6em;
 }
 list[style=hanging] > t:before {
@@ -354,10 +347,12 @@ list[style^=format] > t:before {
 	color: red;
 }
 
-/* A handle for a figure */
+/* A handle for a figure.  Also warn about document model change
+ * deprecating <t><figure>.
+ */
 figure:before {
-	content: collapser() "[figure" attributes() "]";
-	color: #ff9900;
+	content: collapser() "[figure" attributes() xpath('if(local-name(..) = "t"," NOTE: figure inside <t> is deprecated in 2629bis","")') "]";
+	color: concatenate(xpath('if(local-name(..) = "t","red","#ff9900")'));
 }
 figure::attribute(title) {
 	attribute-content-left: "[title:";
@@ -426,11 +421,18 @@ texttable {
 	border-spacing: 2;
 	background-color: silver;
 }
-texttable > preamble {
-	display: table-caption;
-}
+/*
+ * Can't use table-caption for the postamble, since it displays
+ * before the table.  Give them each their own row, and make them
+ * look the same; they will still appear as a row inside the table.
+ * Don't know yet how this will appear when the actual table stuff
+ * is working.
+ */
+texttable > preamble,
 texttable > postamble {
-	display: block;	/* table-caption displays at the top =( */
+	display: block;
+	color: #004080;
+	background-color: white;
 }
 texttable > ttcol {
 	display: table-cell;
