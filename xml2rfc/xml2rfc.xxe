@@ -212,11 +212,15 @@
 
       <transform file="__doc.xml" stylesheet="xsl/rfc2629toFO.xslt"
                  to="__doc.fo"/>
-      <processFO processor="XEP" file="__doc.fo" to="%1.pdf">
+      <transform file="__doc.fo" stylesheet="xsl/xsl11toXep.xslt"
+		 to="__doc.xep" />
+      <transform file="__doc.fo" stylesheet="xsl/xsl11toFop.xslt"
+		 to="__doc.fop" />
+      <processFO processor="XEP" file="__doc.xep" to="%1.pdf">
         <parameter name="OUTPUT_FORMAT">pdf</parameter>
         <parameter name="H4PS.LANGUAGE_LEVEL">2</parameter>
         <!-- If XEP plug-in has not been installed, try FOP plug-in. -->
-        <processFO processor="FOP" file="__doc.fo" to="%1.pdf">
+        <processFO processor="FOP" file="__doc.fop" to="%1.pdf">
           <parameter name="renderer">pdf</parameter>
         </processFO>
       </processFO>
