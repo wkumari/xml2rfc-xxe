@@ -9,7 +9,10 @@
     <title>Overview</title>
 
     <para>This xxe plugin attempts to support most of the rfc2629bis DTD, as
-    of November 10, 2004. The following items are not yet supported:</para>
+    of November 10, 2004. This documentation is $Revision$, and tries to
+    document plugin version %%VERSION%%.</para>
+
+    <para>The following items are not yet supported:</para>
 
     <itemizedlist>
       <listitem>
