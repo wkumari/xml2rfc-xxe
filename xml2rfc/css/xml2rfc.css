@@ -92,7 +92,7 @@ note:before {
 /* Author and address formatting */
 address:before {
 	content: "Address: ";
-	/* XXX to do: can this be outdented? */
+	text-indent: -1em;
 }
 address {
 	margin-left: 1em;
@@ -316,7 +316,7 @@ list:before {
 	color: #ff9900;
 }
 list t {
-	margin: 0.33em 1em;
+	margin: 0.33em 2em;
 }
 /* 3 levels of symbols */
 list[style=symbols] > t:before {
@@ -330,10 +330,10 @@ list[style=symbols] list[style=symbols] list[style=symbols] > t:before {
 	content: icon(diamond);
 }
 /* hanging lists */
-/* XXX marker renders only in the margin. */
+/* XXX marker renders only in the margin, can't decide how to fit. */
 list[style=hanging] > t {
 	/* hangIndent? */
-	margin-left: 6ex;
+	margin-left: 6em;
 }
 list[style=hanging] > t:before {
 	display: marker;
