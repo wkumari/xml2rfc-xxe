@@ -34,8 +34,13 @@
 
     <para>This plugin can create text or HTML output using xml2rfc, if
     installed; it can also use xmlmind's native XSL support to generate HTML.
-    Use the menu items "Convert to HTML using XSL" and "HTML Preview using
-    XSL" if you don't have xml2rfc installed.</para>
+    It can also convert to txt, HTML, nroff or canonical XML using the
+    xml.resource.org web form. Use the menu items <guimenuitem>Convert to HTML
+    using XSL</guimenuitem>, <guimenuitem>HTML Preview using
+    XSL</guimenuitem>, <guimenuitem>Text Preview using
+    xml.resource.org</guimenuitem>, and the <guisubmenu>...using
+    xml.resource.org</guisubmenu> Convert submenu if you don't have xml2rfc
+    installed.</para>
 
     <para>The following items are not yet (and may never be) supported:</para>
 
@@ -94,7 +99,11 @@
 
     <para>To insert sections, paragraphs, figures, cross-references, etc., use
     the toolbar or the XXE insert pane; you'll commonly use "Insert" and
-    "Insert After".</para>
+    "Insert After". Try to learn the keyboard accelerators (command-I, J,
+    typing the start of an element name and expanding it with "space" and
+    inserting with "enter"; command-E to edit the attributes of the current
+    element, etc. See the xxe tutorial, section "Being productive with XXE"
+    for more.)</para>
 
     <para>Lists, paragraphs and sections are inserted after/inside the current
     one depending on the XXE selection; generally a new element is inserted
@@ -147,8 +156,6 @@
             </inlinemediaobject>Add other list</term>
 
           <listitem>
-            <para></para>
-
             <variablelist>
               <varlistentry>
                 <term>empty</term>
@@ -216,7 +223,7 @@
           <listitem>
             <para>Decrease the indentation of the explicitly selected section,
             by making it a sibling of its parent. (e.g., turns 3.2.1 into 3.3
-            and if there was a 3.3 it becomes 3.4)</para>
+            and if there was a 3.3 that becomes 3.4)</para>
           </listitem>
         </varlistentry>
 
@@ -395,12 +402,74 @@
           any system even without the xml2rfc tool installed.</para>
         </listitem>
       </varlistentry>
+
+      <varlistentry>
+        <term>Text Preview using xml.resource.org</term>
+
+        <listitem>
+          <para>Use the xml.resource.org online converter to convert the XML
+          to text, then opens up a text editor (or an xterm running less) on
+          the result.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Insert &lt;?rfc include=''?&gt;</term>
+
+        <listitem>
+          <para>Inserts an empty &lt;?rffc include=''?&gt; processing
+          instruction into the current element at the cursor position, or
+          after the current element if it can't accept a processing
+          instruction inside. NOTE: because of this automatic behavior,
+          double-check using the path at the top of the screen that the
+          processing instruction got inserted <emphasis>inside</emphasis> the
+          node you wanted it in; it's easy to get it
+          <emphasis>after</emphasis> which will confuse the
+          conversions.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Edit in...</term>
+
+        <listitem>
+          <para>Asks for a selection of an external editor from a popup list,
+          saves the current document, runs the external editor, and waits for
+          the user to pick "OK" in the dialog box; then reloads the document
+          if it's been modified. Intended to facilitate editing of elements
+          that xxe can't (in particular the &lt;?rfc ?&gt; elements at the
+          top). This menu item is only available when editing a local file,
+          and will be grayed out if editing via FTP or DAV.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Convert</term>
+
+        <listitem>
+          <para>See the next section for documentation of this
+          sub-menu.</para>
+        </listitem>
+      </varlistentry>
     </variablelist>
 
     <section>
       <title>Convert sub-menu</title>
 
       <variablelist>
+        <varlistentry>
+          <term>...using xml.resource.org</term>
+
+          <listitem>
+            <para>This submenu allows conversion using the xml.resource.org
+            web form. Each sub-menu item corresponds to a different output
+            formatted supported by the form. It asks for the file to save the
+            result in; then uploads the XML in the editor buffer to the web
+            form and saves the results from the web form in the result
+            file.</para>
+          </listitem>
+        </varlistentry>
+
         <varlistentry>
           <term>Convert to HTML</term>
 
@@ -470,7 +539,8 @@
     at this time has no ability to edit processing instructions that occur
     before the root &lt;rfc&gt; element. This plugin displays these elements
     in the "RFC meta-data" section at the top, but editing support is not
-    planned.</para>
+    planned. The <guimenuitem>Edit in...</guimenuitem> menu option facilitates
+    editing these items in another editor.</para>
   </section>
 
   <section>
@@ -489,19 +559,21 @@
 ]&gt;</literallayout><literal>xxe</literal> understands these references when
         loading the file, and also loads the referenced file read-only; this
         makes the document validate and allows the cross-reference macros to
-        save it. Unfortunately, when xxe saves the document, it turns the
+        notice it. Unfortunately, when xxe saves the document, it turns the
         entity definition into the equivalent:<literallayout>&lt;DOCTYPE rfc SYSTEM 'rfc2629.dtd' [
  &lt;!ENTITY rfc2629 SYSTEM 'http://xml.resource.org/public/rfc/bibxml/reference.RFC.2629.xml'&gt;
 ]&gt;</literallayout>When <literal>xml2rfc</literal> (at least, up to and
-        including version 1.26) reads this, it looks for a relative reference
+        including version 1.28) reads this, it looks for a relative reference
         - it only handles fully-qualified URLs in PUBLIC entity definitions,
         so it cannot format a file that has been edited this way. (This is a
         bug in xml2rfc; the two entity definitions above are
         equivalent.)</para>
 
-        <para>In addition, <literal>xxe</literal> doesn't support inserting
-        entity definitions or references into the document, so these must be
-        done using another editor.</para>
+        <para>In addition, although <literal>xxe</literal> supports inserting
+        entity definitions and references into the document, loading the
+        reference file via http to create a reference to it is only supported
+        in the Professional Edition. This also creates a dependency on the
+        http reference, so offline editing is not possible.</para>
       </listitem>
 
       <listitem>
@@ -520,10 +592,11 @@
         convention, so an xref to "RFC2629" will show as "included" given the
         above processing instruction.</para>
 
-        <para>To insert a processing instruction, use F6 or select the Insert
-        &lt;?rfc include=''?&gt; menu item in the XML2RFC menu. This will
-        insert an &lt;?rfc include=''?&gt; processing instruction inside or
-        after the currently-selected element.</para>
+        <para>To insert a processing instruction, use F6 or select the
+        <guimenuitem>Insert &lt;?rfc include=''?&gt;</guimenuitem> menu item
+        in the <guimenu>XML2RFC</guimenu> menu. This will insert an &lt;?rfc
+        include=''?&gt; processing instruction inside or after the
+        currently-selected element.</para>
 
         <para>The XSL transforms will process &lt;?rfc include=''?&gt;
         instructions. They default to using the xml.resource.org site; if you
@@ -562,19 +635,19 @@
     <itemizedlist>
       <listitem>
         <para>Pasting from the ASCII art editor JavE (at least on MacOS)
-        produces a garbled figure. This is fixed in xxe after 2.8p1.</para>
+        produces a garbled figure. This is fixed in xxe 2.9.</para>
       </listitem>
 
       <listitem>
         <para>The 27th lettered list element is "a0", not "aa". This is fixed
-        in xxe after 2.8p1.</para>
+        in xxe 2.9.</para>
       </listitem>
 
       <listitem>
-        <para>xml2rfc version 1.26 and earlier cannot load &lt;ENTITY SYSTEM
+        <para>xml2rfc version 1.28 and earlier cannot load &lt;ENTITY SYSTEM
         "http://..."&gt; definitions; xxe will change the &lt;ENTITY PUBLIC ""
         "http://..."&gt; format that xml2rfc understands to the SYSTEM one.
-        This is fixed in xml2rfc version 1.27.</para>
+        This is fixed in xml2rfc version 1.29.</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -583,11 +656,13 @@
     <title>Support</title>
 
     <para>Support for this plugin is available via the
-    xml2rfc-xxe@rtg.ietf.org mailing list. See
-    http://rtg.ietf.org/mailman/listinfo/xml2rfc-xxe for more info. The
-    distribution page is http://rtg.ietf.org/~fenner/ietf/xml2rfc-xxe/ . A
-    bug/issue list is
-    http://rtg.ietf.org/Members/BillFenner/xml2rfc-xxe/</para>
+    xml2rfc-xxe@rtg.ietf.org mailing list. See <ulink
+    url="http://rtg.ietf.org/mailman/listinfo/xml2rfc-xxe">http://rtg.ietf.org/mailman/listinfo/xml2rfc-xxe</ulink>
+    for more info. The distribution page is <ulink
+    url="http://rtg.ietf.org/~fenner/ietf/xml2rfc-xxe/">http://rtg.ietf.org/~fenner/ietf/xml2rfc-xxe/</ulink>
+    . A bug/issue list is <ulink
+    url="http://rtg.ietf.org/Members/BillFenner/xml2rfc-xxe/">http://rtg.ietf.org/Members/BillFenner/xml2rfc-xxe/</ulink>
+    .</para>
   </section>
 
   <section>
@@ -596,6 +671,93 @@
     <title>Change Log</title>
 
     <variablelist>
+      <varlistentry>
+        <term>0.5 - Mar 22, 2005</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Add web-based conversion, in <guisubmenu>...using
+              xml.resource.org</guisubmenu> submenu, using
+              xml.resource.org</para>
+            </listitem>
+
+            <listitem>
+              <para>Add web-based converter preview, in <guimenuitem>Text
+              Preview using xml.resource.org</guimenuitem> menu item, using
+              xml.resource.org</para>
+            </listitem>
+
+            <listitem>
+              <para>Make comments the same size as surrounding text; having
+              them smaller made them hard to edit.</para>
+            </listitem>
+
+            <listitem>
+              <para>Make vspace blankLines editable inline</para>
+            </listitem>
+
+            <listitem>
+              <para>Default to one blankLine for vspace</para>
+            </listitem>
+
+            <listitem>
+              <para>Update vspace rendering to be less visually
+              disruptive</para>
+            </listitem>
+
+            <listitem>
+              <para>Update postal rendering to include labels</para>
+            </listitem>
+
+            <listitem>
+              <para>Warn about long titles without abbreviations</para>
+            </listitem>
+
+            <listitem>
+              <para>Update iref rendering</para>
+            </listitem>
+
+            <listitem>
+              <para>Display artwork attributes (messily, but these are
+              rare)</para>
+            </listitem>
+
+            <listitem>
+              <para>Update Julian's XSL to 1.216</para>
+            </listitem>
+
+            <listitem>
+              <para>Always save using charset US-ASCII; xml2rfc doesn't
+              support UTF-8 but does support certain entities.</para>
+            </listitem>
+
+            <listitem>
+              <para>Make the mozilla preview work using file:// and the full
+              path to the file.</para>
+            </listitem>
+
+            <listitem>
+              <para>Add <guimenuitem>Edit In...</guimenuitem> menu item to
+              edit the active file in a different editor</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>0.4.1 - Feb 16, 2005</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Recompile plugin for xxe 2.9. This version only works with
+              2.9.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
       <varlistentry>
         <term>0.4 - Jan 28, 2005</term>
 
