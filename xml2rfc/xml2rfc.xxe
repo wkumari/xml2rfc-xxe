@@ -468,7 +468,7 @@
   </command>
 
   <command name="xml2rfc.previewTXTViaWebForm">
-    <macro trace="true">
+    <macro>
       <sequence>
         <command name="xml2rfc.webform" parameter="'%D' txt"/>
 	<set variable="tmpfile" expression="%_" plainString="true"/>
