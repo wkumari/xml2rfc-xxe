@@ -11,12 +11,12 @@
     <dtdSystemId>rfc2629.dtd</dtdSystemId>
   </detect>
 
-  <css location="css/xml2rfc.css" name="Style sheet"/>
+  <css location="css/xml2rfc.css" name="xml2rfc"/>
 
   <!-- Template blank document adapted from xml2rfc distribution's
        contrib/new-draft.xml -->
 
-  <template location="new-draft.xml" name="Template"/>
+  <template location="new-draft.xml" name="New Internet-Draft"/>
 
   <!-- Bindings =========================================================== -->
 
@@ -330,6 +330,9 @@
       <menu>
         <item command="xml2rfc.insert" label="empty"
               parameter="list style empty"/>
+
+        <item command="xml2rfc.insert" label="letters"
+              parameter="list style letters"/>
 
         <item command="xml2rfc.insert" label="hanging text"
               parameter="list style hanging"/>
