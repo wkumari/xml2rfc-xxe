@@ -28,9 +28,10 @@
     <title>Overview</title>
 
     <para>This xxe plugin attempts to support most of the rfc2629bis DTD, as
-    of xml2rfc release 1.28, January 16, 2005. This documentation is
-    $Revision$, and tries to document plugin version %%VERSION%%. The
-    plugin requires at least xxe 2.9 (released February 7, 2005).</para>
+    of xml2rfc release 1.29, April 5, 2005. This documentation for plugin
+    version %%VERSION%%. The plugin requires at least xxe 2.9 (released
+    February 7, 2005) and has been tested with 2.9p1 (released April 4,
+    2005).</para>
 
     <para>This plugin can create text or HTML output using xml2rfc, if
     installed; it can also use xmlmind's native XSL support to generate HTML.
@@ -63,14 +64,6 @@
         editor currently uses the DTD definition; java might be able to help
         implement the other way.</para>
       </listitem>
-
-      <listitem>
-        <para>&lt;list style="format"&gt;</para>
-      </listitem>
-
-      <listitem>
-        <para>&lt;list counter&gt;</para>
-      </listitem>
     </itemizedlist>
 
     <para>Planned features:</para>
@@ -84,6 +77,10 @@
             <para>Increase/decrease list item level</para>
           </listitem>
         </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para>Improve &lt;list counter&gt; support</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -444,6 +441,16 @@
       </varlistentry>
 
       <varlistentry>
+        <term>Check IETF References</term>
+
+        <listitem>
+          <para>Checks references from &lt;reference&gt; elements to RFCs and
+          Internet-Drafts; makes note of any that are obsoleted, expired,
+          updated, etcetera.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
         <term>Convert</term>
 
         <listitem>
@@ -569,11 +576,8 @@
         bug in xml2rfc; the two entity definitions above are
         equivalent.)</para>
 
-        <para>In addition, although <literal>xxe</literal> supports inserting
-        entity definitions and references into the document, loading the
-        reference file via http to create a reference to it is only supported
-        in the Professional Edition. This also creates a dependency on the
-        http reference, so offline editing is not possible.</para>
+        <para>In addition, this creates a dependency on the http reference, so
+        offline editing is not possible.</para>
       </listitem>
 
       <listitem>
@@ -671,6 +675,57 @@
     <title>Change Log</title>
 
     <variablelist>
+      <varlistentry>
+        <term>0.6 - April 5, 2005</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Switch to line-based download in the web-based
+              conversions, so that conversion results get the native line
+              endings on Windows.</para>
+            </listitem>
+
+            <listitem>
+              <para>Support &lt;list style="format"&gt; and counter="",
+              including the implicit counter=. (Changing from one counter to
+              another results in a gap in the other counter's space; deleting
+              a list that's in a counter may cause exceptions; these
+              limitations to be removed in a future version</para>
+            </listitem>
+
+            <listitem>
+              <para>Update DTD to xml2rfc 1.29's, including new IPR</para>
+            </listitem>
+
+            <listitem>
+              <para>Update sample new document to default to new IPR</para>
+            </listitem>
+
+            <listitem>
+              <para>Update <guimenuitem>Insert &lt;?rfc include=''?&gt;
+              </guimenuitem>menu item to properly insert after the current PI
+              if the cursor is in a PI</para>
+            </listitem>
+
+            <listitem>
+              <para>Add <guimenuitem>Check IETF References</guimenuitem> menu
+              item, which checks against RFC and I-D indexes for up to date
+              references.</para>
+            </listitem>
+
+            <listitem>
+              <para>Fix <guimenuitem>Edit In...</guimenuitem> command
+              invocations on UNIX and Windows</para>
+            </listitem>
+
+            <listitem>
+              <para>Made most common element attributes editable inline</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
       <varlistentry>
         <term>0.5 - Mar 22, 2005</term>
 
