@@ -39,23 +39,14 @@
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 
-  <xsl:template name="parse-include">
-    <xsl:param name="include" />
-    <xsl:variable name="elide">&#9;&#10;&#13;&#32;&#34;&#39;</xsl:variable>
-    <xsl:variable name="href"><xsl:value-of select="
-      translate(substring-after(.,'='), $elide, '')"/></xsl:variable>
-    <xsl:value-of select="$href"/>
-    <xsl:if test="not(contains($href,'.xml'))">.xml</xsl:if>
-  </xsl:template>
-
   <xsl:template match="processing-instruction('rfc')">
     <xsl:choose>
       <xsl:when test="contains(.,'include=')">
-        <xsl:variable name="href">
-          <xsl:call-template name="parse-include">
-            <xsl:with-param name="include" select="." />
-          </xsl:call-template>
-        </xsl:variable>
+	<xsl:variable name="elide">&#9;&#10;&#13;&#32;&#34;&#39;</xsl:variable>
+	<xsl:variable name="href"><xsl:value-of select="
+	  translate(substring-after(.,'='), $elide, '')"/><xsl:if test="
+          not(contains(.,'.xml'))">.xml</xsl:if>
+	</xsl:variable>
         <xsl:comment> Begin inclusion <xsl:value-of select="$href"/>. </xsl:comment>
         <!-- XXX first try applying templates to document($href,.)
           - to handle multiple levels of include, except we don't have
