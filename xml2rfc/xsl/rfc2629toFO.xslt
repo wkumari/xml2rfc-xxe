@@ -1,7 +1,7 @@
 <!-- 
   	XSLT transformation from RFC2629 XML format to XSL-FO
       
-    Copyright (c) 2001-2004 Julian F. Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2001-2005 Julian F. Reschke (julian.reschke@greenbytes.de)
       
     placed into the public domain
     
@@ -1042,10 +1042,7 @@
 <xsl:template name="insertAuthors">
 
 	<fo:block id="{$anchor-prefix}.authors" xsl:use-attribute-sets="h1-new-page">
-    <xsl:choose>
-      <xsl:when test="count(/rfc/front/author) = 1">Author's Address</xsl:when>
-      <xsl:otherwise>Authors' Addresses</xsl:otherwise>
-    </xsl:choose>
+    <xsl:call-template name="get-authors-section-title"/>
   </fo:block>
 
   <xsl:apply-templates select="/rfc/front/author" />
@@ -1198,8 +1195,7 @@
 <xsl:template match="front" mode="toc">
 
   <xsl:variable name="title">
-    <xsl:if test="count(author)=1">Author's Address</xsl:if>
-    <xsl:if test="count(author)!=1">Author's Addresses</xsl:if>
+    <xsl:call-template name="get-authors-section-title"/>
   </xsl:variable>
   
   <xsl:call-template name="insert-toc-line">
