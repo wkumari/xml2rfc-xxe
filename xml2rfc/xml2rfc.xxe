@@ -411,7 +411,7 @@
 	  <sequence>
 	    <command name="xml2rfc.os" parameter="windows" />
 	    <command name="pick" parameter="Application false Notepad XMLSpy" />
-	    <command name="start" parameter='start "%_" "%D"' />
+	    <command name="start" parameter='start "" "%_" "%D"' />
 	  </sequence>
 	  <sequence>
 	    <command name="xml2rfc.os" parameter="mac" />
