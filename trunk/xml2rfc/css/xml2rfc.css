@@ -147,13 +147,17 @@ date:before {
 date {
 	content: attr(day) " " attr(month) " " attr(year);
 }
-/* make all anchors editable if present */
+/*
+ * Make all anchors editable if present.
+ * Display "[not referenced]" if it's not the target of an xref.
+ * Make it all red if it's a reference element that's not referenced.
+ */
 *::attribute(anchor) {
 	attribute-content-left: "[a:";
 	attribute-content-middle: text-field(attribute, anchor, columns, 10);
 	attribute-content-right: xpath('if(//xref[@target=current()/@anchor], "", "[not referenced] ")') "] ";
 	show-attribute: when-added;
-	color: purple;
+	color: concatenate(xpath('if(local-name(.)!="reference" or //xref[@target=current()/@anchor],"purple","red")'));
 	font-size: 80%;
 }
 section {
