@@ -55,8 +55,19 @@
           - think this fits into xxe's idea of a transform, since
           - it wants you to copy the necessary files into the temp
           - dir.  So, for now, assume that the only things being
-          - included are references and are in xml2rfc-include:. -->
-        <xsl:copy-of select="document(concat('xml2rfc-include:',$href))"/>
+          - included are references and are in xml2rfc-bibxml:
+          - or in xml2rfc-bibxml3:. -->
+        <xsl:variable name="bibxml"
+                      select="document(concat('xml2rfc-bibxml:',$href))"/>
+	<xsl:choose>
+	  <xsl:when test="$bibxml">
+	    <xsl:copy-of select="$bibxml"/>
+	  </xsl:when>
+	  <xsl:otherwise>
+	    <!-- could cascade conditional -->
+	    <xsl:copy-of select="document(concat('xml2rfc-bibxml3:',$href))"/>
+	  </xsl:otherwise>
+	</xsl:choose>
         <xsl:comment> End inclusion <xsl:value-of select="$href"/>. </xsl:comment>
       </xsl:when>
       <xsl:otherwise>
