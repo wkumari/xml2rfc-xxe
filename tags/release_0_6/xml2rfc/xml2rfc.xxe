@@ -1,0 +1,719 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration name="xml2rfc"
+               xmlns="http://www.xmlmind.com/xmleditor/schema/configuration"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:xs="http://www.w3.org/2001/XMLSchema"
+               xmlns:cfg="http://www.xmlmind.com/xmleditor/schema/configuration">
+  <load location="xml2rfc.jar"/>
+
+  <help location="xml2rfc_help.jar"/>
+
+  <!-- Claim an XML document if:
+       - it has a DOCTYPE referring to the rfc2629.dtd
+       - its root element is <rfc> with no namespace
+       - its root element is <reference> with no namespace
+         (this is for editing the include files directly)
+  -->
+  <detect>
+    <or>
+      <dtdSystemId>rfc2629.dtd</dtdSystemId>
+      <and>
+	<rootElementLocalName>rfc</rootElementLocalName>
+	<rootElementNamespace xsi:nil='true' />
+      </and>
+      <and>
+	<rootElementLocalName>reference</rootElementLocalName>
+	<rootElementNamespace xsi:nil='true' />
+      </and>
+    </or>
+  </detect>
+
+  <dtd systemId="dtd/rfc2629.dtd"/>
+
+  <css location="css/xml2rfc.css" name="xml2rfc"/>
+
+  <!-- make sure that artwork is saved as CDATA.
+       Also, since xml2rfc doesn't support UTF-8, make sure
+       that the file is saved in US-ASCII with non-ASCII characters
+       entity-encoded. -->
+  <saveOptions cdataSectionElements="artwork" encoding="US-ASCII"/>
+
+  <!-- Template blank document adapted from xml2rfc distribution's
+       contrib/new-draft.xml -->
+
+  <template location="new-draft.xml" name="New Internet-Draft"/>
+
+  <!-- Bindings =========================================================== -->
+
+  <!-- (initially copied from xhtml) -->
+
+  <!-- Inside a t, attempt to behave like a word-processor. -->
+
+  <binding>
+    <keyPressed code="ENTER"/>
+
+    <command name="xml2rfc.splitOrInsertNewLine"/>
+  </binding>
+
+  <binding>
+    <keyPressed code="DELETE"/>
+
+    <command name="xml2rfc.joinOrDeleteChar"/>
+  </binding>
+
+  <binding>
+    <keyPressed code="BACK_SPACE"/>
+
+    <command name="xml2rfc.joinOrDeleteChar" parameter="backwards"/>
+  </binding>
+
+  <command name="xml2rfc.splitOrInsertNewLine">
+    <macro>
+      <choice>
+        <command name="insertControlChar" parameter="\n"/>
+
+        <sequence>
+          <command name="selectNode"
+                   parameter="ancestorOrSelf[implicitElement] t"/>
+
+          <command name="split"/>
+        </sequence>
+      </choice>
+    </macro>
+  </command>
+
+  <command name="xml2rfc.joinOrDeleteChar">
+    <macro>
+      <choice>
+        <sequence>
+          <test expression="$dot/ancestor::t and not($selected) and not($mark)"/>
+
+          <command name="deleteSelectionOrJoinOrDeleteChar" parameter="%0"/>
+        </sequence>
+
+        <command name="deleteSelectionOrDeleteChar" parameter="%0"/>
+      </choice>
+    </macro>
+  </command>
+
+  <!-- easy way to insert same element -->
+  <binding>
+    <keyPressed code="ENTER" modifiers="mod" />
+    <command name="xml2rfc.appendSame" />
+  </binding>
+
+  <binding>
+    <keyPressed code="ENTER" modifiers="mod shift" />
+    <command name="xml2rfc.prependSame" />
+  </binding>
+
+  <command name="xml2rfc.appendSame">
+    <macro>
+      <sequence>
+        <command name="selectNode" parameter="selfOrElement" />
+        <command name="insertNode" parameter="sameElementAfter" />
+      </sequence>
+    </macro>
+  </command>
+
+  <command name="xml2rfc.prependSame">
+    <macro>
+      <sequence>
+        <command name="selectNode" parameter="selfOrElement" />
+        <command name="insertNode" parameter="sameElementBefore" />
+      </sequence>
+    </macro>
+  </command>
+
+  <!-- totally random binding -->
+  <binding>
+    <keyPressed code="F6" />
+    <command name="xml2rfc.addRFCInclude" />
+  </binding>
+
+  <command name="xml2rfc.addRFCInclude">
+    <macro undoable="true">
+      <sequence>
+        <choice>
+	  <command name="insertNode" parameter="piInto[implicitElement] rfc" />
+	  <command name="insertNode" parameter="piAfter[implicitNode] rfc" />
+	  <command name="insertNode" parameter="piAfter[implicitElement] rfc" />
+        </choice>
+	<command name="insertString" parameter="include='reference.'" />
+	<!-- assuming the newly inserted element is selected -->
+	<set variable="dotOffset" expression="19" />
+      </sequence>
+    </macro>
+  </command>
+
+  <!-- Menu ============================================================== -->
+
+  <!--
+       Preview using xml2html using a process.
+    -->
+
+  <command name="xml2rfc.preview">
+    <process>
+      <!-- US-ASCII because xml2rfc doesn't support UTF-8, but does
+           support entity-encoded characters -->
+      <copyDocument to="__doc.xml" encoding="US-ASCII"/>
+
+      <shell command="xml2html __doc.xml preview.html"/>
+
+      <delete files="__doc.xml"/>
+
+      <shell command="open preview.html" platform="Mac"/>
+
+      <shell command="start &quot;&quot; preview.html" platform="Windows"/>
+
+      <!-- the call to mozilla needs work (this might be the advantage
+           of the Preview java class) -->
+
+      <shell command="mozilla -remote &quot;openFile(file://`pwd`/preview.html)&quot; &gt;/dev/null 2&gt;&amp;1"
+             platform="GenericUnix"/>
+
+      <!-- sleep to delay the deletion until the app can launch -->
+
+      <shell command="sleep 10" platform="Unix"/>
+
+      <!-- the only way I can figure out how to pause on Windows :-( -->
+
+      <shell command="echo forgive this horrible hack" platform="Windows"/>
+
+      <shell command="ping -n 10 127.0.0.1 &gt; NUL:" platform="Windows"/>
+    </process>
+  </command>
+
+  <!--
+       Return the docName if present, otherwise the string "draft",
+       for naming the results of a "Convert...".
+    -->
+
+  <command name="xml2rfc.draftname">
+    <macro>
+      <sequence>
+        <get expression="if(/rfc/@docName,/rfc/@docName,'draft')"/>
+      </sequence>
+    </macro>
+  </command>
+
+  <!--
+       Use xml2rfc to convert document to text or html.
+    -->
+
+  <command name="xml2rfc.convertDoc">
+    <process>
+      <!-- US-ASCII because xml2rfc doesn't support UTF-8, but does
+           support entity-encoded characters -->
+      <copyDocument to="__doc.xml" encoding="US-ASCII"/>
+
+      <shell command="xml2%1 __doc.xml draft.%2"/>
+
+      <delete files="__doc.xml"/>
+
+      <upload base="file:///">	<!-- we always get a fully-qualified %0 -->
+        <copyFile file="draft.%2" to="%0"/>
+      </upload>
+    </process>
+  </command>
+
+  <!--
+       Preview as .txt.  This is almost like convert.
+    -->
+
+  <command name="xml2rfc.previewTXT">
+    <process>
+      <!-- US-ASCII because xml2rfc doesn't support UTF-8, but does
+           support entity-encoded characters -->
+      <copyDocument to="__doc.xml" encoding="US-ASCII"/>
+
+      <shell command="xml2rfc __doc.xml preview.txt"/>
+
+      <delete files="__doc.xml"/>
+
+      <shell command="open preview.txt" platform="Mac"/>
+
+      <shell command="start &quot;&quot; preview.txt" platform="Windows"/>
+
+      <shell command="xterm -e &quot;less preview.txt&quot;"
+             platform="GenericUnix"/>
+
+      <!-- sleep to delay the deletion until the app can launch -->
+
+      <shell command="sleep 10" platform="Unix"/>
+
+      <!-- the only way I can figure out how to pause on Windows :-( -->
+
+      <shell command="echo forgive this horrible hack" platform="Windows"/>
+
+      <shell command="ping -n 10 127.0.0.1 &gt; NUL:" platform="Windows"/>
+    </process>
+  </command>
+
+  <command name="xml2rfc.previewXSL">
+    <process>
+      <copyDocument to="__doc.xml"/>
+
+      <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd"/>
+
+      <transform file="__doc.xml" stylesheet="xsl/expand-pi-rfc-include.xslt"
+                 to="__doc2.xml"/>
+      <transform file="__doc2.xml" stylesheet="xsl/rfc2629.xslt"
+                 to="preview.html"/>
+
+      <delete files="__doc.xml"/>
+
+      <shell command="open preview.html" platform="Mac"/>
+
+      <shell command="start &quot;&quot; preview.html" platform="Windows"/>
+
+      <!-- the call to mozilla needs work (this might be the advantage
+           of the Preview java class) -->
+
+      <shell command="mozilla -remote &quot;openFile(file://`pwd`/preview.html)&quot; &gt;/dev/null 2&gt;&amp;1"
+             platform="GenericUnix"/>
+
+      <!-- sleep to delay the deletion until the app can launch -->
+
+      <shell command="sleep 10" platform="Unix"/>
+
+      <!-- the only way I can figure out how to pause on Windows :-( -->
+
+      <shell command="echo forgive this horrible hack" platform="Windows"/>
+
+      <shell command="ping -n 10 127.0.0.1 &gt; NUL:" platform="Windows"/>
+    </process>
+  </command>
+
+  <!--
+       Use Julian's xsl transform to convert document to HTML or
+        PDF via FO.
+        -->
+
+  <command name="xml2rfc.toHTMLUsingXSL">
+    <macro>
+      <sequence>
+        <command name="xml2rfc.draftname"/>
+
+        <command name="selectFile" parameter="saveFileURL %p/%_.html"/>
+
+        <command name="xml2rfc.doXSL" parameter="%_"/>
+      </sequence>
+    </macro>
+  </command>
+
+  <command name="xml2rfc.toPDFUsingXSL">
+    <macro>
+      <sequence>
+        <command name="xml2rfc.draftname"/>
+
+        <command name="selectFile" parameter="saveFileURL %p/%_.pdf"/>
+
+        <command name="xml2rfc.doPDF" parameter="%_"/>
+      </sequence>
+    </macro>
+  </command>
+
+  <command name="xml2rfc.checkIetfReferences">
+    <process>
+      <copyDocument to="__doc.xml"/>
+
+      <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd"/>
+
+      <transform file="__doc.xml" stylesheet="xsl/expand-pi-rfc-include.xslt"
+                 to="__doc2.xml"/>
+
+      <transform file="__doc2.xml" stylesheet="xsl/check-ietf-references.xslt"
+      		 to="reference-check.txt"/>
+
+      <shell command="open reference-check.txt" platform="Mac"/>
+
+      <shell command="start &quot;&quot; reference-check.txt" platform="Windows"/>
+
+      <shell command="xterm -e &quot;less reference-check.txt&quot;"
+             platform="GenericUnix"/>
+
+      <!-- sleep to delay the deletion until the app can launch -->
+
+      <shell command="sleep 10" platform="Unix"/>
+
+      <!-- the only way I can figure out how to pause on Windows :-( -->
+
+      <shell command="echo forgive this horrible hack" platform="Windows"/>
+
+      <shell command="ping -n 10 127.0.0.1 &gt; NUL:" platform="Windows"/>
+    </process>
+  </command>
+
+
+
+  <command name="xml2rfc.doPDF">
+    <process>
+      <copyDocument to="__doc.xml"/>
+
+      <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd"/>
+
+      <transform file="__doc.xml" stylesheet="xsl/expand-pi-rfc-include.xslt"
+                 to="__doc2.xml"/>
+      <transform file="__doc2.xml" stylesheet="xsl/rfc2629toFO.xslt"
+                 to="__doc.fo"/>
+
+      <transform file="__doc.fo" stylesheet="xsl/xsl11toXep.xslt"
+                 to="__doc.xep"/>
+
+      <transform file="__doc.fo" stylesheet="xsl/xsl11toFop.xslt"
+                 to="__doc.fop"/>
+
+      <processFO file="__doc.xep" processor="XEP" to="draft.pdf">
+        <parameter name="OUTPUT_FORMAT">pdf</parameter>
+
+        <parameter name="H4PS.LANGUAGE_LEVEL">2</parameter>
+
+        <!-- If XEP plug-in has not been installed, try FOP plug-in. -->
+
+        <processFO file="__doc.fop" processor="FOP" to="draft.pdf">
+          <parameter name="renderer">pdf</parameter>
+        </processFO>
+      </processFO>
+
+      <upload base="file:///">	<!-- we always get a fully-qualified %0 -->
+        <copyFile file="draft.pdf" to="%0"/>
+      </upload>
+    </process>
+  </command>
+
+  <command name="xml2rfc.doXSL">
+    <process>
+      <copyDocument to="__doc.xml"/>
+
+      <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd"/>
+
+      <transform file="__doc.xml" stylesheet="xsl/expand-pi-rfc-include.xslt"
+                 to="__doc2.xml"/>
+      <transform file="__doc2.xml" stylesheet="xsl/rfc2629.xslt"
+                 to="draft.html"/>
+
+      <upload base="file:///">	<!-- we always get a fully-qualified %0 -->
+        <copyFile file="draft.html" to="%0"/>
+      </upload>
+    </process>
+  </command>
+
+  <command name="xml2rfc.convertToSomething">
+    <macro>
+      <sequence>
+        <command name="xml2rfc.draftname"/>
+
+        <command name="selectFile" parameter="saveFileURL %p/%_.%1"/>
+
+        <command name="xml2rfc.convertDoc" parameter="%_ %*"/>
+      </sequence>
+    </macro>
+  </command>
+
+  <command name="xml2rfc.webform">
+    <class>com.att.research.fenner.xmleditapp.xml2rfc.WebForm</class>
+  </command>
+
+  <command name="xml2rfc.convertViaWebForm">
+    <macro>
+      <sequence>
+        <command name="xml2rfc.draftname"/>
+
+	<!-- todo: saveFileURL and have WebForm save using xxe primitives -->
+        <command name="selectFile" parameter="saveFile %p/%_.%0"/>
+
+        <command name="xml2rfc.webform" parameter="'%D' %0 '%_'"/>
+
+	<test expression="'%_' != ''" />
+
+	<command name="alert" parameter="Conversion Completed, output in %_" />
+      </sequence>
+    </macro>
+  </command>
+
+  <command name="xml2rfc.os">
+    <class>com.att.research.fenner.xmleditapp.xml2rfc.Os</class>
+  </command>
+
+  <command name="xml2rfc.externalEdit">
+    <macro>
+      <sequence>
+	<!-- This command is only executable if the file is local -->
+	<test expression="'%D' != ''" />
+	<!-- to do: use the os return value to decide on a file that has the pick list -->
+	<!-- (mostly for user modification convenience; we already need to do a per-OS startup method) -->
+	<command name="XXE.save" parameter="[ifNeeded]" />
+	<choice>
+	  <sequence>
+	    <command name="xml2rfc.os" parameter="windows" />
+	    <command name="pick" parameter="Application false Notepad XMLSpy" />
+	    <command name="start" parameter='start "" "%_" "%D"' />
+	  </sequence>
+	  <sequence>
+	    <command name="xml2rfc.os" parameter="mac" />
+	    <command name="pick" parameter="Application false TextEdit TextWrangler BBEdit" />
+	    <command name="start" parameter='open -a "%_" "%D"' />
+	  </sequence>
+	  <sequence>
+	    <command name="xml2rfc.os" parameter="genericunix" />
+	    <command name="pick" parameter="Application false vi emacs" />
+	    <command name="start" parameter='xterm -e "&apos;%_&apos; &apos;%D&apos;"' />
+	  </sequence>
+	</choice>
+	<command name="alert" parameter="Click OK when done editing and saved." />
+	<command name="XXE.open" parameter="[reopenIfNewer]" />
+      </sequence>
+    </macro>
+  </command>
+
+  <command name="xml2rfc.previewTXTViaWebForm">
+    <macro trace="true">
+      <sequence>
+        <command name="xml2rfc.webform" parameter="'%D' txt"/>
+	<set variable="tmpfile" expression="%_" plainString="true"/>
+	<!-- webform returns null when it fails -->
+	<test expression="$tmpfile != ''"/>
+	<choice>
+	  <sequence>
+	    <command name="xml2rfc.os" parameter="windows"/>
+	    <get expression="$tmpfile"/>
+	    <command name="start" parameter='start "" "%_"'/>
+	  </sequence>
+	  <sequence>
+	    <command name="xml2rfc.os" parameter="mac"/>
+	    <get expression="$tmpfile"/>
+	    <command name="start" parameter='open "%_"'/>
+	  </sequence>
+	  <sequence>
+	    <command name="xml2rfc.os" parameter="genericunix"/>
+	    <get expression="$tmpfile"/>
+	    <command name="start" parameter='xterm -e "less &apos;%_&apos;"'/>
+	  </sequence>
+	</choice>
+	<choice>
+	  <sequence>
+	    <command name="xml2rfc.os" parameter="windows"/>
+	    <command name="run" parameter="ping -n 10 127.0.0.1 &gt; NUL:"/>
+	    <get expression="$tmpfile"/>
+	    <command name="run" parameter="del %_" />
+	  </sequence>
+	  <sequence>
+	    <command name="xml2rfc.os" parameter="unix"/>
+	    <command name="run" parameter="sleep 10"/>
+	    <get expression="$tmpfile"/>
+	    <command name="run" parameter="rm %_" />
+	  </sequence>
+	</choice>
+      </sequence>
+    </macro>
+  </command>
+
+  <menu label="XML2RFC" mnemonic="X">
+    <!--On UNIX, preview requires to have Mozilla or Netscape in $PATH.-->
+
+    <item command="xml2rfc.preview" label="HTML Preview" mnemonic="v">
+      <accelerator code="F5"/>
+    </item>
+
+    <item command="xml2rfc.previewTXT" label="Text Preview"/>
+
+    <item command="xml2rfc.previewXSL" label="HTML Preview using XSL"/>
+
+    <item command="xml2rfc.previewTXTViaWebForm" label="Text Preview using xml.resource.org"/>
+
+    <item command="xml2rfc.addRFCInclude" label="Insert &lt;?rfc include=''?&gt;" />
+
+    <item command="xml2rfc.externalEdit" label="Edit in..."/>
+
+    <item command="xml2rfc.checkIetfReferences" label="Check IETF References"/>
+
+    <menu label="Convert">
+      <menu label="...using xml.resource.org">
+	<item command="xml2rfc.convertViaWebForm" label="Convert to Text"
+	      parameter="txt"/>
+
+	<item command="xml2rfc.convertViaWebForm" label="Convert to HTML"
+	      parameter="html"/>
+
+	<item command="xml2rfc.convertViaWebForm" label="Convert to nroff"
+	      parameter="nr"/>
+
+	<item command="xml2rfc.convertViaWebForm" label="Convert to &quot;canonical&quot; XML"
+	      parameter="xml"/>
+      </menu>
+      <item command="xml2rfc.convertToSomething" label="Convert to Text"
+            parameter="rfc txt"/>
+
+      <item command="xml2rfc.convertToSomething" label="Convert to HTML"
+            parameter="html html"/>
+
+      <item command="xml2rfc.toHTMLUsingXSL" label="Convert to HTML using XSL"/>
+
+      <item command="xml2rfc.toPDFUsingXSL" label="Convert to PDF using XSL"/>
+    </menu>
+  </menu>
+
+  <!-- Toolbar ============================================================ -->
+
+  <!-- helpers for toolbar -->
+
+  <command name="xml2rfc.convert">
+    <macro undoable="true">
+      <sequence>
+        <command name="convert" parameter="[implicitElement] %0"/>
+
+        <command name="putAttribute" parameter="%1 %2"/>
+      </sequence>
+    </macro>
+  </command>
+
+  <command name="xml2rfc.insert">
+    <macro undoable="true">
+      <sequence>
+        <command name="xml2rfc.addBlock" parameter="%0"/>
+
+        <command name="putAttribute" parameter="%1 %2"/>
+      </sequence>
+    </macro>
+  </command>
+
+  <command name="xml2rfc.addBlock">
+    <class>com.att.research.fenner.xmleditapp.xml2rfc.AddBlock</class>
+  </command>
+
+  <toolBar>
+    <button icon="icons/itemizedlist.gif" toolTip="Add itemized list">
+      <command name="xml2rfc.insert" parameter="list style symbols"/>
+    </button>
+
+    <button icon="icons/orderedlist.gif" toolTip="Add numbered list">
+      <command name="xml2rfc.insert" parameter="list style numbers"/>
+    </button>
+
+    <button icon="icons/list_menu.gif" toolTip="Add other list">
+      <menu>
+        <item command="xml2rfc.insert" label="empty"
+              parameter="list style empty"/>
+
+        <item command="xml2rfc.insert" label="letters"
+              parameter="list style letters"/>
+
+        <item command="xml2rfc.insert" label="hanging text"
+              parameter="list style hanging"/>
+
+        <!-- inserts 'empty' - arg passing problem?
+        <item command="xml2rfc.insert" parameter="list style 'format ???'"
+                label="custom format" />
+          -->
+      </menu>
+    </button>
+
+    <button icon="icons/para.gif" toolTip="Add paragraph or list item">
+      <command name="xml2rfc.addBlock" parameter="t"/>
+    </button>
+
+    <separator/>
+
+    <button icon="icons/section.gif" toolTip="Add section">
+      <command name="xml2rfc.addBlock" parameter="section"/>
+    </button>
+
+    <button icon="icons/decrsectlevel.gif" toolTip="Decrease section level">
+      <command name="decrSectionLevel" param="section - t" />
+    </button>
+
+    <button icon="icons/incrsectlevel.gif" toolTip="Increase section level">
+      <command name="incrSectionLevel" param="section - t" />
+    </button>
+
+    <separator/>
+
+    <button icon="icons/table.gif" toolTip="Add table">
+      <command name="xml2rfc.addBlock" parameter="texttable"/>
+    </button>
+
+    <button icon="icons/figure.gif" toolTip="Add figure">
+      <command name="xml2rfc.addBlock" parameter="figure"/>
+    </button>
+
+    <separator/>
+
+    <button icon="icons/navigate2.gif" toolTip="Swap xref Ends">
+      <command name="selectById" parameter="swapIdAndReference"/>
+    </button>
+
+    <button icon="icons/navigatePrevious2.gif" toolTip="Prev xref to same target">
+      <command name="selectById" parameter="previousReference"/>
+    </button>
+
+    <button icon="icons/navigateNext2.gif" toolTip="Next xref to same target">
+      <command name="selectById" parameter="nextReference"/>
+    </button>
+
+    <separator/>
+
+    <button icon="icons/emphasis_menu.gif"
+            toolTip="Convert to emphasis (spanx)">
+      <menu>
+        <item command="xml2rfc.convert" label="emph"
+              parameter="spanx style emph"/>
+
+        <item command="xml2rfc.convert" label="strong"
+              parameter="spanx style strong"/>
+
+        <item command="xml2rfc.convert" label="verb"
+              parameter="spanx style verb"/>
+      </menu>
+    </button>
+
+    <button icon="icons/plain.gif" toolTip="Convert to plain text">
+      <command name="convert" parameter="[implicitElement] #text"/>
+    </button>
+  </toolBar>
+
+  <!-- Templates ========================================================== -->
+
+  <elementTemplate name="figure" selectable="override">
+    <figure
+    xmlns=""><preamble>(preamble)</preamble><artwork>artwork</artwork><postamble>(postamble)</postamble></figure>
+  </elementTemplate>
+
+  <elementTemplate name="section" selectable="override">
+    <section title="new section" xmlns=""><t> </t></section>
+  </elementTemplate>
+
+  <elementTemplate name="texttable" selectable="override">
+    <texttable xmlns=""><preamble>(preamble)</preamble><ttcol>Column
+    1</ttcol><ttcol>Column 2</ttcol><c>Data 1</c><c>Data
+    2</c><postamble>(postamble)</postamble></texttable>
+  </elementTemplate>
+
+  <elementTemplate name="author" parent="front" selectable="override">
+    <author xmlns=""><organization> </organization> <address> <postal><street>
+    </street><city/><region> </region><code> </code><country>
+    </country></postal> <phone> </phone> <facsimile> </facsimile> <email>
+    </email> <uri> </uri> </address></author>
+  </elementTemplate>
+
+  <elementTemplate name="postal" selectable="override">
+    <postal xmlns=""><street> </street><city/><region> </region><code>
+    </code><country> </country></postal>
+  </elementTemplate>
+
+  <elementTemplate name="reference" selectable="override">
+    <reference anchor="Anchor" xmlns=""><front><title>
+    </title><author><organization> </organization></author><date
+    year="2005"/></front></reference>
+  </elementTemplate>
+
+  <elementTemplate name="vspace" selectable="override">
+    <vspace blankLines="1" xmlns=""/>
+  </elementTemplate>
+
+</configuration>
+<!-- To Do:
+     - see css for formatting todo list
+     - defaults for section (e.g., put a <t /> inside a newly-created
+       section?)
+  -->
