@@ -11,9 +11,9 @@
 
 /*
  * Need to write a gadget to handle processing-instructions inside the
- * <rfc> (normally only include?)
-*::processing-instruction(rfc) {
-	content: "rfc:include " attr(include);
+ * <rfc> (I've seen needLines, subcompact, and of course include)
+*:processing-instruction(rfc) {
+	content: "<?rfc " rfcgadget() "?>";
 }
  */
 
@@ -48,11 +48,11 @@ rfc::attribute(ipr) {
 rfc:before {
 	/* to do:
 	     write java function to handle node-set of processing
-	     instructions, return something that renders nicely here.
+	     instructions, return something that renders better here (table?).
 	     Unfortunately, xxe is designed to edit documents starting
              at the root node, so we can't edit these processing
              instructions. */
-	content: xpath("if(/processing-instruction('rfc'), '[contains unparsed processing instructions] ', '')") "RFC metadata: " attributes();
+	content: xpath("if(/processing-instruction('rfc'), concat('[Processing instructions: ', join(/processing-instruction('rfc'), ', '), ']\A'), '')") "RFC metadata: " attributes();
 }
 rfc > front:before {
 	content: "RFC Front Matter";
