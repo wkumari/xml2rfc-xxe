@@ -427,10 +427,15 @@
     in section numbers, switch to verdana default font in CSS.  Add
     experimental support for centered artwork.
     
-    2005-02-06  julian.reschke@greenbytes.de
+    2005-02-09  julian.reschke@greenbytes.de
 
     Fixes in spacing and links of references section titles.  Enhance sorting
-    in references when change tracking is in place.
+    in references when change tracking is in place.  Re-add figure centering
+    support.  Add missing 2nd part of "Author's Adresses" fix. 
+
+    2005-02-25  julian.reschke@greenbytes.de
+
+    Align section number format with xml2rfc1.29.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -725,14 +730,35 @@
       </xsl:if>
     </xsl:if>
   </xsl:if>
-  <xsl:choose>
-    <xsl:when test="$xml2rfc-ext-allow-markup-in-artwork='yes'">
-      <pre>
+  <xsl:variable name="display">
+    <xsl:choose>
+      <xsl:when test="$xml2rfc-ext-allow-markup-in-artwork='yes'">
         <xsl:apply-templates/>
-      </pre>
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="."/>
+      </xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>  
+  <xsl:choose>
+    <xsl:when test="@align='right'">
+      <div style="display:table; margin-left: auto; margin-right: 0pt; width: 0pt;">
+        <pre style="margin-left: 0em;">
+          <xsl:copy-of select="$display"/>
+        </pre>          
+      </div>
+    </xsl:when>
+    <xsl:when test="@align='center'">
+      <div style="display:table; margin-left: auto; margin-right: auto; width: 0pt;">
+        <pre style="margin-left: 0em;">
+          <xsl:copy-of select="$display"/>
+        </pre>          
+      </div>
     </xsl:when>
     <xsl:otherwise>
-      <pre><xsl:value-of select="."/></pre>
+      <pre>
+        <xsl:copy-of select="$display"/>
+      </pre>
     </xsl:otherwise>
   </xsl:choose>
   <xsl:call-template name="check-artwork-width">
@@ -1357,7 +1383,7 @@
     <xsl:choose>
       <xsl:when test="$xml2rfc-sortrefs='yes'">
         <xsl:apply-templates>
-          <xsl:sort select=".//@anchor" />
+          <xsl:sort select="@anchor|.//ed:ins//reference/@anchor" />
         </xsl:apply-templates>
       </xsl:when>
       <xsl:otherwise>
@@ -1899,13 +1925,20 @@
 </xsl:template>
 
 <!-- produce back section with author information -->
+<xsl:template name="get-authors-section-title">
+  <xsl:choose>
+    <xsl:when test="count(/rfc/front/author)=1">Author's Address</xsl:when>
+    <xsl:otherwise>Authors' Addresses</xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template name="insertAuthors">
 
   <xsl:call-template name="insert-conditional-hrule"/>
     
   <h1 id="{$anchor-prefix}.authors">
     <xsl:call-template name="insert-conditional-pagebreak"/>
-    Author's Address<xsl:if test="count(/rfc/front/author) &gt; 1">es</xsl:if>
+    <xsl:call-template name="get-authors-section-title"/>
   </h1>
 
   <table summary="Authors" width="99%" border="0" cellpadding="0" cellspacing="0">
@@ -2412,7 +2445,7 @@ table.closedissue {
       <xsl:variable name="n">
         <xsl:choose>
           <xsl:when test="$_n!=''">
-            <xsl:value-of select="$_n"/><xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
+            <xsl:value-of select="$_n"/>
           </xsl:when>
           <xsl:otherwise>&#167;</xsl:otherwise>
         </xsl:choose>
@@ -2789,8 +2822,7 @@ table.closedissue {
 <xsl:template match="front" mode="toc">
 
   <xsl:variable name="title">
-    <xsl:if test="count(author)=1">Author's Address</xsl:if>
-    <xsl:if test="count(author)!=1">Authors' Addresses</xsl:if>
+    <xsl:call-template name="get-authors-section-title"/>
   </xsl:variable>
   
   <li>
@@ -3577,11 +3609,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.210 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.210 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.215 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.215 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/02/06 13:06:20 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/02/06 13:06:20 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/02/25 22:21:56 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/02/25 22:21:56 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -3643,7 +3675,7 @@ table.closedissue {
 
 <xsl:template name="emit-section-number">
   <xsl:param name="no"/>
-  <xsl:value-of select="$no"/><xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
+  <xsl:value-of select="$no"/><xsl:if test="not(contains($no,'.')) or $xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
 </xsl:template>
 
 <xsl:template name="get-section-type">
