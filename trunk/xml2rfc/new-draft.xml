@@ -59,25 +59,25 @@
     <section title="Problem Statement">
       <t></t>
 
-      <section title="Level2">
+      <section title="Level 2">
         <t><list style="symbols">
             <t></t>
           </list></t>
       </section>
 
-      <section title="Level2">
-        <t><figure>
-            <preamble>preamble to Figure N.</preamble>
+      <section title="Another Level 2">
+        <figure>
+          <preamble>preamble to the figure.</preamble>
 
-            <artwork>
+          <artwork>
               
         ASCII artwork goes here... 
 
 </artwork>
 
-            <postamble>As you can see, this figure doodled and
-            dawdled.</postamble>
-          </figure></t>
+          <postamble>As you can see, this figure doodled and
+          dawdled.</postamble>
+        </figure>
       </section>
     </section>
 
