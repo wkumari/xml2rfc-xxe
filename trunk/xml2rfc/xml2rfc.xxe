@@ -5,6 +5,7 @@
                xmlns:xs="http://www.w3.org/2001/XMLSchema"
                xmlns:cfg="http://www.xmlmind.com/xmleditor/schema/configuration">
   <load location="xml2rfc.jar"/>
+
   <help location="xml2rfc_help.jar"/>
 
   <detect>
@@ -130,11 +131,18 @@
 
       <shell command="start &quot;&quot; preview.txt" platform="Windows"/>
 
-      <shell platform="GenericUnix" command="xterm -e &quot;less preview.txt&quot;"/>
+      <shell command="xterm -e &quot;less preview.txt&quot;"
+             platform="GenericUnix"/>
+
       <!-- sleep to delay the deletion until the app can launch -->
 
-      <shell command="sleep 10"/>
+      <shell command="sleep 10" platform="Unix"/>
 
+      <!-- the only way I can figure out how to pause on Windows :-( -->
+
+      <shell command="echo forgive this horrible hack" platform="Windows"/>
+
+      <shell command="ping -n 10 127.0.0.1 &gt; NUL:" platform="Windows"/>
     </process>
   </command>
 
@@ -142,7 +150,7 @@
     <process>
       <copyDocument to="__doc.xml"/>
 
-      <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd" />
+      <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd"/>
 
       <transform file="__doc.xml" stylesheet="xsl/rfc2629.xslt"
                  to="preview.html"/>
@@ -154,19 +162,27 @@
       <shell command="start &quot;&quot; preview.html" platform="Windows"/>
 
       <!-- the call to mozilla needs work (this might be the advantage
-	   of the Preview java class) -->
-      <shell platform="GenericUnix" command="mozilla -remote &quot;openFile(preview.html)&quot; >/dev/null 2>&amp;1"/>
+           of the Preview java class) -->
+
+      <shell command="mozilla -remote &quot;openFile(preview.html)&quot; &gt;/dev/null 2&gt;&amp;1"
+             platform="GenericUnix"/>
+
       <!-- sleep to delay the deletion until the app can launch -->
 
-      <shell command="sleep 10"/>
+      <shell command="sleep 10" platform="Unix"/>
 
+      <!-- the only way I can figure out how to pause on Windows :-( -->
+
+      <shell command="echo forgive this horrible hack" platform="Windows"/>
+
+      <shell command="ping -n 10 127.0.0.1 &gt; NUL:" platform="Windows"/>
     </process>
   </command>
 
   <!--
        Use Julian's xsl transform to convert document to HTML or
-	PDF via FO.
-	-->
+        PDF via FO.
+        -->
 
   <command name="xml2rfc.toHTMLUsingXSL">
     <macro>
@@ -188,6 +204,7 @@
 
   <!-- I don't have xxe pro, so I can't test the PDF creation.
        Figured I'd try it anyway. -->
+
   <command name="xml2rfc.toPDFUsingXSL">
     <macro>
       <sequence>
@@ -209,19 +226,26 @@
   <command name="xml2rfc.doPDF">
     <process>
       <copyDocument to="__doc.xml"/>
-      <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd" />
+
+      <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd"/>
 
       <transform file="__doc.xml" stylesheet="xsl/rfc2629toFO.xslt"
                  to="__doc.fo"/>
+
       <transform file="__doc.fo" stylesheet="xsl/xsl11toXep.xslt"
-		 to="__doc.xep" />
+                 to="__doc.xep"/>
+
       <transform file="__doc.fo" stylesheet="xsl/xsl11toFop.xslt"
-		 to="__doc.fop" />
-      <processFO processor="XEP" file="__doc.xep" to="%1.pdf">
+                 to="__doc.fop"/>
+
+      <processFO file="__doc.xep" processor="XEP" to="%1.pdf">
         <parameter name="OUTPUT_FORMAT">pdf</parameter>
+
         <parameter name="H4PS.LANGUAGE_LEVEL">2</parameter>
+
         <!-- If XEP plug-in has not been installed, try FOP plug-in. -->
-        <processFO processor="FOP" file="__doc.fop" to="%1.pdf">
+
+        <processFO file="__doc.fop" processor="FOP" to="%1.pdf">
           <parameter name="renderer">pdf</parameter>
         </processFO>
       </processFO>
@@ -235,10 +259,10 @@
   <command name="xml2rfc.doXSL">
     <process>
       <copyDocument to="__doc.xml"/>
-      <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd" />
 
-      <transform file="__doc.xml" stylesheet="xsl/rfc2629.xslt"
-                 to="%1.html"/>
+      <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd"/>
+
+      <transform file="__doc.xml" stylesheet="xsl/rfc2629.xslt" to="%1.html"/>
 
       <upload base="%0/">
         <copyFiles files="*.*" toDir="."/>
@@ -282,8 +306,7 @@
       <item command="xml2rfc.convertToSomething" label="Convert to HTML"
             parameter="html html"/>
 
-      <item command="xml2rfc.toHTMLUsingXSL" label="Convert to HTML using XSL"
-            />
+      <item command="xml2rfc.toHTMLUsingXSL" label="Convert to HTML using XSL"/>
 
       <item command="xml2rfc.toPDFUsingXSL" label="Convert to PDF using XSL"/>
     </menu>
@@ -338,9 +361,9 @@
               parameter="list style hanging"/>
 
         <!-- inserts 'empty' - arg passing problem?
-	<item command="xml2rfc.insert" parameter="list style 'format ???'"
-		label="custom format" />
-	  -->
+        <item command="xml2rfc.insert" parameter="list style 'format ???'"
+                label="custom format" />
+          -->
       </menu>
     </button>
 
@@ -414,16 +437,10 @@
   </elementTemplate>
 
   <elementTemplate name="author" parent="front" selectable="override">
-    <author xmlns=""><organization> </organization>
-    <address>
-    <postal><street> </street><city/><region> </region><code>
-    </code><country> </country></postal>
-    <phone> </phone>
-    <facsimile> </facsimile>
-    <email> </email>
-    <uri> </uri>
-    </address>
-    </author>
+    <author xmlns=""><organization> </organization> <address> <postal><street>
+    </street><city/><region> </region><code> </code><country>
+    </country></postal> <phone> </phone> <facsimile> </facsimile> <email>
+    </email> <uri> </uri> </address></author>
   </elementTemplate>
 
   <elementTemplate name="postal" selectable="override">
@@ -433,8 +450,8 @@
 
   <elementTemplate name="reference" selectable="override">
     <reference anchor="Anchor" xmlns=""><front><title>
-    </title><author><organization>
-    </organization></author><date year="2004"/></front></reference>
+    </title><author><organization> </organization></author><date
+    year="2004"/></front></reference>
   </elementTemplate>
 
   <!-- the xpath subset doesn't include attributes, so this one
