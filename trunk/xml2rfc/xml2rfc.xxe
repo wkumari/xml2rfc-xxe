@@ -359,12 +359,12 @@
       <command name="xml2rfc.addBlock" parameter="section"/>
     </button>
 
-    <button icon="icons/incrsectlevel.gif" toolTip="Increase section level">
-      <command name="incrSectionLevel" param="section - t" />
-    </button>
-
     <button icon="icons/decrsectlevel.gif" toolTip="Decrease section level">
       <command name="decrSectionLevel" param="section - t" />
+    </button>
+
+    <button icon="icons/incrsectlevel.gif" toolTip="Increase section level">
+      <command name="incrSectionLevel" param="section - t" />
     </button>
 
     <separator/>
@@ -378,10 +378,6 @@
     </button>
 
     <separator/>
-
-    <!-- xxe-config: doesn't work as documented?
-   <button icon="xxe-config:common/icons2/emphasis_menu.gif"
--->
 
     <button icon="icons/emphasis_menu.gif"
             toolTip="Convert to emphasis (spanx)">
@@ -403,9 +399,6 @@
   </toolBar>
 
   <!-- Templates ========================================================== -->
-
-  <!-- I don't know why I need the xmlns=""; none of the other
-       config files have that...-->
 
   <elementTemplate name="figure" selectable="override">
     <figure
@@ -443,10 +436,6 @@
 </configuration>
 <!-- To Do:
      - see css for formatting todo list
-     - toolbar to insert common types
-       - list (types)
-       - section
-       - xref (convert selected text to xref if there's a selection)
      - defaults for section (e.g., put a <t /> inside a newly-created
        section?)
   -->
