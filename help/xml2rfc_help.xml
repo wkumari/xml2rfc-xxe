@@ -437,8 +437,8 @@
           <term>Convert to PDF using XSL</term>
 
           <listitem>
-            <para>NOTE: This procedure requires xxe Professional Edition; it
-            will not work in the free Standard Edition.</para>
+            <para>NOTE: This procedure requires xxe Professional Edition; the
+            FO plugins are not supported in Standard Edition.</para>
 
             <para>Asks for the file to save the result in; then uses Julian
             Reschke's XSL transform to convert the XML to XML-FO, then uses an
@@ -462,18 +462,81 @@
   <section>
     <title>Processing Instructions</title>
 
-    <para>Although support for editing &lt;?rfc include=?&gt; processing
-    instructions is planned, support for handling the file that is included is
-    not - meaning that, for example, although cross-references to a reference
-    in the included file now show as "included", the xxe validator will claim
-    that the document doesn't validate.</para>
+    <para>Although support for editing and inserting &lt;?rfc include=?&gt;
+    processing instructions more easily is planned, support for handling the
+    file that is included is not - meaning that, for example, although
+    cross-references to a reference in the included file now show as
+    "included", the xxe validator will claim that the document doesn't
+    validate.</para>
 
     <para>xxe is by nature a "root element editor", not an XML file editor, so
     at this time has no ability to edit processing instructions that occur
-    before the root &lt;rfc&gt; element. Support for displaying these elements
-    in the "RFC meta-data" section at the top is planned, but requires some
-    Java coding. Editing support for these elements is not planned at this
-    time.</para>
+    before the root &lt;rfc&gt; element. This plugin displays these elements
+    in the "RFC meta-data" section at the top, but editing support is not
+    planned.</para>
+  </section>
+
+  <section>
+    <title>Including External References</title>
+
+    <para>There are two commonly-used methods of importing references from the
+    reference database maintained at xml.resource.org:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para><emphasis role="bold">Entity definitions and
+        references.</emphasis> This is the form shown under "Including files"
+        on the xml.resource.org web page. Definitions are of the
+        form<literallayout>&lt;DOCTYPE rfc SYSTEM 'rfc2629.dtd' [
+ &lt;!ENTITY rfc2629 PUBLIC '' 'http://xml.resource.org/public/rfc/bibxml/reference.RFC.2629.xml'&gt;
+]&gt;</literallayout><literal>xxe</literal> understands these references when
+        loading the file, and also loads the referenced file read-only; this
+        makes the document validate and allows the cross-reference macros to
+        save it. Unfortunately, when xxe saves the document, it turns the
+        entity definition into the equivalent:<literallayout>&lt;DOCTYPE rfc SYSTEM 'rfc2629.dtd' [
+ &lt;!ENTITY rfc2629 SYSTEM 'http://xml.resource.org/public/rfc/bibxml/reference.RFC.2629.xml'&gt;
+]&gt;</literallayout>When <literal>xml2rfc</literal> (at least, up to and
+        including version 1.26) reads this, it looks for a relative reference
+        - it only handles fully-qualified URLs in PUBLIC entity definitions,
+        so it cannot format a file that has been edited this way. (This is a
+        bug in xml2rfc; the two entity definitions above are
+        equivalent.)</para>
+
+        <para>In addition, <literal>xxe</literal> doesn't support inserting
+        entity definitions or references into the document, so these must be
+        done using another editor.</para>
+      </listitem>
+
+      <listitem>
+        <para><emphasis role="bold">&lt;?rfc include="..."?&gt; processing
+        instructions.</emphasis> These are described in the README for
+        <literal>xml2rfc</literal>. They only require a single processing
+        instruction inserted where the reference belongs, e.g.:<literallayout>&lt;?rfc include="reference.RFC.2629.xml"?&gt;</literallayout>However,
+        this does not cause <literal>xxe</literal> to load the reference, so
+        it may think that the document is not well-formed (e.g., a
+        &lt;references&gt; section with no &lt;reference&gt; elements since
+        they're all included). The &lt;xref&gt;-checking code does check for
+        the standard naming convention, so an xref to "RFC2629" will show as
+        "included" given the above processing instruction.</para>
+
+        <para>The XSL transforms cannot process these processing instructions,
+        so the XSL-based conversions in the XML2RFC menu will not include
+        these references.</para>
+
+        <para>It is possible, though at the moment a little cumbersome, to
+        insert this processing instructionusing <literal>xxe</literal>. Use
+        <guimenu>Edit</guimenu>/<guimenuitem>Processing
+        Instruction</guimenuitem>/<guimenuitem>Insert Processing
+        Instruction</guimenuitem> to insert a processing instruction. Then use
+        <guimenu>Edit</guimenu>/<guimenuitem>Processing
+        Instruction</guimenuitem>/<guimenuitem>Change Processing Instruction
+        Target...</guimenuitem> to change the target to
+        "<literal>rfc</literal>". Finally, enter
+        '<literal>include="</literal>...<literal>"</literal>' in the green
+        box. I hope to improve this process in future versions of the
+        plugin.</para>
+      </listitem>
+    </itemizedlist>
   </section>
 
   <section>
@@ -513,6 +576,11 @@
               and the processing instruction includes
               "reference.&lt;target&gt;". Boy did that make for a complex
               xpath function.</para>
+            </listitem>
+
+            <listitem>
+              <para>Display the actual rfc processing instructions that occur
+              before the root element.</para>
             </listitem>
 
             <listitem>
