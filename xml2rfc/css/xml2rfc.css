@@ -96,20 +96,22 @@ address:before {
 address {
 	margin-left: 1em;
 }
-address postal {
-	margin-left: 1em;
+/*
+ * Display tags in the margin of the postal address
+ */
+address postal * {
+	margin-left: 4em;
 }
-address phone:before {
-	content: "Telephone: ";
+address postal *:before {
+	display: marker;
+	content: element-label();
+	font-size: 80%;
 }
-address facsimile:before {
-	content: "Facsimile: ";
+address *:before {
+	content: element-label() ": ";
 }
-address email:before {
-	content: "Email: ";
-}
-address uri:before {
-	content: "URI: ";
+address postal:before {
+	content: "";
 }
 /* Collapse author details by default */
 author {
@@ -215,8 +217,13 @@ back section section section section section:before {
 t {
 	margin-bottom: 1em;
 }
+title:after {
+	content: label(xpath,"if(string-length(.) > 39, ' <-- should have abbrev', '')");
+	color: red;
+}
 title[abbrev]:after {
 	content: " (aka " text-field(attribute, abbrev) ")";
+	color: inherit;
 }
 xref, eref {
 	display: inline;
@@ -252,26 +259,33 @@ eref:after {
 	content: attributes();
 	color: purple;
 }
-/*
- * Make all attributes of iref editable inline.
- * Dunno if this is a good plan or not.
- */
 iref::attribute() {
-	attribute-content-left: "[" attribute-label() ":";
-	attribute-content-middle: value-editor(attribute, attribute());
-	attribute-content-right: "] ";
-	show-attribute: always;
+	show-attribute: when-added;
 	color: purple;
 	font-size: 80%;
 }
+iref::attribute(subitem) {
+	attribute-content-left: "[" attribute-label() ":";
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "] ";
+}
+iref::attribute(primary) {
+	attribute-content-left: "[";
+	attribute-content-middle: check-box(attribute, primary,
+					    label, attribute-label(),
+					    checked-value, "true",
+					    unchecked-value, "false");
+	attribute-content-right: "] ";
+}
 iref {
-	display: inline;
-	content: "[ Index item: " attributes() " ]";
+	/* need to reduce the margins for a series of irefs */
+	display: block;
+	content: " [Index: " text-field(attribute, "item") attributes() "] ";
 	color: purple;
 }
 /*
- * I tried making cref collapsible, but it ended up collapsing the
- * whole section it was included inside.
+ * I'd like cref to be collapsible, but elements without sub-elements
+ * can't be.
  */
 cref::attribute() {
 	attribute-content-left: "[" attribute-label() ":";
@@ -291,10 +305,12 @@ cref:after {
 }
 vspace {
 	display: block;
-	content: "--- vspace(" text-field(attribute, "blankLines", columns, 2, missing-color, yellow) ") ---";
+	/* These command-buttons are for increment and decrement operations. */
+	content: "--- vspace(" text-field(attribute, "blankLines", columns, 2) ") " command-button(icon, icon(plus-box), command, "putAttribute", parameter, xpath("concat('blankLines ', ./@blankLines + 1)")) command-button(icon, icon(minus-box), command, "putAttribute", parameter, xpath("concat('blankLines ', ./@blankLines - 1)")) " ---";
 	color: purple;
 	font-size: 80%;
-	margin-bottom: concatenate(xpath("if(@blankLines > 2, @blankLines - 1, 0)"), "em");
+	/* Whitespace at the bottom of the element */
+	padding-bottom: concatenate(xpath("if(@blankLines > 1, @blankLines - 1, 0)"), "em");
 }
 spanx {
 	display: inline;
@@ -314,7 +330,6 @@ spanx[style=verb] {
 	font-family: monospace;
 	font-style: normal;
 }
-/* A handle for the list */
 list::attribute(counter) {
 	attribute-content-left: " [(not supported) counter:";
 	color: red;
@@ -328,6 +343,7 @@ list::attribute() {
 	attribute-content-right: "] ";
 	show-attribute: when-added;
 }
+/* A handle for the list */
 /* todo: offer an easy way to convert[wrap] <t> if needed? */
 list:before {
 	content: icon(right) "[list style " attr(style) attributes() xpath('if(local-name(..) = "t", "", " NOTE: list must be inside <t>")') "]";
@@ -394,7 +410,7 @@ figure:before {
 	color: concatenate(xpath('if(local-name(..) = "t","red","#ff9900")'));
 }
 figure::attribute(title) {
-	attribute-content-left: "[title:";
+	attribute-content-left: "[" attribute-label() ":";
 	attribute-content-middle: value-editor(attribute, attribute());
 	attribute-content-right: "] ";
 	color: black;
@@ -404,7 +420,21 @@ figure {
 	collapsed: no;
 	not-collapsible-head: 1;
 }
-/* name? type? */
+/* Attributes on artwork are ugly, but rare, so fine tuning can wait. */
+artwork::attribute() {
+	attribute-content-left: "[" attribute-label() ":";
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "] ";
+	color: purple;
+	show-attribute: when-added;
+}
+figure artwork:before {
+	display: block;
+	content: attributes();
+	white-space: normal;
+	font-family: sans-serif;
+	background-color: white;
+}
 figure artwork {
 	display: block;
 	white-space: pre;
@@ -423,12 +453,11 @@ references > reference:before {
 }
 /* Don't display abstracts in references */
 reference abstract {
-	display: none
+	display: none;
 }
 reference seriesInfo {
 	content: "Series: " attr(name) " Doc: " attr(value);
 }
-/* maybe editable inline? */
 reference format {
 	content: "Format " attr(type);
 }
