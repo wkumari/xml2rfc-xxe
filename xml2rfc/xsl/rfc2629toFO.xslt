@@ -42,6 +42,22 @@
     Make URLs in text break where they are allowed to break by inserting
     zero-width spaces.
 
+    2004-09-26  julian.reschke@greenbytes.de
+    
+    Fix letter-style inside nested lists.
+    
+    2004-10-31  julian.reschke@greenbytes.de
+    
+    Update handling of artwork.
+
+    2004-11-13  julian.reschke@greenbytes.de
+    
+    Fix handling of references inside ed:* markup.  Fix whitespace handling
+    in artwork.
+    
+    2004-11-27  julian.reschke@greenbytes.de
+    
+    Irefs in artwork generate monospaced entries in index.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -118,15 +134,23 @@
 	<xsl:apply-templates />
 </xsl:template>
 
+<!-- optimize empty lines starting artwork -->
+<xsl:template match="artwork/text()[0=count(preceding-sibling::node())]">
+  <xsl:choose>
+    <xsl:when test="substring(.,1,1)='&#10;'">
+      <xsl:value-of select="substring(.,2)" />
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="." />
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="artwork">
 	<fo:block font-family="monospace" font-size="9pt" background-color="#dddddd"
     white-space-treatment="preserve" linefeed-treatment="preserve"
     white-space-collapse="false">
-    <xsl:call-template name="showArtwork">
-      <xsl:with-param name="mode" select="'fo'" />
-      <xsl:with-param name="text" select="." />
-      <xsl:with-param name="initial" select="'yes'" />
-    </xsl:call-template>
+    <xsl:apply-templates/>
   </fo:block>
 </xsl:template>
 
@@ -471,6 +495,14 @@
 <xsl:template match="list[@style='letters']/t" priority="1">
   <fo:list-item space-before=".25em" space-after=".25em">
     <fo:list-item-label end-indent="label-end()"><fo:block><xsl:number format="a"/>.</fo:block></fo:list-item-label>
+    <fo:list-item-body start-indent="body-start()"><fo:block><xsl:apply-templates /></fo:block></fo:list-item-body>
+  </fo:list-item>
+</xsl:template>
+
+<!-- special case: nested -->
+<xsl:template match="list//t//list[@style='letters']/t" priority="9">
+  <fo:list-item space-before=".25em" space-after=".25em">
+    <fo:list-item-label end-indent="label-end()"><fo:block><xsl:number format="A"/>.</fo:block></fo:list-item-label>
     <fo:list-item-body start-indent="body-start()"><fo:block><xsl:apply-templates /></fo:block></fo:list-item-body>
   </fo:list-item>
 </xsl:template>
@@ -921,7 +953,7 @@
         </xsl:choose>
       </xsl:when>
       <xsl:otherwise>
-        <xsl:call-template name="referencename"><xsl:with-param name="node" select="/rfc/back/references/reference[@anchor=$target]" /></xsl:call-template>
+        <xsl:call-template name="referencename"><xsl:with-param name="node" select="/rfc/back/references//reference[@anchor=$target]" /></xsl:call-template>
       </xsl:otherwise>
     </xsl:choose>
   </fo:basic-link>
@@ -997,40 +1029,61 @@
   <xsl:for-each select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase)))]">
 	  <xsl:sort select="translate(@item,$lcase,$ucase)" />
             
-      <fo:block space-before="1em" font-weight="bold">
-        <xsl:value-of select="translate(substring(@item,1,1),$lcase,$ucase)" />
-      </fo:block>
-            
-      <xsl:for-each select="key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase))">
-				<xsl:sort select="translate(@item,$lcase,$ucase)" />
-    
-    	  <xsl:if test="generate-id(.) = generate-id(key('index-item',@item))">
-    
-          <fo:block start-indent="1em" hyphenate="true">
-            <xsl:value-of select="concat(@item,' ')" />
-            
-            <xsl:variable name="entries" select="key('index-item',@item)[not(@subitem) or @subitem='']" />
-                                    
-            <xsl:if test="$entries">
-              <fo:page-index>
-                <xsl:if test="$entries[@primary='true']">
-                  <fo:index-item create-index-link="true" merge-sequential-index-page-numbers="true" ref-index-key="{concat('item=',@item,',subitem=',@subitem,',primary')}" font-weight="bold"/>
-                </xsl:if>
-                <xsl:if test="$entries[not(@primary='true')]">
-                  <fo:index-item create-index-link="true" merge-sequential-index-page-numbers="true" ref-index-key="{concat('item=',@item,',subitem=',@subitem)}"/>
-                </xsl:if>
-              </fo:page-index>
-            </xsl:if>
+    <fo:block space-before="1em" font-weight="bold">
+      <xsl:value-of select="translate(substring(@item,1,1),$lcase,$ucase)" />
+    </fo:block>
+          
+    <xsl:for-each select="key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase))">
+		<xsl:sort select="translate(@item,$lcase,$ucase)" />
+  
+  	  <xsl:if test="generate-id(.) = generate-id(key('index-item',@item))">
+      
+        <xsl:variable name="item" select="@item"/>
+        <xsl:variable name="in-artwork" select="count(//iref[@item=$item and @primary='true' and ancestor::artwork])!=0"/>
+  
+        <fo:block start-indent="1em" hyphenate="true">
+          <xsl:choose>
+            <xsl:when test="$in-artwork">
+              <fo:wrapper font-family="monospace"><xsl:value-of select="concat(@item,' ')" /></fo:wrapper>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="concat(@item,' ')" />
+            </xsl:otherwise>
+          </xsl:choose>
+          
+          <xsl:variable name="entries" select="key('index-item',@item)[not(@subitem) or @subitem='']" />
+                                  
+          <xsl:if test="$entries">
+            <fo:page-index>
+              <xsl:if test="$entries[@primary='true']">
+                <fo:index-item create-index-link="true" merge-sequential-index-page-numbers="true" ref-index-key="{concat('item=',@item,',subitem=',@subitem,',primary')}" font-weight="bold"/>
+              </xsl:if>
+              <xsl:if test="$entries[not(@primary='true')]">
+                <fo:index-item create-index-link="true" merge-sequential-index-page-numbers="true" ref-index-key="{concat('item=',@item,',subitem=',@subitem)}"/>
+              </xsl:if>
+            </fo:page-index>
+          </xsl:if>
 
-          </fo:block>
-                
-          <xsl:for-each select="key('index-item',@item)[@subitem and @subitem!='']">
-					  <xsl:sort select="translate(@subitem,$lcase,$ucase)" />
-		      
-        	  <xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem)))">
+        </fo:block>
+              
+        <xsl:for-each select="key('index-item',@item)[@subitem and @subitem!='']">
+			  <xsl:sort select="translate(@subitem,$lcase,$ucase)" />
+      
+      	  <xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem)))">
+          
+            <xsl:variable name="itemsubitem" select="concat(@item,'..',@subitem)"/>
+            <xsl:variable name="in-artwork2" select="count(//iref[concat(@item,'..',@subitem)=$itemsubitem and @primary='true' and ancestor::artwork])!=0"/>
+                        
             <fo:block start-indent="2em" hyphenate="true">
             
-              <xsl:value-of select="concat(@subitem,' ')" />
+              <xsl:choose>
+                <xsl:when test="$in-artwork">
+                  <fo:wrapper font-family="monospace"><xsl:value-of select="concat(@subitem,' ')" /></fo:wrapper>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="concat(@subitem,' ')" />
+                </xsl:otherwise>
+              </xsl:choose>
 
               <xsl:variable name="entries2" select="key('index-item-subitem',concat(@item,'..',@subitem))" />
               
