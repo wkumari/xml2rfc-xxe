@@ -32,6 +32,9 @@
 
   <css location="css/xml2rfc.css" name="xml2rfc"/>
 
+  <!-- make sure that artwork is saved as CDATA. -->
+  <saveOptions cdataSectionElements="artwork" />
+
   <!-- Template blank document adapted from xml2rfc distribution's
        contrib/new-draft.xml -->
 
