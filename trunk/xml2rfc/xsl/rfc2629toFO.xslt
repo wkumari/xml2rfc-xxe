@@ -62,6 +62,10 @@
     2005-01-31  julian.reschke@greenbytes.de
     
     Fix TOC generation that was broken after changes in main XSLT.
+    
+    2005-02-05  julian.reschke@greenbytes.de
+    
+    Bring in sync with cosmetic changes in rfc2629.xslt.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -206,10 +210,16 @@
     source document -->
 	<!-- <xsl:apply-templates select="references" />  -->
            
-  <xsl:call-template name="insertAuthors" />
+  <xsl:if test="$xml2rfc-ext-authors-section!='end'">
+    <xsl:call-template name="insertAuthors" />
+  </xsl:if>
   
   <!-- add all other top-level sections under <back> -->
 	<xsl:apply-templates select="*[not(self::references)]" />
+
+  <xsl:if test="$xml2rfc-ext-authors-section='end'">
+    <xsl:call-template name="insertAuthors" />
+  </xsl:if>
 
   <xsl:if test="not($xml2rfc-private)">
   	<!-- copyright statements -->
@@ -611,13 +621,27 @@
             <xsl:if test="@role='editor'">
               <xsl:text>, Ed.</xsl:text>
             </xsl:if>
-            <xsl:if test="position()!=last() - 1">,&#0160;</xsl:if>
-            <xsl:if test="position()=last() - 1"> and </xsl:if>
+            <xsl:choose>
+              <xsl:when test="position()=last() - 1">
+                <xsl:if test="last() &gt; 2">,</xsl:if>
+                <xsl:text> and </xsl:text>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text>, </xsl:text>
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:when>
           <xsl:when test="organization/text()">
             <xsl:value-of select="organization" />
-            <xsl:if test="position()!=last() - 1">,&#0160;</xsl:if>
-            <xsl:if test="position()=last() - 1"> and </xsl:if>
+            <xsl:choose>
+              <xsl:when test="position()=last() - 1">
+                <xsl:if test="last() &gt; 2">,</xsl:if>
+                <xsl:text> and </xsl:text>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:text>, </xsl:text>
+              </xsl:otherwise>
+            </xsl:choose>
           </xsl:when>
           <xsl:otherwise />
         </xsl:choose>
@@ -684,7 +708,10 @@
       <xsl:variable name="sectionNumber">
         <xsl:call-template name="get-references-section-number"/>
       </xsl:variable>
-      <xsl:value-of select="$sectionNumber"/>&#160;&#160;References
+      <xsl:call-template name="emit-section-number">
+        <xsl:with-param name="no" select="$sectionNumber"/>
+      </xsl:call-template>
+      <xsl:text>&#160;&#160;References</xsl:text>
     </fo:block>
   </xsl:if>
 
@@ -823,7 +850,12 @@
   
   <xsl:call-template name="add-anchor" />
   
-  <xsl:if test="$sectionNumber!=''"><xsl:value-of select="$sectionNumber" />&#0160;&#0160;</xsl:if>
+  <xsl:if test="$sectionNumber!=''">
+    <xsl:call-template name="emit-section-number">
+      <xsl:with-param name="no" select="$sectionNumber"/>
+    </xsl:call-template>
+    <xsl:text>&#0160;&#0160;</xsl:text>
+  </xsl:if>
   <xsl:value-of select="@title" />
 
 </xsl:template>
@@ -1010,7 +1042,10 @@
 <xsl:template name="insertAuthors">
 
 	<fo:block id="{$anchor-prefix}.authors" xsl:use-attribute-sets="h1-new-page">
-    Author's Address<xsl:if test="count(/rfc/front/author) &gt; 1">es</xsl:if>
+    <xsl:choose>
+      <xsl:when test="count(/rfc/front/author) = 1">Author's Address</xsl:when>
+      <xsl:otherwise>Authors' Addresses</xsl:otherwise>
+    </xsl:choose>
   </fo:block>
 
   <xsl:apply-templates select="/rfc/front/author" />
@@ -1127,19 +1162,24 @@
 
   <xsl:if test="//cref and $xml2rfc-comments='yes' and $xml2rfc-inline!='yes'">
     <xsl:call-template name="insert-toc-line">
-      <xsl:with-param name="number" select="'&#167;'"/>
       <xsl:with-param name="target" select="concat($anchor-prefix,'.comments')"/>
       <xsl:with-param name="title" select="'Editorial Comments'"/>
     </xsl:call-template>
   </xsl:if>
 
-  <xsl:apply-templates select="/rfc/front" mode="toc" />
+  <xsl:if test="$xml2rfc-ext-authors-section!='end'">
+    <xsl:apply-templates select="/rfc/front" mode="toc" />
+  </xsl:if>
+
   <xsl:apply-templates select="*[not(self::references)]" mode="toc" />
+
+  <xsl:if test="$xml2rfc-ext-authors-section='end'">
+    <xsl:apply-templates select="/rfc/front" mode="toc" />
+  </xsl:if>
 
   <!-- copyright statements -->
   <xsl:if test="not($xml2rfc-private)">
     <xsl:call-template name="insert-toc-line">
-      <xsl:with-param name="number" select="'&#167;'"/>
       <xsl:with-param name="target" select="concat($anchor-prefix,'.ipr')"/>
       <xsl:with-param name="title" select="'Intellectual Property and Copyright Statements'"/>
     </xsl:call-template>
@@ -1148,7 +1188,6 @@
   <!-- insert the index if index entries exist -->
   <xsl:if test="//iref">
     <xsl:call-template name="insert-toc-line">
-      <xsl:with-param name="number" select="'&#167;'"/>
       <xsl:with-param name="target" select="concat($anchor-prefix,'.index')"/>
       <xsl:with-param name="title" select="'Index'"/>
     </xsl:call-template>
@@ -1164,7 +1203,6 @@
   </xsl:variable>
   
   <xsl:call-template name="insert-toc-line">
-    <xsl:with-param name="number" select="'&#167;'"/>
     <xsl:with-param name="target" select="concat($anchor-prefix,'.authors')"/>
     <xsl:with-param name="title" select="$title"/>
   </xsl:call-template>
@@ -1278,21 +1316,37 @@
     </xsl:when>
     <xsl:when test="$depth = 0">
       <fo:block space-before="1em" font-weight="bold" text-align-last="justify">
-        <xsl:value-of select="$number" />&#0160;&#0160;<fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link"><xsl:value-of select="$title"/></fo:basic-link>
+        <xsl:if test="$number!=''">
+          <xsl:value-of select="$number" />
+          <xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
+          <xsl:text>&#0160;&#0160;</xsl:text>
+        </xsl:if>
+        <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link"><xsl:value-of select="$title"/></fo:basic-link>
         <fo:leader leader-pattern="dots"/>
         <fo:page-number-citation ref-id="{$target}"/>
       </fo:block>
     </xsl:when>
     <xsl:when test="$depth = 1">
       <fo:block space-before="0.5em" text-align-last="justify">
-        <xsl:value-of select="$number" />&#0160;&#0160;&#0160;&#0160;<fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link"><xsl:value-of select="$title"/></fo:basic-link>
+        <xsl:if test="$number!=''">
+          <xsl:value-of select="$number" />
+          <xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
+          <xsl:text>&#0160;&#0160;&#0160;&#0160;</xsl:text>
+        </xsl:if>
+        <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link"><xsl:value-of select="$title"/></fo:basic-link>
         <fo:leader leader-pattern="dots"/>
         <fo:page-number-citation ref-id="{$target}"/>
       </fo:block>
     </xsl:when>
     <xsl:otherwise>
       <fo:block text-align-last="justify">
-        &#0160;&#0160;<xsl:value-of select="$number" />&#0160;&#0160;&#0160;&#0160;<fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link"><xsl:value-of select="$title"/></fo:basic-link>
+        <xsl:text>&#0160;&#0160;</xsl:text>
+        <xsl:if test="$number!=''">
+          <xsl:value-of select="$number" />
+          <xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
+          <xsl:text>&#0160;&#0160;&#0160;&#0160;</xsl:text>
+        </xsl:if>
+        <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link"><xsl:value-of select="$title"/></fo:basic-link>
         <fo:leader leader-pattern="dots"/>
         <fo:page-number-citation ref-id="{$target}"/>
       </fo:block>
@@ -1409,8 +1463,6 @@
 <xsl:template match="ed:link" />
 
 
-<!-- Specials for XEP -->
-
 <xsl:template match="node()" mode="bookmarks">
   <xsl:apply-templates mode="bookmarks"/>
 </xsl:template>
@@ -1435,7 +1487,11 @@
 <xsl:template match="section[not(@myns:unnumbered)]" mode="bookmarks">
   <xsl:variable name="sectionNumber"><xsl:call-template name="get-section-number" /></xsl:variable>
   <fo:bookmark internal-destination="{$anchor-prefix}.section.{$sectionNumber}">
-    <fo:bookmark-title><xsl:value-of select="concat($sectionNumber,' ',@title)"/></fo:bookmark-title>
+    <fo:bookmark-title>
+      <xsl:value-of select="$sectionNumber"/>
+      <xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
+      <xsl:value-of select="concat(' ',@title)"/>
+    </fo:bookmark-title>
     <xsl:apply-templates mode="bookmarks"/>
   </fo:bookmark>
 </xsl:template>
@@ -1448,8 +1504,16 @@
 </xsl:template>
 
 <xsl:template match="back" mode="bookmarks">
-  <xsl:apply-templates select="/rfc/front" mode="bookmarks" />
+
+  <xsl:if test="$xml2rfc-ext-authors-section!='end'">
+    <xsl:apply-templates select="/rfc/front" mode="bookmarks" />
+  </xsl:if>
+  
   <xsl:apply-templates select="*[not(self::references)]" mode="bookmarks" />
+
+  <xsl:if test="$xml2rfc-ext-authors-section='end'">
+    <xsl:apply-templates select="/rfc/front" mode="bookmarks" />
+  </xsl:if>
 
   <xsl:if test="not($xml2rfc-private)">
     <!-- copyright statements -->
@@ -1499,14 +1563,23 @@
         </xsl:variable>
       
         <fo:bookmark internal-destination="{$anchor-prefix}.references">
-          <fo:bookmark-title><xsl:call-template name="get-references-section-number"/><xsl:text> </xsl:text><xsl:value-of select="$title"/></fo:bookmark-title>
+          <fo:bookmark-title>
+            <xsl:call-template name="get-references-section-number"/>
+            <xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="$title"/>
+          </fo:bookmark-title>
         </fo:bookmark>
       </xsl:for-each>
     </xsl:when>
     <xsl:otherwise>
       <!-- insert pseudo container -->    
       <fo:bookmark internal-destination="{$anchor-prefix}.references">
-        <fo:bookmark-title><xsl:call-template name="get-references-section-number"/><xsl:text> References</xsl:text></fo:bookmark-title>
+        <fo:bookmark-title>
+          <xsl:call-template name="get-references-section-number"/>
+          <xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
+          <xsl:text> References</xsl:text>
+        </fo:bookmark-title>
 
         <!-- ...with subsections... -->    
         <xsl:for-each select="/*/back/references">
@@ -1519,6 +1592,7 @@
         
           <xsl:variable name="sectionNumber">
             <xsl:call-template name="get-section-number" />
+            <xsl:if test="$xml2rfc-ext-sec-no-trailing-dots='yes'">.</xsl:if>
           </xsl:variable>
   
           <xsl:variable name="num">
