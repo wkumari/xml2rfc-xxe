@@ -55,6 +55,14 @@
         editor currently uses the DTD definition; java might be able to help
         implement the other way.</para>
       </listitem>
+
+      <listitem>
+        <para>&lt;list style="format"&gt;</para>
+      </listitem>
+
+      <listitem>
+        <para>&lt;list counter&gt;</para>
+      </listitem>
     </itemizedlist>
 
     <para>Planned features:</para>
@@ -99,6 +107,194 @@
     after the current one if the current one is selected, or at the easiest
     place inside the current one if the mark is inside the current
     element.</para>
+
+    <section>
+      <title>Toolbar</title>
+
+      <para>Most toolbar items that add elements have behavior that depends on
+      the currently selected object. In general, if the selected object is an
+      element, the item that's added is a sibling to the selected object. If
+      the selection is simply text or there is no selection and the cursor is
+      in text, the item that's added is added at or as close to the cursor as
+      is feasible, generally as a child of the parent item.</para>
+
+      <variablelist>
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/itemizedlist.gif" />
+              </imageobject>
+            </inlinemediaobject>Add Itemized List</term>
+
+          <listitem>
+            <para>Adds an itemized list (<literal>&lt;list
+            style="symbols"&gt;</literal>)</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/orderedlist.gif" />
+              </imageobject>
+            </inlinemediaobject>Add Ordered List</term>
+
+          <listitem>
+            <para>Adds an ordered list (<literal>&lt;list
+            style="numbers"&gt;</literal>)</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/list_menu.gif" />
+              </imageobject>
+            </inlinemediaobject>Add other list</term>
+
+          <listitem>
+            <para></para>
+
+            <variablelist>
+              <varlistentry>
+                <term>empty</term>
+
+                <listitem>
+                  <para>Adds an empty list (<literal>&lt;list
+                  style="empty"&gt;</literal>)</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>letters</term>
+
+                <listitem>
+                  <para>Adds a lettered list (<literal>&lt;list
+                  style="letters"&gt;</literal>)</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>hanging text</term>
+
+                <listitem>
+                  <para>Adds a list using hanging text (<literal>&lt;list
+                  style="hanging"&gt;</literal>)</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/para.gif" />
+              </imageobject>
+            </inlinemediaobject>Add paragraph or list item</term>
+
+          <listitem>
+            <para>Add a paragraph or list item at the current level.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/section.gif" />
+              </imageobject>
+            </inlinemediaobject>Add section</term>
+
+          <listitem>
+            <para>Add a section - if a section is currently selected, add a
+            sibling at the same level; otherwise, add a subsection within the
+            current section.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/table.gif" />
+              </imageobject>
+            </inlinemediaobject>Add table</term>
+
+          <listitem>
+            <para>Adds a &lt;texttable&gt; and related elements.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/figure.gif" />
+              </imageobject>
+            </inlinemediaobject>Add figure</term>
+
+          <listitem>
+            <para>Adds a &lt;figure&gt; and related elements.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/emphasis_menu.gif" />
+              </imageobject>
+            </inlinemediaobject>Convert to emphasis (spanx)</term>
+
+          <listitem>
+            <para>Convert the selected text to the selected type of
+            emphasis.</para>
+
+            <variablelist>
+              <varlistentry>
+                <term>emph</term>
+
+                <listitem>
+                  <para>Emphasis - usually <emphasis>italic</emphasis> or
+                  *emphasized*</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>strong</term>
+
+                <listitem>
+                  <para>Strong - usually <emphasis role="bold">bold</emphasis>
+                  or 'single-quoted'</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>verb</term>
+
+                <listitem>
+                  <para>Verbatim - usually <literal>monospaced</literal> or
+                  "quoted"</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/plain.gif" />
+              </imageobject>
+            </inlinemediaobject>Convert to plain text</term>
+
+          <listitem>
+            <para>Converts the selection to plain text. In general, removes
+            any formatting elements around the selection but doesn't lose any
+            text. This has the expected results when applied to a
+            <literal>&lt;spanx&gt;</literal> and possibly unexpected results
+            when applied to a figure, table or list.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
   </section>
 
   <section>
@@ -226,11 +422,9 @@
 
     <variablelist>
       <varlistentry>
-        <term>0.2 - not released yet</term>
+        <term>0.2 - Nov 29, 2004</term>
 
         <listitem>
-          <para></para>
-
           <itemizedlist>
             <listitem>
               <para>Fixed section and appendix numbering, make a note when we
@@ -264,6 +458,16 @@
             </listitem>
 
             <listitem>
+              <para>Display "???" as the marker for lists with an invalid
+              style</para>
+            </listitem>
+
+            <listitem>
+              <para>Display warning inside &lt;list&gt; that's not a child of
+              &lt;t&gt;</para>
+            </listitem>
+
+            <listitem>
               <para>Fixed bugs in draft template; it validates now</para>
             </listitem>
 
@@ -292,7 +496,5 @@
         </listitem>
       </varlistentry>
     </variablelist>
-
-    <para></para>
   </section>
 </article>
