@@ -349,7 +349,7 @@
       <command name="xml2rfc.insert" parameter="list style numbers"/>
     </button>
 
-    <button icon="icons/variablelist.gif" toolTip="Add other list">
+    <button icon="icons/list_menu.gif" toolTip="Add other list">
       <menu>
         <item command="xml2rfc.insert" label="empty"
               parameter="list style empty"/>
