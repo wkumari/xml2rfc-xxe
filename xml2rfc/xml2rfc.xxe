@@ -428,6 +428,46 @@
     </macro>
   </command>
 
+  <command name="xml2rfc.previewTXTViaWebForm">
+    <macro trace="true">
+      <sequence>
+        <command name="xml2rfc.webform" parameter="'%D' txt"/>
+	<set variable="tmpfile" expression="%_" plainString="true"/>
+	<choice>
+	  <sequence>
+	    <command name="xml2rfc.os" parameter="windows"/>
+	    <get expression="$tmpfile"/>
+	    <command name="start" parameter='start "" "%_"'/>
+	  </sequence>
+	  <sequence>
+	    <command name="xml2rfc.os" parameter="mac"/>
+	    <get expression="$tmpfile"/>
+	    <command name="start" parameter='open "%_"'/>
+	  </sequence>
+	  <sequence>
+	    <command name="xml2rfc.os" parameter="genericunix"/>
+	    <get expression="$tmpfile"/>
+	    <command name="start" parameter='xterm -e "less &apos;%_apos;"'/>
+	  </sequence>
+	</choice>
+	<choice>
+	  <sequence>
+	    <command name="xml2rfc.os" parameter="windows"/>
+	    <command name="run" parameter="ping -n 10 127.0.0.1 &gt; NUL:"/>
+	    <get expression="$tmpfile"/>
+	    <command name="run" parameter="del %_" />
+	  </sequence>
+	  <sequence>
+	    <command name="xml2rfc.os" parameter="unix"/>
+	    <command name="run" parameter="sleep 10"/>
+	    <get expression="$tmpfile"/>
+	    <command name="run" parameter="rm %_" />
+	  </sequence>
+	</choice>
+      </sequence>
+    </macro>
+  </command>
+
   <menu label="XML2RFC" mnemonic="X">
     <!--On UNIX, preview requires to have Mozilla or Netscape in $PATH.-->
 
@@ -438,6 +478,8 @@
     <item command="xml2rfc.previewTXT" label="Text Preview"/>
 
     <item command="xml2rfc.previewXSL" label="HTML Preview using XSL"/>
+
+    <item command="xml2rfc.previewTXTViaWebForm" label="Text Preview using xml.resource.org"/>
 
     <item command="xml2rfc.addRFCInclude" label="Insert &lt;?rfc include=''?&gt;" />
 
