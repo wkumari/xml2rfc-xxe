@@ -217,7 +217,12 @@ back section section section section section:before {
 t {
 	margin-bottom: 1em;
 }
-title:after {
+/*
+ * Long document titles should have an abbrev attribute.
+ * XXX draft-mrose-writing-rfcs says 42, xml2rfc uses a formula that
+ *     tends to be 40 for an Internet-Draft
+ */
+rfc > front title:after {
 	content: label(xpath,"if(string-length(.) > 39, ' <-- should have abbrev', '')");
 	color: red;
 }
