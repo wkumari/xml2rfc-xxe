@@ -275,7 +275,7 @@ cref:before {
 }
 cref {
 	font-size: 80%;
-	background-color: #8ed6ea;
+	background-color: yellow;
 }
 cref:after {
 	content: " ]]";
@@ -374,6 +374,7 @@ figure artwork {
 	display: block;
 	white-space: pre;
 	font-family: monospace;
+	background-color: #ffffcc;
 	/* can we display a vertical line at 70 characters? */
 }
 
