@@ -634,17 +634,10 @@
   <section>
     <title>Known Limitations</title>
 
-    <para></para>
-
     <itemizedlist>
       <listitem>
         <para>Pasting from the ASCII art editor JavE (at least on MacOS)
         produces a garbled figure. This is fixed in xxe 2.9.</para>
-      </listitem>
-
-      <listitem>
-        <para>The 27th lettered list element is "a0", not "aa". This is fixed
-        in xxe 2.9.</para>
       </listitem>
 
       <listitem>
