@@ -419,11 +419,11 @@
   <!-- Templates ========================================================== -->
 
   <!-- I don't know why I need the xmlns=""; none of the other
- config files have that...-->
+       config files have that...-->
 
   <elementTemplate name="figure" selectable="override">
     <figure
-    xmlns=""><preamble>(preamble)</preamble><asciiart>artwork</asciiart><postamble>(postamble)</postamble></figure>
+    xmlns=""><preamble>(preamble)</preamble><artwork>artwork</artwork><postamble>(postamble)</postamble></figure>
   </elementTemplate>
 
   <elementTemplate name="section" selectable="override">
@@ -454,14 +454,6 @@
     year="2004"/></front></reference>
   </elementTemplate>
 
-  <!-- the xpath subset doesn't include attributes, so this one
-       can't work.  We want to include hangText only on <t>
-       inside hanging lists.
-  <elementTemplate name="hanging" selectable="override"
-   parent="list[@style='hanging']">
-    <t hangText="???" xmlns=""> </t>
-  </elementTemplate>
-  -->
 </configuration>
 <!-- To Do:
      - see css for formatting todo list
