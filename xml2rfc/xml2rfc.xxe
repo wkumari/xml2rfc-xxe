@@ -391,6 +391,10 @@
         <command name="selectFile" parameter="saveFile %p/%_.%0"/>
 
         <command name="xml2rfc.webform" parameter="'%D' %0 '%_'"/>
+
+	<test expression="'%_' != ''" />
+
+	<command name="alert" parameter="Conversion Completed, output in %_" />
       </sequence>
     </macro>
   </command>
