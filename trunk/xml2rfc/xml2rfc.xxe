@@ -173,7 +173,9 @@
 
       <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd"/>
 
-      <transform file="__doc.xml" stylesheet="xsl/rfc2629.xslt"
+      <transform file="__doc.xml" stylesheet="xsl/expand-pi-rfc-include.xslt"
+                 to="__doc2.xml"/>
+      <transform file="__doc2.xml" stylesheet="xsl/rfc2629.xslt"
                  to="preview.html"/>
 
       <delete files="__doc.xml"/>
@@ -235,7 +237,9 @@
 
       <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd"/>
 
-      <transform file="__doc.xml" stylesheet="xsl/rfc2629toFO.xslt"
+      <transform file="__doc.xml" stylesheet="xsl/expand-pi-rfc-include.xslt"
+                 to="__doc2.xml"/>
+      <transform file="__doc2.xml" stylesheet="xsl/rfc2629toFO.xslt"
                  to="__doc.fo"/>
 
       <transform file="__doc.fo" stylesheet="xsl/xsl11toXep.xslt"
@@ -268,7 +272,10 @@
 
       <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd"/>
 
-      <transform file="__doc.xml" stylesheet="xsl/rfc2629.xslt" to="draft.html"/>
+      <transform file="__doc.xml" stylesheet="xsl/expand-pi-rfc-include.xslt"
+                 to="__doc2.xml"/>
+      <transform file="__doc2.xml" stylesheet="xsl/rfc2629.xslt"
+                 to="draft.html"/>
 
       <upload base="file:///">	<!-- we always get a fully-qualified %0 -->
         <copyFile file="draft.html" to="%0"/>
