@@ -11,6 +11,7 @@ release:
 	tar --exclude CVS --exclude '*~' -cf - xml2rfc | tar -C dist -xvf -
 	#
 	# Create zip file.
+	rm -f dist/xml2rfc-xxe-`cat xml2rfc/version.txt`.zip
 	cd dist; zip -r xml2rfc-xxe-`cat xml2rfc/version.txt`.zip xml2rfc
 
 clean:
