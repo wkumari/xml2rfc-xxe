@@ -133,7 +133,7 @@
 
       <shell command="start &quot;&quot; preview.txt" platform="Windows"/>
 
-      <!--      <shell platform="Unix" command="xterm -e &quot;less preview.txt&quot;"/> -->
+      <shell platform="Unix" command="xterm -e &quot;less preview.txt&quot;"/>
     </process>
   </command>
 
@@ -210,9 +210,9 @@
   <command name="xml2rfc.insert">
     <macro>
       <sequence>
-        <command name="xml2rfc.addBlock" parameter="%1"/>
+        <command name="xml2rfc.addBlock" parameter="%0"/>
 
-        <command name="putAttribute" parameter="%2 %3"/>
+        <command name="putAttribute" parameter="%1 %2"/>
       </sequence>
     </macro>
   </command>
@@ -223,23 +223,23 @@
 
   <toolBar>
     <button icon="icons/itemizedlist.gif" toolTip="Add itemized list">
-      <command name="xml2rfc.insert" parameter="after list style symbols"/>
+      <command name="xml2rfc.insert" parameter="list style symbols"/>
     </button>
 
     <button icon="icons/orderedlist.gif" toolTip="Add numbered list">
-      <command name="xml2rfc.insert" parameter="after list style numbers"/>
+      <command name="xml2rfc.insert" parameter="list style numbers"/>
     </button>
 
     <button icon="icons/variablelist.gif" toolTip="Add other list">
       <menu>
         <item command="xml2rfc.insert" label="empty"
-              parameter="after list style empty"/>
+              parameter="list style empty"/>
 
         <item command="xml2rfc.insert" label="hanging text"
-              parameter="after list style hanging"/>
+              parameter="list style hanging"/>
 
         <!-- inserts 'empty' - arg passing problem?
-	<item command="xml2rfc.insert" parameter="after list style 'format ???'"
+	<item command="xml2rfc.insert" parameter="list style 'format ???'"
 		label="custom format" />
 	  -->
       </menu>
@@ -333,10 +333,11 @@
   </elementTemplate>
 
   <!-- looks like the xpath subset doesn't include attributes? 
-  <elementTemplate name="hanging" selectable="override" xmlns=""
+  <elementTemplate name="hanging" selectable="override"
    parent="list[@style='hanging']">
-  <t hangText="???"> </t></elementTemplate>
--->
+    <t hangText="???" xmlns=""> </t>
+  </elementTemplate>
+  -->
 </configuration>
 <!-- To Do:
      - see css for formatting todo list
