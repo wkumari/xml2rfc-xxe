@@ -120,13 +120,12 @@ author {
 	not-collapsible-head: 1;
 }
 author::attribute(role) {
-	attribute-content-left: "[role:";
+	attribute-content-left: " [" attribute-label() ":";
 	attribute-content-middle: value-editor(attribute, attribute());
 	attribute-content-right: "] ";
 }
-/* Should these be inline attributes too? */
 author:before {
-	content: collapser() "Author: " attr(fullname) " (" attr(initials) " " attr(surname) ")" attributes();
+	content: collapser() "Author: " text-field(attribute,fullname) " (" text-field(attribute,initials,columns,5) " " text-field(attribute,surname) ")" attributes();
 }
 organization:before {
 	content: "Organization: ";
@@ -134,20 +133,13 @@ organization:before {
 organization[abbrev]:after {
 	content: " (aka " attr(abbrev) ")";
 }
-area:before {
-	content: "Area: ";
-}
-workgroup:before {
-	content: "Working Group: ";
-}
-keyword:before {
-	content: "Keyword: ";
-}
-date:before {
-	content: "Date: ";
+/* The default document comes with some of these, so make them easy
+   to delete. */
+area:before, workgroup:before, keyword:before {
+	content: delete-button(background-color, red) element-label() ": ";
 }
 date {
-	content: attr(day) " " attr(month) " " attr(year);
+	content: "Date: [day]" text-field(attribute,day,columns,5) " [month]" text-field(attribute,month,columns,10) " [year]" text-field(attribute,year,columns,5);
 }
 /*
  * Make all anchors editable if present.
