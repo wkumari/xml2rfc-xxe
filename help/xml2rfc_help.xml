@@ -28,9 +28,9 @@
     <title>Overview</title>
 
     <para>This xxe plugin attempts to support most of the rfc2629bis DTD, as
-    of November 10, 2004. This documentation is $Revision$, and tries
-    to document plugin version %%VERSION%%. The plugin requires at least xxe
-    2.8p1 (released November 29, 2004).</para>
+    of xml2rfc release 1.28, January 16, 2005. This documentation is
+    $Revision$, and tries to document plugin version %%VERSION%%. The
+    plugin requires at least xxe 2.8p1 (released November 29, 2004).</para>
 
     <para>This plugin can create text or HTML output using xml2rfc, if
     installed; it can also use xmlmind's native XSL support to generate HTML.
@@ -48,7 +48,8 @@
       <listitem>
         <para>&lt;?rfc ?&gt; processing instructions in general. &lt;?rfc
         include= in particular. (Wish: to be able to handle this like external
-        entity references)</para>
+        entity references) (Partial &lt;?rfc include= support is described in
+        <xref linkend="extref" />).</para>
       </listitem>
 
       <listitem>
@@ -78,11 +79,6 @@
             <para>Increase/decrease list item level</para>
           </listitem>
         </itemizedlist>
-      </listitem>
-
-      <listitem>
-        <para>Revisit HTML preview (right now it accidentally strips out all
-        the early processing instructions)</para>
       </listitem>
     </itemizedlist>
   </section>
@@ -478,7 +474,7 @@
   </section>
 
   <section>
-    <title>Including External References</title>
+    <title id="extref">Including External References</title>
 
     <para>There are two commonly-used methods of importing references from the
     reference database maintained at xml.resource.org:</para>
@@ -516,28 +512,82 @@
         this does not cause <literal>xxe</literal> to load the reference, so
         it may think that the document is not well-formed (e.g., a
         &lt;references&gt; section with no &lt;reference&gt; elements since
-        they're all included). The &lt;xref&gt;-checking code does check for
-        the standard naming convention, so an xref to "RFC2629" will show as
-        "included" given the above processing instruction.</para>
+        they're all included). xxe will also refuse to allow you to delete an
+        element that makes the document not-well-formed, so you may end up
+        with a placehodler &lt;reference&gt; inside a references section that
+        you have to delete by editing the .xml file elsewhere. The
+        &lt;xref&gt;-checking code does check for the standard naming
+        convention, so an xref to "RFC2629" will show as "included" given the
+        above processing instruction.</para>
 
-        <para>The XSL transforms cannot process these processing instructions,
-        so the XSL-based conversions in the XML2RFC menu will not include
-        these references.</para>
+        <para>To insert a processing instruction, use F6 or select the Insert
+        &lt;?rfc include=''?&gt; menu item in the XML2RFC menu. This will
+        insert an &lt;?rfc include=''?&gt; processing instruction inside or
+        after the currently-selected element.</para>
 
-        <para>It is possible, though at the moment a little cumbersome, to
-        insert this processing instructionusing <literal>xxe</literal>. Use
-        <guimenu>Edit</guimenu>/<guimenuitem>Processing
-        Instruction</guimenuitem>/<guimenuitem>Insert Processing
-        Instruction</guimenuitem> to insert a processing instruction. Then use
-        <guimenu>Edit</guimenu>/<guimenuitem>Processing
-        Instruction</guimenuitem>/<guimenuitem>Change Processing Instruction
-        Target...</guimenuitem> to change the target to
-        "<literal>rfc</literal>". Finally, enter
-        '<literal>include="</literal>...<literal>"</literal>' in the green
-        box. I hope to improve this process in future versions of the
-        plugin.</para>
+        <para>The XSL transforms will process &lt;?rfc include=''?&gt;
+        instructions. They default to using the xml.resource.org site; if you
+        have a local mirror you can configure it as follows:</para>
+
+        <orderedlist>
+          <listitem>
+            <para>Create a file "my_xml2rfc_catalog.xml" in your XXE
+            configuration directory (the same place you unzipped the xml2rfc
+            plugin, in the config/ directory)</para>
+          </listitem>
+
+          <listitem>
+            <para>Add the following two lines:</para>
+
+            <para><literallayout>  &lt;rewriteURI uriStartString="xml2rfc-bibxml:"
+              rewritePrefix="(URL to your RFC bibxml mirror)" /&gt;
+  &lt;rewriteURI uriStartString="xml2rfc-bibxml3:"
+              rewritePrefix="(URL to your I-D bibxml mirror)" /&gt;
+</literallayout></para>
+          </listitem>
+        </orderedlist>
+
+        <para>Future work will hopefully teach xxe about this style of
+        inclusion so that it can include the actual referenced file read-only.
+        (xxe knows how to do this with entities and xi:include)</para>
       </listitem>
     </itemizedlist>
+  </section>
+
+  <section>
+    <title>Known Limitations</title>
+
+    <para></para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Pasting from the ASCII art editor JavE (at least on MacOS)
+        produces a garbled figure. This is fixed in xxe after 2.8p1.</para>
+      </listitem>
+
+      <listitem>
+        <para>The 27th lettered list element is "a0", not "aa". This is fixed
+        in xxe after 2.8p1.</para>
+      </listitem>
+
+      <listitem>
+        <para>xml2rfc version 1.26 and earlier cannot load &lt;ENTITY SYSTEM
+        "http://..."&gt; definitions; xxe will change the &lt;ENTITY PUBLIC ""
+        "http://..."&gt; format that xml2rfc understands to the SYSTEM one.
+        This is fixed in xml2rfc version 1.27.</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Support</title>
+
+    <para>Support for this plugin is available via the
+    xml2rfc-xxe@rtg.ietf.org mailing list. See
+    http://rtg.ietf.org/mailman/listinfo/xml2rfc-xxe for more info. The
+    distribution page is http://rtg.ietf.org/~fenner/ietf/xml2rfc-xxe/ . A
+    bug/issue list is
+    http://rtg.ietf.org/Members/BillFenner/xml2rfc-xxe/</para>
   </section>
 
   <section>
@@ -547,7 +597,7 @@
 
     <variablelist>
       <varlistentry>
-        <term>0.4 - not yet released</term>
+        <term>0.4 - Jan 28, 2005</term>
 
         <listitem>
           <itemizedlist>
@@ -560,6 +610,39 @@
             <listitem>
               <para>The anchor of a &lt;reference&gt; that's not referenced in
               the document turns red.</para>
+            </listitem>
+
+            <listitem>
+              <para>&lt;?rfc include...?&gt; is now handled when using XSL for
+              preview or conversion (thanks to Rob Austein / ISC for the
+              script). [to do: document configuring the local directory with a
+              catalog]</para>
+            </listitem>
+
+            <listitem>
+              <para>Changed HTML preview using xml2html to a process just like
+              the one using xml2rfc - no longer strips out processing
+              instructions.</para>
+            </listitem>
+
+            <listitem>
+              <para>Updated XSL transforms to Julian's January 27, 2005
+              release.</para>
+            </listitem>
+
+            <listitem>
+              <para>Added F6/menu option to insert an &lt;?rfc include=''?&gt;
+              PI</para>
+            </listitem>
+
+            <listitem>
+              <para>Added command-ENTER and command-shift-ENTER shortcuts to
+              insert the same element after (before) the current one.</para>
+            </listitem>
+
+            <listitem>
+              <para>Duplicate anchors are noted with [DUPLICATE ANCHOR] in
+              red.</para>
             </listitem>
           </itemizedlist>
         </listitem>
