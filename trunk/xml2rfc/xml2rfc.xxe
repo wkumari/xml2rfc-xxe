@@ -402,6 +402,8 @@
   <command name="xml2rfc.externalEdit">
     <macro>
       <sequence>
+	<!-- This command is only executable if the file is local -->
+	<test expression="'%D' != ''" />
 	<!-- to do: use the os return value to decide on a file that has the pick list -->
 	<!-- (mostly for user modification convenience; we already need to do a per-OS startup method) -->
 	<command name="XXE.save" parameter="[ifNeeded]" />
