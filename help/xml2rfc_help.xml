@@ -46,7 +46,8 @@
 
       <listitem>
         <para>&lt;?rfc ?&gt; processing instructions in general. &lt;?rfc
-        include= in particular.</para>
+        include= in particular. (Wish: to be able to handle this like external
+        entity references)</para>
       </listitem>
 
       <listitem>
@@ -512,6 +513,23 @@
               and the processing instruction includes
               "reference.&lt;target&gt;". Boy did that make for a complex
               xpath function.</para>
+            </listitem>
+
+            <listitem>
+              <para>Display "[not referenced]" next to an anchor that has no
+              references (most significant in a references section)</para>
+            </listitem>
+
+            <listitem>
+              <para>Display the format string (unformatted) in format-style
+              lists.</para>
+            </listitem>
+
+            <listitem>
+              <para>Claim (inside xxe) an XML document with no DOCTYPE and an
+              &lt;rfc&gt; root element, and force the rfc2629.dtd on it. Also
+              claim &lt;reference&gt;, in case of editing a reference that's
+              included via an entity reference.</para>
             </listitem>
           </itemizedlist>
         </listitem>
