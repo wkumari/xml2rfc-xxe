@@ -284,7 +284,6 @@ cref:before {
 	content: "[[ comment" attributes() ": ";
 }
 cref {
-	font-size: 80%;
 	background-color: yellow;
 }
 cref:after {
@@ -292,7 +291,7 @@ cref:after {
 }
 vspace {
 	display: block;
-	content: "vspace(" attr(blankLines) ")";
+	content: "vspace(" text-field(attribute, "blankLines", columns, 2, missing-color, yellow) ")";
 	background-color: purple;
 	color: white;
 }
