@@ -30,7 +30,7 @@
     <para>This xxe plugin attempts to support most of the rfc2629bis DTD, as
     of xml2rfc release 1.28, January 16, 2005. This documentation is
     $Revision$, and tries to document plugin version %%VERSION%%. The
-    plugin requires at least xxe 2.8p1 (released November 29, 2004).</para>
+    plugin requires at least xxe 2.9 (released February 7, 2005).</para>
 
     <para>This plugin can create text or HTML output using xml2rfc, if
     installed; it can also use xmlmind's native XSL support to generate HTML.
