@@ -291,9 +291,10 @@ cref:after {
 }
 vspace {
 	display: block;
-	content: "vspace(" text-field(attribute, "blankLines", columns, 2, missing-color, yellow) ")";
-	background-color: purple;
-	color: white;
+	content: "--- vspace(" text-field(attribute, "blankLines", columns, 2, missing-color, yellow) ") ---";
+	color: purple;
+	font-size: 80%;
+	margin-bottom: concatenate(xpath("if(@blankLines > 2, @blankLines - 1, 0)"), "em");
 }
 spanx {
 	display: inline;
