@@ -3,8 +3,13 @@
 <?rfc toc="yes"?>
 <?rfc tocompact="no"?>
 <?rfc tocdepth="6"?>
+<?rfc tocindent="yes"?>
 <?rfc symrefs="yes"?>
 <?rfc sortrefs="yes"?>
+<?rfc comments="yes"?>
+<?rfc inline="yes"?>
+<?rfc compact="no"?>
+<?rfc subcompact="no"?>
 <rfc category="exp" docName="draft-baker-document-00" ipr="full3667">
   <front>
     <title abbrev="Abbreviated-Title">Full Title</title>
