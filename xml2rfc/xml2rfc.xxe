@@ -379,6 +379,20 @@
 
     <separator/>
 
+    <button icon="icons/navigate2.gif" toolTip="Swap xref Ends">
+      <command name="selectById" parameter="swapIdAndReference"/>
+    </button>
+
+    <button icon="icons/navigatePrevious2.gif" toolTip="Prev xref to same target">
+      <command name="selectById" parameter="previousReference"/>
+    </button>
+
+    <button icon="icons/navigateNext2.gif" toolTip="Next xref to same target">
+      <command name="selectById" parameter="nextReference"/>
+    </button>
+
+    <separator/>
+
     <button icon="icons/emphasis_menu.gif"
             toolTip="Convert to emphasis (spanx)">
       <menu>
