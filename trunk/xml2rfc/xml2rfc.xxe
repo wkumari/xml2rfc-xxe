@@ -122,6 +122,27 @@
     </macro>
   </command>
 
+  <!-- totally random binding -->
+  <binding>
+    <keyPressed code="F6" />
+    <command name="xml2rfc.addRFCInclude" />
+  </binding>
+
+  <command name="xml2rfc.addRFCInclude">
+    <macro>
+      <sequence>
+        <choice>
+	  <command name="insertNode" parameter="piInto[implicitElement]" />
+	  <command name="insertNode" parameter="piAfter[implicitElement]" />
+        </choice>
+	<command name="insertString" parameter="include='reference.'" />
+	<command name="editPITarget" parameter="[implicitNode] rfc" />
+	<!-- assuming the newly inserted element is selected -->
+	<set variable="dotOffset" expression="19" />
+      </sequence>
+    </macro>
+  </command>
+
   <!-- Menu ============================================================== -->
 
   <!--
@@ -358,6 +379,8 @@
     <item command="xml2rfc.previewTXT" label="Text Preview"/>
 
     <item command="xml2rfc.previewXSL" label="HTML Preview using XSL"/>
+
+    <item command="xml2rfc.addRFCInclude" label="Insert &lt;?rfc include=''?&gt;" />
 
     <menu label="Convert">
       <item command="xml2rfc.convertToSomething" label="Convert to Text"
