@@ -41,7 +41,7 @@ public class WebForm implements Command {
 		String[] args = StringUtil.splitArguments(parameter);
 		String infile = args[0];
 		String format = args.length > 1 ? args[1] : "txt";
-		String outfile = args.length > 2 ? args[2] : PlatformUtil.tmpFileName(format);
+		String outfile = args.length > 2 ? args[2] : PlatformUtil.tmpFileName("." + format);
 		
 		String lineEnd = "\r\n";
 		String twoHyphens = "--";
