@@ -119,12 +119,14 @@ public class WebForm implements Command {
 		}
 		catch (MalformedURLException ex)
 		{
+			CommonDialog.showStatus("Internal Error" + ex);
 			CommonDialog.showError(component, "Internal Error" + ex);
 			return null;
 		}
 		
 		catch (IOException ioe)
 		{
+			CommonDialog.showStatus("Upload Error" + ioe);
 			CommonDialog.showError(component, "Upload Error" + ioe);
 			return null;
 		}
@@ -147,6 +149,7 @@ public class WebForm implements Command {
 			if ("text/html".equals(conn.getContentType())) {
 				// XXX Get charset from conn instead of hardcoding
 				String html = FileUtil.loadString(conn.getInputStream(), "iso8859-1");
+				CommonDialog.showStatus("Conversion Failed");
 				CommonDialog.showErrorHTML(component, "Conversion Failed", html, 600, 250);
 				return null;
 			}
@@ -166,11 +169,11 @@ public class WebForm implements Command {
 		}
 		catch (IOException ioe)
 		{
+			CommonDialog.showStatus("Download Error" + ioe);
 			CommonDialog.showError(component, "Download Error" + ioe);
 			return null;
 		}
-		CommonDialog.showStatus("Conversion using " + urlString + " complete.");
-		CommonDialog.showInfo(component, "Conversion Completed, output in " + outfile);
+		CommonDialog.showStatus("Conversion using " + urlString + " completed, output in " + outfile);
 		return outfile;
 		
 }
