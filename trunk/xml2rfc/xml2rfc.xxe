@@ -451,7 +451,7 @@
 	  <sequence>
 	    <command name="xml2rfc.os" parameter="genericunix"/>
 	    <get expression="$tmpfile"/>
-	    <command name="start" parameter='xterm -e "less &apos;%_apos;"'/>
+	    <command name="start" parameter='xterm -e "less &apos;%_&apos;"'/>
 	  </sequence>
 	</choice>
 	<choice>
