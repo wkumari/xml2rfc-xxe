@@ -29,7 +29,8 @@
 
     <para>This xxe plugin attempts to support most of the rfc2629bis DTD, as
     of November 10, 2004. This documentation is $Revision$, and tries to
-    document plugin version %%VERSION%%.</para>
+    document plugin version %%VERSION%%. The plugin requires at least xxe
+    2.8p1 (released November 29, 2004).</para>
 
     <para>This plugin can create text or HTML output using xml2rfc, if
     installed; it can also use xmlmind's native XSL support to generate HTML.
