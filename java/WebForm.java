@@ -79,26 +79,25 @@ public class WebForm implements Command {
 			conn.connect();
 			CommonDialog.showStatus("Uploading XML document");
 			
-			// Get the stream to post the document to the form
-			PrintStream post = new PrintStream(conn.getOutputStream());
+			DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
 			
 			// Create form answers - mode={txt,html,nr,xml} and type={ascii,binary}
 			//
-			post.print(twoHyphens + boundary + lineEnd);
-			post.print("Content-Disposition: form-data; name=\"mode\"" + lineEnd);
-			post.print(lineEnd);
-			post.print(format + lineEnd);
+			dos.writeBytes(twoHyphens + boundary + lineEnd);
+			dos.writeBytes("Content-Disposition: form-data; name=\"mode\"" + lineEnd);
+			dos.writeBytes(lineEnd);
+			dos.writeBytes(format + lineEnd);
 			
-			post.print(twoHyphens + boundary + lineEnd);
-			post.print("Content-Disposition: form-data; name=\"type\"" + lineEnd);
-			post.print(lineEnd);
-			post.print("binary" + lineEnd);
+			dos.writeBytes(twoHyphens + boundary + lineEnd);
+			dos.writeBytes("Content-Disposition: form-data; name=\"type\"" + lineEnd);
+			dos.writeBytes(lineEnd);
+			dos.writeBytes("binary" + lineEnd);
 			
-			post.print(twoHyphens + boundary + lineEnd);
-			post.print("Content-Disposition: form-data; name=\"input\";"
+			dos.writeBytes(twoHyphens + boundary + lineEnd);
+			dos.writeBytes("Content-Disposition: form-data; name=\"input\";"
 						   + " filename=\"" + infile +"\"" + lineEnd);
-			post.print("Content-Type: text/xml" + lineEnd);
-			post.print(lineEnd);
+			dos.writeBytes("Content-Type: text/xml" + lineEnd);
+			dos.writeBytes(lineEnd);
 			
 			// Write the document in the edit buffer to the web server.
 			DocumentWriter writer = new DocumentWriter();
@@ -108,14 +107,14 @@ public class WebForm implements Command {
 												// into entities or XIncludes.
 			// could setCdataSectionElements but CDATA is really for presentation
 			//  and this isn't presentation.
-			writer.writeDocument(document, post);
+			writer.writeDocument(document, dos);
 						
 			// Finish the MIME part
-			post.print(lineEnd);
-			post.print(twoHyphens + boundary + twoHyphens + lineEnd);
+			dos.writeBytes(lineEnd);
+			dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 			
-			post.flush();
-			post.close();
+			dos.flush();
+			dos.close();
 		}
 		catch (MalformedURLException ex)
 		{
@@ -152,17 +151,22 @@ public class WebForm implements Command {
 			}
 			CommonDialog.showStatus("Downloading result");
 
-			//
-			// Line-based copying to convert to native line endings.
-			PrintStream out = new PrintStream(new FileOutputStream(new File(outfile)));
-			BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			String line;
 			
-			while ((line = in.readLine()) != null) {
-				out.println(line);
+			FileOutputStream fileOutputStream = new FileOutputStream( new
+																	  File(outfile) );
+			InputStream inStream = conn.getInputStream();
+			
+			buffer = new byte[maxBufferSize];
+			// Read the file and write it into the form
+			bytesRead = inStream.read(buffer, 0, maxBufferSize);
+			
+			while (bytesRead > 0)
+			{
+				fileOutputStream.write(buffer, 0, bytesRead);
+				bytesRead = inStream.read(buffer, 0, maxBufferSize);
 			}
-			in.close();
-			out.close();
+			inStream.close();
+			fileOutputStream.close();
 		}
 		catch (IOException ioe)
 		{
