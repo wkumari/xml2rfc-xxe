@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id$ -->
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
+"http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
+<article>
+  <title>xml2rfc Plugin</title>
+
+  <articleinfo>
+    <author>
+      <firstname>Bill</firstname>
+
+      <surname>Fenner</surname>
+
+      <email>fenner@research.att.com</email>
+    </author>
+
+    <abstract>
+      <para>xml2rfc/rfc2629 support for the XMLMind XML Editor.</para>
+
+      <para>Great thanks are due to Hussein Shafie, who answered many
+      inexperienced questions about xxe's css/xml/java support.</para>
+    </abstract>
+
+    <pubdate role="rcs">$Date$</pubdate>
+  </articleinfo>
+
+  <section>
+    <title>Overview</title>
+
+    <para>This xxe plugin attempts to support most of the rfc2629bis DTD, as
+    of November 10, 2004. This documentation is $Revision$, and tries to
+    document plugin version %%VERSION%%.</para>
+
+    <para>This plugin can create text or HTML output using xml2rfc, if
+    installed; it can also use xmlmind's native XSL support to generate HTML.
+    Use the menu items "Convert to HTML using XSL" and "HTML Preview using
+    XSL" if you don't have xml2rfc installed.</para>
+
+    <para>The following items are not yet (and may never be) supported:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>texttable. This requires some extra help (probably a custom java
+        widget) to style the table for xmlmind.</para>
+      </listitem>
+
+      <listitem>
+        <para>&lt;?rfc ?&gt; processing instructions in general. &lt;?rfc
+        include= in particular.</para>
+      </listitem>
+
+      <listitem>
+        <para>The RFC's description of &lt;list&gt; specifies that style is
+        inherited from nearest parent; DTD says that it defaults to empty. The
+        editor currently uses the DTD definition; java might be able to help
+        implement the other way.</para>
+      </listitem>
+
+      <listitem>
+        <para>&lt;list style="format"&gt;</para>
+      </listitem>
+
+      <listitem>
+        <para>&lt;list counter&gt;</para>
+      </listitem>
+    </itemizedlist>
+
+    <para>Planned features:</para>
+
+    <itemizedlist>
+      <listitem>
+        <para>Make toolbar helpers more useful</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Increase/decrease section level</para>
+          </listitem>
+
+          <listitem>
+            <para>Increase/decrease list item level</para>
+          </listitem>
+        </itemizedlist>
+      </listitem>
+
+      <listitem>
+        <para>Revisit HTML preview (right now it accidentally strips out all
+        the early processing instructions)</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+
+  <section>
+    <title>Usage</title>
+
+    <para>For now, you still have to know a fair amount about the xml2rfc
+    schema to use this tool.</para>
+
+    <para>Enter and backspace can be used as you might expect a word processor
+    to behave when you're editing paragraphs or lists.</para>
+
+    <para>To insert sections, paragraphs, figures, cross-references, etc., use
+    the toolbar or the XXE insert pane; you'll commonly use "Insert" and
+    "Insert After".</para>
+
+    <para>Lists, paragraphs and sections are inserted after/inside the current
+    one depending on the XXE selection; generally a new element is inserted
+    after the current one if the current one is selected, or at the easiest
+    place inside the current one if the mark is inside the current
+    element.</para>
+
+    <section>
+      <title>Toolbar</title>
+
+      <para>Most toolbar items that add elements have behavior that depends on
+      the currently selected object. In general, if the selected object is an
+      element, the item that's added is a sibling to the selected object. If
+      the selection is simply text or there is no selection and the cursor is
+      in text, the item that's added is added at or as close to the cursor as
+      is feasible, generally as a child of the parent item.</para>
+
+      <variablelist>
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/itemizedlist.gif" />
+              </imageobject>
+            </inlinemediaobject>Add Itemized List</term>
+
+          <listitem>
+            <para>Adds an itemized list (<literal>&lt;list
+            style="symbols"&gt;</literal>)</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/orderedlist.gif" />
+              </imageobject>
+            </inlinemediaobject>Add Ordered List</term>
+
+          <listitem>
+            <para>Adds an ordered list (<literal>&lt;list
+            style="numbers"&gt;</literal>)</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/list_menu.gif" />
+              </imageobject>
+            </inlinemediaobject>Add other list</term>
+
+          <listitem>
+            <para></para>
+
+            <variablelist>
+              <varlistentry>
+                <term>empty</term>
+
+                <listitem>
+                  <para>Adds an empty list (<literal>&lt;list
+                  style="empty"&gt;</literal>)</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>letters</term>
+
+                <listitem>
+                  <para>Adds a lettered list (<literal>&lt;list
+                  style="letters"&gt;</literal>)</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>hanging text</term>
+
+                <listitem>
+                  <para>Adds a list using hanging text (<literal>&lt;list
+                  style="hanging"&gt;</literal>)</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/para.gif" />
+              </imageobject>
+            </inlinemediaobject>Add paragraph or list item</term>
+
+          <listitem>
+            <para>Add a paragraph or list item at the current level.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/section.gif" />
+              </imageobject>
+            </inlinemediaobject>Add section</term>
+
+          <listitem>
+            <para>Add a section - if a section is currently selected, add a
+            sibling at the same level; otherwise, add a subsection within the
+            current section.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/table.gif" />
+              </imageobject>
+            </inlinemediaobject>Add table</term>
+
+          <listitem>
+            <para>Adds a &lt;texttable&gt; and related elements.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/figure.gif" />
+              </imageobject>
+            </inlinemediaobject>Add figure</term>
+
+          <listitem>
+            <para>Adds a &lt;figure&gt; and related elements.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/emphasis_menu.gif" />
+              </imageobject>
+            </inlinemediaobject>Convert to emphasis (spanx)</term>
+
+          <listitem>
+            <para>Convert the selected text to the selected type of
+            emphasis.</para>
+
+            <variablelist>
+              <varlistentry>
+                <term>emph</term>
+
+                <listitem>
+                  <para>Emphasis - usually <emphasis>italic</emphasis> or
+                  *emphasized*</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>strong</term>
+
+                <listitem>
+                  <para>Strong - usually <emphasis role="bold">bold</emphasis>
+                  or 'single-quoted'</para>
+                </listitem>
+              </varlistentry>
+
+              <varlistentry>
+                <term>verb</term>
+
+                <listitem>
+                  <para>Verbatim - usually <literal>monospaced</literal> or
+                  "quoted"</para>
+                </listitem>
+              </varlistentry>
+            </variablelist>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term><inlinemediaobject>
+              <imageobject>
+                <imagedata fileref="icons/plain.gif" />
+              </imageobject>
+            </inlinemediaobject>Convert to plain text</term>
+
+          <listitem>
+            <para>Converts the selection to plain text. In general, removes
+            any formatting elements around the selection but doesn't lose any
+            text. This has the expected results when applied to a
+            <literal>&lt;spanx&gt;</literal> and possibly unexpected results
+            when applied to a figure, table or list.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
+  </section>
+
+  <section>
+    <title>XML2RFC menu</title>
+
+    <variablelist>
+      <varlistentry>
+        <term>HTML Preview</term>
+
+        <listitem>
+          <para>Uses an externally-installed <literal>xml2html</literal> to
+          convert the XML to HTML, then opens up the rendered HTML in a web
+          browser.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>Text Preview</term>
+
+        <listitem>
+          <para>Uses an externally-installed <literal>xml2rfc</literal> to
+          convert the XML to text, then opens up a text editor (or an xterm
+          running less) on the result.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>HTML Preview using XSL</term>
+
+        <listitem>
+          <para>Uses Julian Reschke's xsl transform to convert the XML to
+          HTML, then opens up the rendered HTML in a web browser. This
+          procedure does not require any external software, so should work on
+          any system even without the xml2rfc tool installed.</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+
+    <section>
+      <title>Convert sub-menu</title>
+
+      <variablelist>
+        <varlistentry>
+          <term>Convert to HTML</term>
+
+          <listitem>
+            <para>Asks for a directory to save the result in; then uses an
+            externally-installed <literal>xml2html</literal> to convert the
+            XML to HTML and saves it in the resulting directory; named based
+            on the docname attribute of the rfc element or simply
+            '<filename>draft.html</filename>'.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Convert to Text</term>
+
+          <listitem>
+            <para>Asks for a directory to save the result in; then uses an
+            externally-installed <literal>xml2rfc</literal> to convert the XML
+            to text and saves it in the resulting directory; named based on
+            the docname attribute of the rfc element or simply
+            '<filename>draft.txt</filename>'.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Convert to HTML using XSL</term>
+
+          <listitem>
+            <para>Asks for a directory to save the result in; then uses Julian
+            Reschke's XSL transform to convert the XML to HTML and saves it in
+            the resulting directory; named based on the docname attribute of
+            the rfc element or simply
+            '<filename>draft.html</filename>'.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Convert to PDF using XSL</term>
+
+          <listitem>
+            <para>NOTE: This procedure is untested.</para>
+
+            <para>Asks for a directory to save the result in; then uses Julian
+            Reschke's XSL transform to convert the XML to XML-FO, then uses an
+            xxe XML-FO plugin (if installed) and saves it in the resulting
+            directory; named based on the docname attribute of the rfc element
+            or simply '<filename>draft.pdf</filename>'.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
+  </section>
+
+  <section>
+    <title>Table Rendering</title>
+
+    <para>The xml2rfc &lt;texttable&gt; attribute is basically unsupported at
+    this time. xxe has native table support, but requires row elements to wrap
+    sets of cells; there is no straightforward way at this time to support the
+    xml2rfc schema's type of table that just has a series of cells with no row
+    elements.</para>
+  </section>
+
+  <section>
+    <title>Processing Instructions</title>
+
+    <para>Although support for editing &lt;?rfc include=?&gt; processing
+    instructions is planned, support for handling the file that is included is
+    not - meaning that, for example, cross-references to a reference in the
+    included file will show as broken, and the xxe validator will claim that
+    the document doesn't validate.</para>
+
+    <para>xxe is by nature a "root element editor", not an XML file editor, so
+    at this time has no ability to edit processing instructions that occur
+    before the root &lt;rfc&gt; element. Support for displaying these elements
+    in the "RFC meta-data" section at the top is planned, but requires some
+    Java coding. Editing support for these elements is not planned at this
+    time.</para>
+  </section>
+
+  <section>
+    <title>Change Log</title>
+
+    <variablelist>
+      <varlistentry>
+        <term>0.2 - Nov 29, 2004</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Fixed section and appendix numbering, make a note when we
+              know we can't auto-number properly because the indentation got
+              too deep.</para>
+            </listitem>
+
+            <listitem>
+              <para>Modified comment and figure coloring to match XSL
+              transform's HTML output</para>
+            </listitem>
+
+            <listitem>
+              <para>Support hangIndent in hanging lists</para>
+            </listitem>
+
+            <listitem>
+              <para>Make hangText editable in the margin in hanging
+              lists</para>
+            </listitem>
+
+            <listitem>
+              <para>Note in the figure handle if the document uses the
+              deprecated &lt;t&gt;&lt;figure&gt; construct.</para>
+            </listitem>
+
+            <listitem>
+              <para>Slightly modify texttable rendering to give the preamble
+              and postamble a consistent look. (Still can't render the body of
+              the table as a table)</para>
+            </listitem>
+
+            <listitem>
+              <para>Display "???" as the marker for lists with an invalid
+              style</para>
+            </listitem>
+
+            <listitem>
+              <para>Display warning inside &lt;list&gt; that's not a child of
+              &lt;t&gt;</para>
+            </listitem>
+
+            <listitem>
+              <para>Fixed bugs in draft template; it validates now</para>
+            </listitem>
+
+            <listitem>
+              <para>Include online help</para>
+            </listitem>
+
+            <listitem>
+              <para>XSL HTML preview and HTML and (untested) PDF
+              conversions</para>
+            </listitem>
+
+            <listitem>
+              <para>Add template to ensure that added references contain all
+              required elements.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>0.1 - Nov 17, 2004</term>
+
+        <listitem>
+          <para>First public release</para>
+        </listitem>
+      </varlistentry>
+    </variablelist>
+  </section>
+</article>
