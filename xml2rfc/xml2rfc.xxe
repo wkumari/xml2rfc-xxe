@@ -5,6 +5,7 @@
                xmlns:xs="http://www.w3.org/2001/XMLSchema"
                xmlns:cfg="http://www.xmlmind.com/xmleditor/schema/configuration">
   <load location="xml2rfc.jar"/>
+  <help location="xml2rfc_help.jar"/>
 
   <detect>
     <dtdSystemId>rfc2629.dtd</dtdSystemId>
