@@ -32,8 +32,11 @@
 
   <css location="css/xml2rfc.css" name="xml2rfc"/>
 
-  <!-- make sure that artwork is saved as CDATA. -->
-  <saveOptions cdataSectionElements="artwork" />
+  <!-- make sure that artwork is saved as CDATA.
+       Also, since xml2rfc doesn't support UTF-8, make sure
+       that the file is saved in US-ASCII with non-ASCII characters
+       entity-encoded. -->
+  <saveOptions cdataSectionElements="artwork" encoding="US-ASCII"/>
 
   <!-- Template blank document adapted from xml2rfc distribution's
        contrib/new-draft.xml -->
@@ -151,7 +154,9 @@
 
   <command name="xml2rfc.preview">
     <process>
-      <copyDocument to="__doc.xml"/>
+      <!-- US-ASCII because xml2rfc doesn't support UTF-8, but does
+           support entity-encoded characters -->
+      <copyDocument to="__doc.xml" encoding="US-ASCII"/>
 
       <shell command="xml2html __doc.xml preview.html"/>
 
@@ -198,7 +203,9 @@
 
   <command name="xml2rfc.convertDoc">
     <process>
-      <copyDocument to="__doc.xml"/>
+      <!-- US-ASCII because xml2rfc doesn't support UTF-8, but does
+           support entity-encoded characters -->
+      <copyDocument to="__doc.xml" encoding="US-ASCII"/>
 
       <shell command="xml2%1 __doc.xml draft.%2"/>
 
@@ -216,7 +223,9 @@
 
   <command name="xml2rfc.previewTXT">
     <process>
-      <copyDocument to="__doc.xml"/>
+      <!-- US-ASCII because xml2rfc doesn't support UTF-8, but does
+           support entity-encoded characters -->
+      <copyDocument to="__doc.xml" encoding="US-ASCII"/>
 
       <shell command="xml2rfc __doc.xml preview.txt"/>
 
@@ -374,11 +383,11 @@
   </command>
 
   <command name="xml2rfc.convertViaWebForm">
-    <macro trace="true">
+    <macro>
       <sequence>
         <command name="xml2rfc.draftname"/>
 
-	<!-- todo: saveFileURL %p and have WebForm save using xxe primitives -->
+	<!-- todo: saveFileURL and have WebForm save using xxe primitives -->
         <command name="selectFile" parameter="saveFile %p/%_.%0"/>
 
         <command name="xml2rfc.webform" parameter="'%D' %0 '%_'"/>
@@ -579,7 +588,7 @@
   </elementTemplate>
 
   <elementTemplate name="vspace" selectable="override">
-    <vspace blankLines="1"/>
+    <vspace blankLines="1" xmlns=""/>
   </elementTemplate>
 
 </configuration>
