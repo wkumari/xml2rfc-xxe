@@ -3,7 +3,7 @@
 <!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.2//EN"
 "http://www.oasis-open.org/docbook/xml/4.2/docbookx.dtd">
 <article>
-  <title>XMLmind XML Editor - xml2rfc Support</title>
+  <title>xml2rfc Support</title>
 
   <section>
     <title>Overview</title>
@@ -34,38 +34,37 @@
 
     <itemizedlist>
       <listitem>
-        <para>Toolbar helpers for common features (e.g., lists)</para>
+        <para>Make toolbar helpers more useful</para>
       </listitem>
 
       <listitem>
-        <para>Text preview</para>
+        <para>Revisit HTML preview</para>
       </listitem>
 
       <listitem>
-        <para>HTML and Text conversions</para>
-
-        <para>(use xsl instead of tcl for the HTML output, since xxe has
-        native xsl support?)</para>
+        <para>Try to use xsl instead of tcl for the HTML output, since xxe has
+        native xsl support?</para>
       </listitem>
     </itemizedlist>
-
-    <para></para>
-
-    <section>
-      <title></title>
-
-      <para></para>
-    </section>
   </section>
 
   <section>
     <title>Usage</title>
 
-    <para>Until I figure out more about building a toolbar, the only
-    format-specific optimization is that enter and backspace can be used as
-    you might expect a word processor to behave when you're editing paragraphs
-    or lists. To insert sections, paragraphs, figures, cross-references, etc.,
-    use the XXE insert pane; you'll commonly use "Insert" and "Insert
-    After".</para>
+    <para>For now, you still have to know a fair amount about the xml2rfc
+    schema to use this tool.</para>
+
+    <para>Enter and backspace can be used as you might expect a word processor
+    to behave when you're editing paragraphs or lists.</para>
+
+    <para>To insert sections, paragraphs, figures, cross-references, etc., use
+    the toolbar or the XXE insert pane; you'll commonly use "Insert" and
+    "Insert After".</para>
+
+    <para>Lists, paragraphs and sections are inserted after/inside the current
+    one depending on the XXE selection; generally a new element is inserted
+    after the current one if the current one is selected, or at the easiest
+    place inside the current one if the mark is inside the current
+    element.</para>
   </section>
 </article>
