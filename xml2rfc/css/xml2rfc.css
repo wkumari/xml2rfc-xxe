@@ -168,8 +168,8 @@ section::attribute(toc) {
 	color: #ff9900;
 	font-size: 80%;
 }
-/* Handle 4-level-embedded sections; anything beyond 4 will be numbered
- * incorrectly.  Too bad "counters" doesn't work. */
+/* Handle 5-level-embedded sections; anything beyond 5 will be marked
+ * as failing.  Too bad "counters" doesn't work. */
 section:before {
 	content: collapser() attributes() "Section " counter(n) ". " text-field(attribute, title);
 	font-size: 125%;
@@ -183,23 +183,27 @@ section section section:before {
 section section section section:before {
 	content: collapser() attributes() "Section " counter(nnnn) ". " text-field(attribute, title);
 }
-/*
- * Don't know how to do letter.number numbering, so we do
- * letter on major sections and number.number on subsections.
- * Confusing.
- */
+section section section section section:before {
+	content: collapser() attributes() "Section " counter(nnnnn) ". " text-field(attribute, title);
+}
+section section section section section section:before {
+	content: collapser() attributes() "Section (auto-numbering failed). " text-field(attribute, title);
+}
 back section:before {
 	content: collapser() attributes() "Appendix " counter(n, upper-alpha) ". " text-field(attribute, title);
 	font-size: 125%;
 }
 back section section:before {
-	content: collapser() attributes() "Appendix " counter(nn, decimal) ". " text-field(attribute, title);
+	content: collapser() attributes() "Appendix " counter(n-, upper-alpha) "." counter(n) ". " text-field(attribute, title);
 }
 back section section section:before {
-	content: collapser() attributes() "Appendix " counter(nnn, decimal) ". " text-field(attribute, title);
+	content: collapser() attributes() "Appendix " counter(n--, upper-alpha) "." counter(nn) ". " text-field(attribute, title);
 }
 back section section section section:before {
-	content: collapser() attributes() "Appendix " counter(nnnn, decimal) ". " text-field(attribute, title);
+	content: collapser() attributes() "Appendix " counter(n---, upper-alpha) "." counter(nnn) ". " text-field(attribute, title);
+}
+back section section section section section:before {
+	content: collapser() attributes() "Appendix (auto-numbering failed). " text-field(attribute, title);
 }
 t {
 	margin-bottom: 1em;
