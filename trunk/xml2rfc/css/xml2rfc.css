@@ -5,6 +5,8 @@
  * $Id$
  */
 
+@extension "StyleSheetExtension";
+
 * {
 	display: block;
 }
@@ -377,23 +379,19 @@ list[style=hanging] > t:before {
 	display: marker;
 	content: text-field(attribute, "hangText", columns, xpath("if(../@hangIndent,../@hangIndent, 6)")) " ";
 }
-list[style=numbers] > t:before {
-	display: marker;
-	content: counter(n) ".";
-}
-list[style=letters] > t:before {
-	display: marker;
-	content: counter(n, lower-alpha) ".";
-}
-/* to do: java to support style=format */
-list[style^=format] > t {
-	/* to do: find better unit for this */
-	margin-left: concatenate(xpath("(string-length(../@style)-5)*0.6"), "em");
-}
+/*
+ * listItemCounter knows about numbers, letters and format.
+ * It will eventually know about counter.
+ */
+list[style=numbers] > t:before,
+list[style=letters] > t:before,
 list[style^=format] > t:before {
 	display: marker;
-	content: "?" xpath('substring-after(../@style, "format ")') "?";
-	color: red;
+	content: invoke("listItemCounter");
+}
+list[style^=format] > t {
+	/* to do: find better unit for this */
+	margin-left: concatenate(xpath("(string-length(../@style)-7)*0.6"), "em");
 }
 list[style=empty] > t:before {
 	content: "";	/* override the catch-all */
@@ -445,6 +443,14 @@ back > references:before {
 	content: xpath("if(@title, @title, 'References')");
 	font-size: 125%;
 }
+reference::attribute(target) {
+	attribute-content-left: " [" attribute-label() ":";
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "]";
+	show-attribute: when-added;
+	color: purple;
+	font-size: 80%;
+}
 references > reference:before {
 	content: collapser() "Reference " attributes();
 }
@@ -453,10 +459,20 @@ reference abstract {
 	display: none;
 }
 reference seriesInfo {
-	content: "Series: " attr(name) " Doc: " attr(value);
+	content: "Series: " text-field(attribute, name, columns, 10) " Doc: " text-field(attribute, value);
+}
+format::attribute(type) {
+	show-attribute: never;
+}
+format::attribute() {
+	attribute-content-left: "[" attribute-label() ":";
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "] ";
+	show-attribute: when-added;
+	font-size: 80%;
 }
 reference format {
-	content: "Format " attr(type);
+	content: "Format " text-field(attribute, type, columns, 10) attributes();
 }
 reference title:before {
 	content: "Title: ";
