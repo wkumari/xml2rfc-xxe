@@ -329,10 +329,6 @@ spanx[style=verb] {
 	font-family: monospace;
 	font-style: normal;
 }
-list::attribute(counter) {
-	attribute-content-left: " [(not supported) counter:";
-	color: red;
-}
 list::attribute(style) {
 	show-attribute: never;
 }
