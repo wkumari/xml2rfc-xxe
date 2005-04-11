@@ -2,6 +2,8 @@
   revised DTD for the RFC document series, draft of 2004-04-04
   -->
 
+<!ENTITY % RFC2629ent SYSTEM "rfc2629.ent">
+%RFC2629ent;
 
 <!--
   Contents
