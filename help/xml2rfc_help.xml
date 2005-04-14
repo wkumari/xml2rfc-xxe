@@ -669,6 +669,19 @@
 
     <variablelist>
       <varlistentry>
+        <term>0.7 - ?</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Adds entity support for the entities known by
+              xml2rfc-1.29.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
         <term>0.6 - April 5, 2005</term>
 
         <listitem>
