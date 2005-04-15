@@ -14,6 +14,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.DefaultCellEditor;
+import javax.swing.ListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import java.awt.BorderLayout;
@@ -51,6 +52,7 @@ public class PreRootPI implements ComponentFactory, ActionListener {
 	String[] columnNames = {"Instruction", "Value"};
 	private Element rootElement;
 	private MyTableModel tablemodel;
+	private JTable table;
 	private ArrayList pis;
 	String[] knownPIs = {
 			 "autobreaks",
@@ -129,6 +131,12 @@ public class PreRootPI implements ComponentFactory, ActionListener {
 			if (n.getNodeType() == Node.PROCESSING_INSTRUCTION &&
 				n.name() == RFC) {
 				
+				/* xxe 2.9 bug workaround - configure document listeners
+				   for the PI node that hasn't been set up */
+				Node next = n.getNextSibling();
+				document.removeChild(n);
+				document.insertChild(next, n);
+				
 				pis.add(new RFCPI((ProcessingInstruction)n));
 			}
 		}
@@ -140,7 +148,8 @@ public class PreRootPI implements ComponentFactory, ActionListener {
 		pane.setBorder(BorderFactory.createTitledBorder("<?rfc ...?> PIs"));
 		
 		tablemodel = new MyTableModel();
-		JTable table = new JTable(tablemodel);
+		table = new JTable(tablemodel);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		pane.add(table.getTableHeader(), BorderLayout.PAGE_START);
 		pane.add(table, BorderLayout.CENTER);
 		TableColumn instructionColumn = table.getColumnModel().getColumn(0);
@@ -154,32 +163,54 @@ public class PreRootPI implements ComponentFactory, ActionListener {
 		//        column 2's editor depends on the value of column 1
 		//		  how to delete a row?
 		
-		JPanel pane2 = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+		JPanel pane2 = new JPanel(new BorderLayout());
 		pane2.setBackground(style.backgroundColor);
 		pane2.setForeground(style.color);
 
 		pane.add(pane2, BorderLayout.PAGE_END);
-		JButton button = new JButton("Add");
-		button.setBackground(style.backgroundColor);
-		button.setForeground(style.color);
+		JButton addbutton = new JButton("Add");
+		addbutton.setBackground(style.backgroundColor);
+		addbutton.setForeground(style.color);
+		addbutton.addActionListener(this);
+		addbutton.setActionCommand("add");
+		addbutton.setToolTipText("Add a new <?rfc ...?> PI to the table");
+		pane2.add(addbutton, BorderLayout.WEST);
+		
+		JButton delbutton = new JButton("Delete");
+		delbutton.setBackground(style.backgroundColor);
+		delbutton.setForeground(style.color);
+		delbutton.addActionListener(this);
+		delbutton.setActionCommand("del");
+		delbutton.setToolTipText("Delete the current table row");
+		pane2.add(delbutton, BorderLayout.EAST);
+		
 
-		pane2.add(button);
-		button.addActionListener(this);
-		button.setToolTipText("Add a new <?rfc ...?> PI to the table");
+
 		
 		stretch[0] = true;
 		
 		return pane;
 	}
 	
-	// "Add" button was clicked.
+	// "Add" or "Delete" button was clicked.
 	public void actionPerformed(ActionEvent e) {
-		ProcessingInstruction pi = new ProcessingInstruction("rfc", "???='???'");
 		Tree document = (Tree)rootElement.document();
-		
-		document.insertChild(rootElement, pi);
-		pis.add(new RFCPI(pi));
-		tablemodel.fireTableRowsInserted(pis.size() - 1,pis.size() - 1);
+
+		if ("add".equals(e.getActionCommand())) {
+			ProcessingInstruction pi = new ProcessingInstruction("rfc", "???='???'");
+			
+			document.insertChild(rootElement, pi);
+			pis.add(new RFCPI(pi));
+			tablemodel.fireTableRowsInserted(pis.size() - 1,pis.size() - 1);
+		} else {
+			int row = table.getSelectionModel().getMinSelectionIndex();
+			if (row >= 0) {
+				RFCPI pi = (RFCPI)pis.get(row);
+				document.removeChild(pi.pi);
+				pis.remove(row);
+				tablemodel.fireTableRowsDeleted(row, row);
+			}
+		}
 		// XXX need to fire a redraw too - via rootElement?
 	}
 	
