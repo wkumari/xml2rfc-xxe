@@ -13,14 +13,18 @@ import javax.swing.BorderFactory;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ListSelectionModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.JList;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import java.util.ArrayList;
@@ -32,6 +36,7 @@ import com.xmlmind.xmledit.styledgadget.Style;
 import com.xmlmind.xmledit.stylesheet.StyleValue;
 import com.xmlmind.xmledit.styledview.StyledViewFactory;
 import com.xmlmind.xmledit.styledview.ComponentFactory;
+import com.xmlmind.xmledit.view.DocumentView;
 
 /* meta to do:
  * PIs can be split into two sets:
@@ -42,17 +47,24 @@ import com.xmlmind.xmledit.styledview.ComponentFactory;
  * the in-document code as a widget or small component.
  */
  
+/* more meta to do:
+ * figure out why the list sometimes notifies the wrong
+ *  row after deletions
+ */
+ 
 /*
  * Style the Processing Instructions that occur before
  * the root element.
  */
-public class PreRootPI implements ComponentFactory, ActionListener {
+public class PreRootPI implements ComponentFactory, ActionListener, ListSelectionListener {
 	private static final Name RFC = Name.get("rfc");
 
 	String[] columnNames = {"Instruction", "Value"};
 	private Element rootElement;
+	private DocumentView documentView;
 	private MyTableModel tablemodel;
 	private JTable table;
+	private JButton delbutton;
 	private ArrayList pis;
 	String[] knownPIs = {
 			 "autobreaks",
@@ -121,6 +133,7 @@ public class PreRootPI implements ComponentFactory, ActionListener {
 		// Find the document from it.
 		Tree document = (Tree)element.document();
 		rootElement = element;
+		documentView = viewFactory.getDocumentView();
 		pis = new ArrayList();
 		
 		// XXX is "n.compareTo(element)" the best way to do this?
@@ -130,12 +143,6 @@ public class PreRootPI implements ComponentFactory, ActionListener {
 			 
 			if (n.getNodeType() == Node.PROCESSING_INSTRUCTION &&
 				n.name() == RFC) {
-				
-				/* xxe 2.9 bug workaround - configure document listeners
-				   for the PI node that hasn't been set up */
-				Node next = n.getNextSibling();
-				document.removeChild(n);
-				document.insertChild(next, n);
 				
 				pis.add(new RFCPI((ProcessingInstruction)n));
 			}
@@ -150,8 +157,13 @@ public class PreRootPI implements ComponentFactory, ActionListener {
 		tablemodel = new MyTableModel();
 		table = new JTable(tablemodel);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.getSelectionModel().addListSelectionListener(this);
+		//
+		// undocumented! property to stop editing when you lose focus.
+		table.putClientProperty("terminateEditOnFocusLost", Boolean.TRUE);
 		pane.add(table.getTableHeader(), BorderLayout.PAGE_START);
 		pane.add(table, BorderLayout.CENTER);
+		
 		TableColumn instructionColumn = table.getColumnModel().getColumn(0);
 		JComboBox comboBox = new JComboBox(knownPIs);
 		comboBox.setEditable(true);
@@ -159,9 +171,7 @@ public class PreRootPI implements ComponentFactory, ActionListener {
 		instructionColumn.setCellEditor(new DefaultCellEditor(comboBox));
 		
 		// to do: tooltip for current value of column 1 (implement TableCellRenderer?)
-		//		  tooltip for combobox used for column 1 (see ToolTipComboBoxExample)
 		//        column 2's editor depends on the value of column 1
-		//		  how to delete a row?
 		
 		JPanel pane2 = new JPanel(new BorderLayout());
 		pane2.setBackground(style.backgroundColor);
@@ -176,16 +186,14 @@ public class PreRootPI implements ComponentFactory, ActionListener {
 		addbutton.setToolTipText("Add a new <?rfc ...?> PI to the table");
 		pane2.add(addbutton, BorderLayout.WEST);
 		
-		JButton delbutton = new JButton("Delete");
+		delbutton = new JButton("Delete");
 		delbutton.setBackground(style.backgroundColor);
 		delbutton.setForeground(style.color);
 		delbutton.addActionListener(this);
 		delbutton.setActionCommand("del");
 		delbutton.setToolTipText("Delete the current table row");
 		pane2.add(delbutton, BorderLayout.EAST);
-		
-
-
+		delbutton.setEnabled(false);	// It shouldn't be enabled until there's a selection.
 		
 		stretch[0] = true;
 		
@@ -197,7 +205,7 @@ public class PreRootPI implements ComponentFactory, ActionListener {
 		Tree document = (Tree)rootElement.document();
 
 		if ("add".equals(e.getActionCommand())) {
-			ProcessingInstruction pi = new ProcessingInstruction("rfc", "???='???'");
+			ProcessingInstruction pi = new ProcessingInstruction("rfc", "???=\"???\"");
 			
 			document.insertChild(rootElement, pi);
 			pis.add(new RFCPI(pi));
@@ -205,13 +213,39 @@ public class PreRootPI implements ComponentFactory, ActionListener {
 		} else {
 			int row = table.getSelectionModel().getMinSelectionIndex();
 			if (row >= 0) {
+				// If there's an actively edited cell, stop editing first.
+				// Otherwise, the editor will remain after the row is deleted,
+				// editing the cell that replaces the one being edited.
+				TableCellEditor ce = table.getCellEditor();
+				if (ce != null)
+					ce.cancelCellEditing();
+
 				RFCPI pi = (RFCPI)pis.get(row);
 				document.removeChild(pi.pi);
 				pis.remove(row);
 				tablemodel.fireTableRowsDeleted(row, row);
 			}
 		}
-		// XXX need to fire a redraw too - via rootElement?
+		// schedule a refresh of the rootElement
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				documentView.refreshView(rootElement);
+			}
+		});
+	}
+	
+	// Table selection was changed
+	public void valueChanged(ListSelectionEvent e) {
+		// Ignore extra messages.
+		if (e.getValueIsAdjusting())
+			return;
+		
+		ListSelectionModel m = (ListSelectionModel)e.getSource();
+		if (m.isSelectionEmpty()) {
+			delbutton.setEnabled(false);
+		} else {
+			delbutton.setEnabled(true);
+		}
 	}
 	
 	class MyTableModel extends AbstractTableModel {
@@ -260,6 +294,7 @@ public class PreRootPI implements ComponentFactory, ActionListener {
 		}
 	}
 	
+	// Custom ComboBox renderer to add tool tips.
 	class MyComboBoxRenderer extends BasicComboBoxRenderer {
 		public Component getListCellRendererComponent(JList list,
 									Object value, int index,
@@ -290,13 +325,25 @@ public class PreRootPI implements ComponentFactory, ActionListener {
 			attr = pi.getPseudoAttributes();
 			if (attr == null || attr.length < 2) {
 				// throw
+				// what about: string[0] = text if the PI has any
 				attr = new String[] { "???", "???" };
 			}
 		}
+		private void update() {
+			// per Hussein, the only safe thing to do is
+			// to delete the current node and create a new
+			// one, to not confuse document listeners.
+			Tree document = (Tree)rootElement.document();
+
+			ProcessingInstruction newpi = new ProcessingInstruction("rfc");
+			newpi.setPseudoAttributes(attr);
+			document.replaceChild(pi, newpi);
+			pi = newpi;
+		}			
 		public void setAttr(String s) {
 			if (!s.equals(attr[0])) {
 				attr[0] = s;
-				pi.setPseudoAttributes(attr);	// XXX todo: set document modified?
+				update();
 			}
 		}
 		public String getAttr() {
@@ -305,7 +352,7 @@ public class PreRootPI implements ComponentFactory, ActionListener {
 		public void setValue(String s) {
 			if (!s.equals(attr[1])) {
 				attr[1] = s;
-				pi.setPseudoAttributes(attr);
+				update();
 			}
 		}
 		public String getValue() {
