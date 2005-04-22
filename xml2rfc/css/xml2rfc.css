@@ -43,18 +43,17 @@ rfc::attribute() {
 	attribute-content-right: "] ";
 	font-size: 80%;
 }
-rfc::attribute(category),
-rfc::attribute(ipr) {
+rfc::attribute(category) {
 	show-attribute: always;
 }
+rfc::attribute(ipr) {
+	attribute-content-right: xpath('if(contains(@ipr, "3978"), "", "(The IETF will not accept drafts with\A non-3978 IPR after 6 May 2005)")') "] ";
+	show-attribute: always;
+	color: concatenate(xpath('if(contains(@ipr, "3978"), "", "red")'));
+}
 rfc:before {
-	/* to do:
-	     write java function to handle node-set of processing
-	     instructions, return something that renders better here (table?).
-	     Unfortunately, xxe is designed to edit documents starting
-             at the root node, so we can't edit these processing
-             instructions. */
-	content: xpath("if(/processing-instruction('rfc'), concat('[Processing instructions: ', join(/processing-instruction('rfc'), ', '), ']\A'), '')") "RFC metadata: " attributes();
+	display: block;
+	content: division(content(component("com.att.research.fenner.xmleditapp.xml2rfc.PreRootPI"), paragraph(content("RFC metadata: ", attributes()))));
 }
 rfc > front:before {
 	content: "RFC Front Matter";
@@ -145,7 +144,7 @@ date {
 }
 /*
  * Make all anchors editable if present.
- * Display "[not referenced]" if it's not the target of an xref.
+ * Display "[not referenced]" if it's not the target of an xref or iprExtract.
  * Display "[DUPLICATE ANCHOR]" if it's a duplicate of another anchor.
  * Make it all red if it's a reference element that's not referenced, or
  *  if it's a duplicate.
@@ -153,9 +152,9 @@ date {
 *::attribute(anchor) {
 	attribute-content-left: "[a:";
 	attribute-content-middle: text-field(attribute, anchor, columns, 10);
-	attribute-content-right: xpath('if(//xref[@target=current()/@anchor], "", "[not referenced] ")') xpath('if(count(//*[@anchor=current()/@anchor]) = 1, "", "[DUPLICATE ANCHOR] ")') "] ";
+	attribute-content-right: xpath('if(//xref[@target=current()/@anchor] or /rfc[@iprExtract=current()/@anchor], "", "[not referenced] ")') xpath('if(count(//*[@anchor=current()/@anchor]) = 1, "", "[DUPLICATE ANCHOR] ")') "] ";
 	show-attribute: when-added;
-	color: concatenate(xpath('if((local-name(.)!="reference" or //xref[@target=current()/@anchor]) and (count(//*[@anchor=current()/@anchor]) = 1),"purple","red")'));
+	color: concatenate(xpath('if((local-name(.)!="reference" or //xref[@target=current()/@anchor] or /rfc[@iprExtract=current()/@anchor]) and (count(//*[@anchor=current()/@anchor]) = 1),"purple","red")'));
 	font-size: 80%;
 }
 section {
