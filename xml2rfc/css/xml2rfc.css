@@ -29,6 +29,7 @@ rfc > back:before {
 	font-weight: bold;
 	text-align: center;
 	background-color: #ff9900;
+	content: "RFC " element-label() " Matter";
 }
 rfc,
 rfc > front,
@@ -54,15 +55,7 @@ rfc::attribute(ipr) {
 rfc:before {
 	display: block;
 	content: division(content(component("com.att.research.fenner.xmleditapp.xml2rfc.PreRootPI"), paragraph(content("RFC metadata: ", attributes()))));
-}
-rfc > front:before {
-	content: "RFC Front Matter";
-}
-rfc > middle:before {
-	content: "RFC Middle Matter";
-}
-rfc > back:before {
-	content: "RFC Back Matter";
+	padding: 2px 2px 0 2px;
 }
 rfc > front title {
 	font-size: 150%;
@@ -469,11 +462,9 @@ format::attribute() {
 reference format {
 	content: "Format " text-field(attribute, type, columns, 10) attributes();
 }
-reference title:before {
-	content: "Title: ";
-}
+reference title:before,
 reference annotation:before {
-	content: "Annotation: ";
+	content: element-label() ": ";
 }
 reference {
 	display: block;
