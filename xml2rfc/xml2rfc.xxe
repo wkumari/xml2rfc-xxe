@@ -33,7 +33,7 @@
   <css location="css/xml2rfc.css" name="xml2rfc"/>
 
   <!-- make sure that artwork is saved as CDATA.
-       Also, since xml2rfc doesn't support UTF-8, make sure
+       Also, since xml2rfc pre-1.29 doesn't support UTF-8, make sure
        that the file is saved in US-ASCII with non-ASCII characters
        entity-encoded. -->
   <saveOptions cdataSectionElements="artwork" encoding="US-ASCII"/>
@@ -41,7 +41,8 @@
   <!-- Template blank document adapted from xml2rfc distribution's
        contrib/new-draft.xml -->
 
-  <template location="new-draft.xml" name="New Internet-Draft"/>
+  <template location="new-draft.xml" name="Baker Sample Internet-Draft"/>
+  <template location="empty-draft.xml" name="Empty Internet-Draft"/>
 
   <!-- Bindings =========================================================== -->
 
@@ -154,7 +155,7 @@
 
   <command name="xml2rfc.preview">
     <process>
-      <!-- US-ASCII because xml2rfc doesn't support UTF-8, but does
+      <!-- US-ASCII because xml2rfc pre-1.29 doesn't support UTF-8, but does
            support entity-encoded characters -->
       <copyDocument to="__doc.xml" encoding="US-ASCII"/>
 
@@ -203,7 +204,7 @@
 
   <command name="xml2rfc.convertDoc">
     <process>
-      <!-- US-ASCII because xml2rfc doesn't support UTF-8, but does
+      <!-- US-ASCII because xml2rfc pre-1.29 doesn't support UTF-8, but does
            support entity-encoded characters -->
       <copyDocument to="__doc.xml" encoding="US-ASCII"/>
 
@@ -223,7 +224,7 @@
 
   <command name="xml2rfc.previewTXT">
     <process>
-      <!-- US-ASCII because xml2rfc doesn't support UTF-8, but does
+      <!-- US-ASCII because xml2rfc pre-1.29 doesn't support UTF-8, but does
            support entity-encoded characters -->
       <copyDocument to="__doc.xml" encoding="US-ASCII"/>
 
@@ -509,6 +510,21 @@
     </macro>
   </command>
 
+  <!-- copied from xxe documentation -->
+  <command name="xml2rfc.insertAfterAsParagraphs">
+    <macro trace="true">
+      <sequence> 
+        <command name="makeParagraphs" parameter="[blocks] %0" />
+        <command name="paste" parameter="after[implicitElement] %_" />
+      </sequence>
+    </macro>
+  </command>
+
+  <binding>
+    <keyPressed code="F7" />
+    <command name="insertAfterAsParagraphs" parameter="t" />
+  </binding>
+
   <menu label="XML2RFC" mnemonic="X">
     <!--On UNIX, preview requires to have Mozilla or Netscape in $PATH.-->
 
@@ -527,6 +543,9 @@
     <item command="xml2rfc.externalEdit" label="Edit in..."/>
 
     <item command="xml2rfc.checkIetfReferences" label="Check IETF References"/>
+
+    <item command="xml2rfc.insertAfterAsParagraphs" label="Insert as Paragraphs"
+	  parameter="t"/>
 
     <menu label="Convert">
       <menu label="...using xml.resource.org">
