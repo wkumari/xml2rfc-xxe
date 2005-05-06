@@ -38,11 +38,11 @@
        entity-encoded. -->
   <saveOptions cdataSectionElements="artwork" encoding="US-ASCII"/>
 
-  <!-- Template blank document adapted from xml2rfc distribution's
-       contrib/new-draft.xml -->
+  <!-- Template blank documents adapted from xml2rfc distribution's
+       contrib/fred.baker/new-draft.xml -->
 
-  <template location="new-draft.xml" name="Baker Sample Internet-Draft"/>
   <template location="empty-draft.xml" name="Empty Internet-Draft"/>
+  <template location="new-draft.xml" name="Baker Sample Internet-Draft"/>
 
   <!-- Bindings =========================================================== -->
 
@@ -68,6 +68,18 @@
     <command name="xml2rfc.joinOrDeleteChar" parameter="backwards"/>
   </binding>
 
+  <binding>
+    <keyPressed code="DOWN" modifiers="ctrl shift meta"/>
+
+    <command name="selectNode" parameter="extendToNextSiblingOrElement"/>
+  </binding>
+
+  <binding>
+    <keyPressed code="UP" modifiers="ctrl shift meta"/>
+
+    <command name="selectNode" parameter="extendToPreviousSiblingOrElement"/>
+  </binding>
+
   <command name="xml2rfc.splitOrInsertNewLine">
     <macro>
       <choice>
@@ -80,6 +92,62 @@
           <command name="split"/>
         </sequence>
       </choice>
+    </macro>
+  </command>
+
+  <binding>
+    <keyPressed code="F8"/>
+
+    <command name="xml2rfc.increaseSectionLevel"/>
+  </binding>
+
+  <command name="xml2rfc.increaseSectionLevel">
+    <macro undoable="true" trace="true">
+      <sequence>
+        <!-- to do: only allowed if preceding-sibling::section and
+	     preceding-sibling::section//section[position()=last()]
+	     != current() -->
+	<test expression="$implicitElement/ancestor-or-self::section[position()=1]/preceding-sibling::section[position()=1] and not($implicitElement/ancestor-or-self::section[position()=1]/preceding-sibling::section[position()=1]//section[position()=last()] = $implicitElement/ancestor-or-self::section[position()=1])"/>
+	<!-- select the section containing the cursor -->
+	<command name="selectNode" parameter="ancestorOrSelf[implicitElement] section"/>
+	<!-- find the previous sibling's last section (or content element)
+	     either we want //section[position()=last()] or if
+	     there is no section child, we want //*[position()=last()]
+	     I feel like this choice is a hack, to try the second pattern
+	     if the first one failed. -->
+	<set variable="anchor" context="$selected" expression="preceding-sibling::section[position()=1]//section[position()=last()]"/>
+	<choice>
+	  <sequence>
+	    <test expression="not($anchor)"/>
+	    <set variable="anchor" context="$selected" expression="preceding-sibling::section[position()=1]/*[position()=last()]"/>
+	  </sequence>
+	  <test expression="1"/>
+	</choice>
+	<!-- fail if this got no result -->
+	<test expression="$anchor"/>
+	<!-- cut it -->
+	<command name="cut"/>
+	<!-- select the previos sibling's last section -->
+	<set variable="selected" expression="$anchor"/>
+	<!-- paste it -->
+	<command name="paste" parameter="after"/>
+      </sequence>
+    </macro>
+  </command>
+
+  <command name="xml2rfc.convertToList">
+    <macro undoable="true">
+      <sequence>
+	<match context="$selected" pattern="t"/>
+	<!-- cut the selected elements -->
+	<command name="cut" />
+	<!-- insert a new list element where the elements were removed from -->
+	<command name="insert" parameter="into list"/>
+	<!-- select the implicitly created t item inside the list -->
+	<command name="selectNode" parameter="firstChild"/>
+	<!-- replace it with what was selected -->
+	<command name="paste" parameter="to"/>
+      </sequence>
     </macro>
   </command>
 
@@ -512,7 +580,7 @@
 
   <!-- copied from xxe documentation -->
   <command name="xml2rfc.insertAfterAsParagraphs">
-    <macro trace="true">
+    <macro>
       <sequence> 
         <command name="makeParagraphs" parameter="[blocks] %0" />
         <command name="paste" parameter="after[implicitElement] %_" />
@@ -526,8 +594,6 @@
   </binding>
 
   <menu label="XML2RFC" mnemonic="X">
-    <!--On UNIX, preview requires to have Mozilla or Netscape in $PATH.-->
-
     <item command="xml2rfc.preview" label="HTML Preview" mnemonic="v">
       <accelerator code="F5"/>
     </item>
@@ -544,8 +610,10 @@
 
     <item command="xml2rfc.checkIetfReferences" label="Check IETF References"/>
 
-    <item command="xml2rfc.insertAfterAsParagraphs" label="Insert as Paragraphs"
+    <item command="xml2rfc.insertAfterAsParagraphs" label="Paste as Paragraphs"
 	  parameter="t"/>
+
+    <item command="xml2rfc.convertToList" label="Convert Selected Paragraphs to List"/>
 
     <menu label="Convert">
       <menu label="...using xml.resource.org">
@@ -598,7 +666,12 @@
   </command>
 
   <command name="xml2rfc.addBlock">
-    <class>com.att.research.fenner.xmleditapp.xml2rfc.AddBlock</class>
+    <macro>
+      <choice>
+	<command name="insert" parameter="into %0"/>
+	<command name="insert" parameter="after[implicitElement] %0"/>
+      </choice>
+    </macro>
   </command>
 
   <toolBar>
@@ -638,10 +711,12 @@
       <command name="xml2rfc.addBlock" parameter="section"/>
     </button>
 
+    <!-- ??? - can insert <para> - should I write my own? -->
     <button icon="icons/decrsectlevel.gif" toolTip="Decrease section level">
       <command name="decrSectionLevel" param="section - t" />
     </button>
 
+    <!-- to do: option to be added after previous sibling's last child -->
     <button icon="icons/incrsectlevel.gif" toolTip="Increase section level">
       <command name="incrSectionLevel" param="section - t" />
     </button>
