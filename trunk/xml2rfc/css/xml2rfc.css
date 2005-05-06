@@ -242,7 +242,7 @@ eref::attribute(target) {
  */
 xref:after {
 	display: inline;
-	content: attributes() " [" xpath("if(//*[@anchor=current()/@target]/@title, //*[@anchor=current()/@target]/@title, if(//*[@anchor=current()/@target]/front/title, //*[@anchor=current()/@target]/front/title, if(//*[@anchor=current()/@target], 'ok', if(//processing-instruction('rfc')[starts-with(normalize-space(.),'include=') and substring(normalize-space(.), 10, 10)='reference.' and ((starts-with(current()/@target, 'RFC') and substring-after(substring(normalize-space(.), 20, string-length(normalize-space(.))-20), 'RFC.')=substring-after(current()/@target, 'RFC')) or (starts-with(current()/@target, 'RFC')=false and substring(normalize-space(.), 20, string-length(normalize-space(.))-20)=current()/@target))], 'included', '(not found)'))))") "]";
+	content: attributes() " [" xpath("if(id(@target)/@title, id(@target)/@title, id(@target)/front/title, id(@target)/front/title, id(@target), 'ok', //processing-instruction('rfc')[starts-with(normalize-space(.),'include=') and substring(normalize-space(.), 10, 10)='reference.' and ((starts-with(current()/@target, 'RFC') and substring-after(substring(normalize-space(.), 20, string-length(normalize-space(.))-20), 'RFC.')=substring-after(current()/@target, 'RFC')) or (starts-with(current()/@target, 'RFC')=false and substring(normalize-space(.), 20, string-length(normalize-space(.))-20)=current()/@target))], 'included', '(not found)')") "]";
 	color: purple;
 }
 eref:after {
@@ -425,6 +425,11 @@ figure artwork {
 	background-color: #ffffcc;
 	/* can we display a vertical line at 70 characters? */
 }
+preamble:before,
+postamble:before {
+	display: inline;
+	content: element-label() ": ";
+}
 
 back > references:before {
 	display: block;
@@ -507,8 +512,23 @@ texttable > ttcol {
 	font-weight: bold;
 	color: olive;
 }
+texttable > ttcol:before {
+	display: inline;
+	content: "  c" xpath("count(preceding-sibling::ttcol) + 1") ": ";
+}
 texttable > c {
 	display: table-cell;
+}
+texttable > c:before {
+	display: inline;
+	/* to do: come up with better way to fix the result of mod */
+	content:
+		"r" xpath("round((count(preceding-sibling::c) + 1) div count(../ttcol) + 0.49)")
+		"c" xpath("if((count(preceding-sibling::c) + 1) mod count(../ttcol) = 0, count(../ttcol), (count(preceding-sibling::c) + 1) mod count(../ttcol))")
+		": ";
+}
+texttable:after {
+	content: label(xpath, "if(count(c) mod count(ttcol), 'WARNING: incomplete table (number of <c> elements is not divisible by the number of <ttcol> elements)', '')");
 }
 /*
  to do:
