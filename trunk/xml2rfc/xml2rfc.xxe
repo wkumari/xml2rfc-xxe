@@ -38,6 +38,9 @@
        entity-encoded. -->
   <saveOptions cdataSectionElements="artwork" encoding="US-ASCII"/>
 
+  <!-- make sure that artwork is loaded with space preserved -->
+  <preserveSpace xmlns="" elements="artwork" />
+
   <!-- Template blank documents adapted from xml2rfc distribution's
        contrib/fred.baker/new-draft.xml -->
 
