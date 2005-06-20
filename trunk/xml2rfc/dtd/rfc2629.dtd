@@ -2,11 +2,11 @@
   revised DTD for the RFC document series, draft of 2004-04-04
   -->
 
-<!ENTITY % RFC2629ent SYSTEM "rfc2629.ent">
-%RFC2629ent;
 
 <!--
   Contents
+
+    Character entities
 
     DTD data types
 
@@ -18,6 +18,22 @@
 
     Back matter
   -->
+
+
+<!--
+  Character entities
+  -->
+
+
+<!ENTITY % rfc2629-xhtml
+         PUBLIC "-//IETF//ENTITIES XHTML subset for RFC 2629//EN"
+                "rfc2629-xhtml.ent">
+%rfc2629-xhtml;
+
+<!ENTITY % rfc2629-other
+         PUBLIC "-//IETF//ENTITIES Other for RFC 2629//EN"
+                "rfc2629-other.ent">
+%rfc2629-other;
 
 
 <!--
