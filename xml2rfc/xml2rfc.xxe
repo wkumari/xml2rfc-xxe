@@ -593,7 +593,7 @@
 
   <binding>
     <keyPressed code="F7" />
-    <command name="insertAfterAsParagraphs" parameter="t" />
+    <command name="xml2rfc.insertAfterAsParagraphs" parameter="t" />
   </binding>
 
   <menu label="XML2RFC" mnemonic="X">
