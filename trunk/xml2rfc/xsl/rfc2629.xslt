@@ -445,6 +445,19 @@
     2005-04-03  fenner@research.att.com
     
     Add RFC3978-style IPR statement support.
+
+    2005-04-11  julian.reschke@greenbytes.de
+    
+    Cleanup author display. hCard related fixes.
+    
+    2005-05-07  julian.reschke@greenbytes.de
+    
+    Minor fixes to allow change tracking in doc title.  Add experimental 
+    support for table border styles. CSS cleanup.
+    
+    2005-06-18  julian.reschke@greenbytes.de
+    
+    Implement missing support for references to texttables.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -830,7 +843,7 @@
       </span>
       <span class="adr vcardline">
         <xsl:if test="address/postal/street!=''">
-          <span class="street vcardline">
+          <span class="street Street-Address vcardline">
             <xsl:for-each select="address/postal/street">
               <xsl:value-of select="." />
             </xsl:for-each>
@@ -838,30 +851,30 @@
         </xsl:if>
         <xsl:if test="address/postal/city|address/postal/region|address/postal/code">
           <span class="vcardline">
-            <xsl:if test="address/postal/city"><span class="locality"><xsl:value-of select="address/postal/city" /></span>, </xsl:if>
-            <xsl:if test="address/postal/region"><span class="region"><xsl:value-of select="address/postal/region" /></span>&#160;</xsl:if>
-            <xsl:if test="address/postal/code"><span class="pcode"><xsl:value-of select="address/postal/code" /></span></xsl:if>
+            <xsl:if test="address/postal/city"><span class="Locality"><xsl:value-of select="address/postal/city" /></span>, </xsl:if>
+            <xsl:if test="address/postal/region"><span class="Region"><xsl:value-of select="address/postal/region" /></span>&#160;</xsl:if>
+            <xsl:if test="address/postal/code"><span class="Postal-Code"><xsl:value-of select="address/postal/code" /></span></xsl:if>
           </span>
         </xsl:if>
         <xsl:if test="address/postal/country">
-          <span class="country vcardline"><xsl:value-of select="address/postal/country" /></span>
+          <span class="Country vcardline"><xsl:value-of select="address/postal/country" /></span>
         </xsl:if>
       </span>
       <xsl:if test="address/phone">
         <span class="vcardline">
-          <b>Phone:&#0160;</b>
+          <xsl:text>Phone: </xsl:text>
           <a href="tel:{translate(address/phone,' ','')}"><span class="tel"><span class="voice"><xsl:value-of select="address/phone" /></span></span></a>
         </span>
       </xsl:if>
       <xsl:if test="address/facsimile">
         <span class="vcardline">
-          <b>Fax:&#0160;</b>
+          <xsl:text>Fax: </xsl:text>
           <a href="fax:{translate(address/facsimile,' ','')}"><span class="tel"><span class="fax"><xsl:value-of select="address/facsimile" /></span></span></a>
         </span>
       </xsl:if>
       <xsl:if test="address/email">
         <span class="vcardline">
-        <b>EMail:&#0160;</b>
+        <xsl:text>EMail: </xsl:text>
         <a>
           <xsl:if test="$xml2rfc-linkmailto!='no'">
             <xsl:attribute name="href">mailto:<xsl:value-of select="address/email" /></xsl:attribute>
@@ -872,7 +885,7 @@
       </xsl:if>
       <xsl:if test="address/uri">
         <span class="vcardline">
-          <b>URI:&#0160;</b>
+          <xsl:text>URI: </xsl:text>
           <a href="{address/uri}" class="url"><xsl:value-of select="address/uri" /></a>
         </span>
       </xsl:if>
@@ -945,16 +958,10 @@
   <xsl:if test="@anchor!=''">
     <div id="{@anchor}"/>
   </xsl:if>
-  <xsl:choose>
-    <xsl:when test="@title!='' or @anchor!=''">
-      <xsl:variable name="n"><xsl:number level="any" count="figure[@title!='' or @anchor!='']" /></xsl:variable>
-      <div id="{$anchor-prefix}.figure.{$n}" />
-    </xsl:when>
-    <xsl:otherwise>
-      <xsl:variable name="n"><xsl:number level="any" count="figure[not(@title!='' or @anchor!='')]" /></xsl:variable>
-      <div id="{$anchor-prefix}.figure.u.{$n}" />
-    </xsl:otherwise>
-  </xsl:choose>
+  <xsl:variable name="anch">
+    <xsl:call-template name="get-figure-anchor"/>
+  </xsl:variable>
+  <div id="{$anch}" />
   <xsl:apply-templates />
   <xsl:if test="@title!='' or @anchor!=''">
     <xsl:variable name="n"><xsl:number level="any" count="figure[@title!='' or @anchor!='']" /></xsl:variable>
@@ -1001,9 +1008,8 @@
   </xsl:if>
     
   <p class="title">
-    <br/>
     <!-- main title -->
-    <xsl:value-of select="title"/>
+    <xsl:apply-templates select="title"/>
     <xsl:if test="/rfc/@docName">
       <br/>
       <span class="filename"><xsl:value-of select="/rfc/@docName"/></span>
@@ -1416,7 +1422,9 @@
 
   <html lang="{$lang}">
     <head>
-      <title><xsl:value-of select="front/title" /></title>
+      <title>
+        <xsl:apply-templates select="front/title" mode="get-text-content" />
+      </title>
       <style type="text/css" title="Xml2Rfc (sans serif)">
         <xsl:call-template name="insertCss" />
       </style>
@@ -1545,6 +1553,10 @@
     <xsl:apply-templates select="following-sibling::node()[1]" mode="t-content2" />
   </xsl:if>
 </xsl:template>               
+
+<xsl:template match="title">
+  <xsl:apply-templates />
+</xsl:template>
 
 <xsl:template name="insertTitle">
   <xsl:choose>
@@ -1739,6 +1751,24 @@
           </xsl:when>
           <xsl:otherwise>
             <xsl:value-of select="normalize-space(concat('Figure&#160;',$figcnt))"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
+      <xsl:when test="local-name($node)='texttable'">
+        <xsl:variable name="tabcnt">
+          <xsl:for-each select="$node">
+            <xsl:number level="any" count="texttable[@title!='' or @anchor!='']" />
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:choose>
+          <xsl:when test="@format='counter'">
+            <xsl:value-of select="$tabcnt" />
+          </xsl:when>
+          <xsl:when test="@format='title'">
+            <xsl:value-of select="$node/@title" />
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="normalize-space(concat('Table&#160;',$tabcnt))"/>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
@@ -2195,6 +2225,37 @@ pre {
 table {
   margin-left: 2em;
 }
+<xsl:if test="//texttable">
+table.tt {
+  vertical-align: top;
+}
+table.full {
+  border-style: outset;
+  border-width: 1px;
+}
+table.headers {
+  border-style: outset;
+  border-width: 1px;
+}
+table.tt td {
+  vertical-align: top;
+}
+table.full td {
+  border-style: inset;
+  border-width: 1px;
+}
+table.tt th {
+  vertical-align: top;
+}
+table.full th {
+  border-style: inset;
+  border-width: 1px;
+}
+table.headers th {
+  border-style: none none inset none;
+  border-width: 1px;
+}
+</xsl:if>
 table.header {
   width: 95%;
   font-size: 10pt;
@@ -2266,16 +2327,14 @@ li.indline1 {
 .comment {
   background-color: yellow;
 }
+<xsl:if test="$xml2rfc-editing='yes'">
 .editingmark {
   background-color: khaki;
 }
+</xsl:if>
 .error {
   font-size: 14pt;
   background-color: red;
-}
-.toowide {
-  color: red;
-  font-weight: bold;
 }
 .title {
   color: #990000;
@@ -2283,6 +2342,7 @@ li.indline1 {
   line-height: 18pt;
   font-weight: bold;
   text-align: center;
+  margin-top: 36pt;
 }
 .figure {
   font-weight: bold;
@@ -2300,6 +2360,7 @@ li.indline1 {
   font-size: 14pt;
   background-color: yellow;
 }
+<xsl:if test="//ed:del|//ed:replace|//ed:ins">
 del {
   color: red;
   text-decoration: line-through;
@@ -2316,24 +2377,21 @@ ins {
   color: green;
   text-decoration: underline;
 }
-.pn {
-  position: absolute;
-  color: white;
-}
-.pn:hover {
-  color: #C8A8FF;
+</xsl:if>
+.fn {
+  font-weight: bold;
 }
 .vcardline {
   display: block;
 }
 
+<xsl:if test="//ed:issue">
 table.openissue {
   background-color: khaki;
   border-width: thin;
   border-style: solid;
   border-color: black;
 }
-
 table.closedissue {
   background-color: white;
   border-width: thin;
@@ -2341,7 +2399,6 @@ table.closedissue {
   border-color: gray;
   color: gray; 
 }
-
 .closed-issue {
   border: solid;
   border-width: thin;
@@ -2349,7 +2406,6 @@ table.closedissue {
   font-size: smaller;
   font-weight: bold;
 }
-
 .open-issue {
   border: solid;
   border-width: thin;
@@ -2357,7 +2413,6 @@ table.closedissue {
   font-size: smaller;
   font-weight: bold;
 }
-
 .editor-issue {
   border: solid;
   border-width: thin;
@@ -2365,6 +2420,7 @@ table.closedissue {
   font-size: smaller;
   font-weight: bold;
 }
+</xsl:if>
 
 @media print {
   .noprint {
@@ -3303,14 +3359,10 @@ table.closedissue {
     <xsl:variable name="resolves" select="."/>
     <!-- need the right context node for proper numbering -->
     <xsl:variable name="count"><xsl:for-each select=".."><xsl:number level="any" count="*[@ed:resolves=$resolves or ed:resolves=$resolves]" /></xsl:for-each></xsl:variable>
-    <a>
-      <xsl:attribute name="name">
-        <xsl:value-of select="$anchor-prefix"/>.change.<xsl:value-of select="$resolves"/>.<xsl:value-of select="$count" />
-      </xsl:attribute>
-    </a>
+    <xsl:variable name="id"><xsl:value-of select="$anchor-prefix"/>.change.<xsl:value-of select="$resolves"/>.<xsl:value-of select="$count" /></xsl:variable>
     <xsl:choose>
-      <xsl:when test="not(ancestor::t)">
-        <div style="float: left;">
+      <xsl:when test="not(ancestor::t) and not(ancestor::title)">
+        <div style="float: left;" id="{$id}">
           <a class="open-issue" href="#{$anchor-prefix}.issue.{$resolves}" title="resolves: {$resolves}">
             <xsl:choose>
               <xsl:when test="//ed:issue[@name=$resolves and @status='closed']">
@@ -3329,7 +3381,7 @@ table.closedissue {
         </div>
       </xsl:when>
       <xsl:otherwise>
-        <a class="open-issue" href="#{$anchor-prefix}.issue.{$resolves}" title="resolves: {$resolves}">
+        <a class="open-issue" href="#{$anchor-prefix}.issue.{$resolves}" title="resolves: {$resolves}" id="{$id}">
           <xsl:choose>
             <xsl:when test="//ed:issue[@name=$resolves and @status='closed']">
               <xsl:attribute name="class">closed-issue noprint</xsl:attribute>
@@ -3434,37 +3486,62 @@ table.closedissue {
 <!-- table formatting -->
 
 <xsl:template match="texttable">
-  <xsl:apply-templates select="preamble" />
-  <table summary="{preamble}" border="1" cellpadding="3" cellspacing="0">
-    <thead>
-      <tr>
-        <xsl:apply-templates select="ttcol" />
-      </tr>
-    </thead>
-    <tbody>
-      <xsl:variable name="columns" select="count(ttcol)" />
-      <xsl:for-each select="c[(position() mod $columns) = 1]">
+
+  <xsl:variable name="anch">
+    <xsl:call-template name="get-table-anchor"/>
+  </xsl:variable>
+
+  <div id="{$anch}">
+    <xsl:if test="@anchor!=''">
+      <div id="{@anchor}"/>
+    </xsl:if>
+    <xsl:apply-templates select="preamble" />
+    <xsl:variable name="style">
+      <xsl:text>tt </xsl:text>
+      <xsl:choose>
+        <xsl:when test="@style!=''">
+          <xsl:value-of select="@style"/>
+        </xsl:when>
+        <xsl:otherwise>full</xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
+    <table summary="{preamble}" class="{$style}" cellpadding="3" cellspacing="0">
+      <thead>
         <tr>
-          <xsl:for-each select=". | following-sibling::c[position() &lt; $columns]">
-            <td class="top">
-              <xsl:variable name="pos" select="position()" />
-              <xsl:variable name="col" select="../ttcol[position() = $pos]" />
-              <xsl:if test="$col/@align">
-                <xsl:attribute name="style">text-align: <xsl:value-of select="$col/@align" />;</xsl:attribute>
-              </xsl:if>
-              <xsl:apply-templates select="node()" />
-              <xsl:text>&#0160;</xsl:text>
-            </td>
-          </xsl:for-each>
+          <xsl:apply-templates select="ttcol" />
         </tr>
-      </xsl:for-each>
-    </tbody>
-  </table>
-  <xsl:apply-templates select="postamble" />
+      </thead>
+      <tbody>
+        <xsl:variable name="columns" select="count(ttcol)" />
+        <xsl:for-each select="c[(position() mod $columns) = 1]">
+          <tr>
+            <xsl:for-each select=". | following-sibling::c[position() &lt; $columns]">
+              <td>
+                <xsl:variable name="pos" select="position()" />
+                <xsl:variable name="col" select="../ttcol[position() = $pos]" />
+                <xsl:if test="$col/@align">
+                  <xsl:attribute name="style">text-align: <xsl:value-of select="$col/@align" />;</xsl:attribute>
+                </xsl:if>
+                <xsl:apply-templates select="node()" />
+                <xsl:text>&#160;</xsl:text>
+              </td>
+            </xsl:for-each>
+          </tr>
+        </xsl:for-each>
+      </tbody>
+    </table>
+    <xsl:apply-templates select="postamble" />
+
+    <xsl:if test="@title!='' or @anchor!=''">
+      <xsl:variable name="n"><xsl:number level="any" count="texttable[@title!='' or @anchor!='']" /></xsl:variable>
+      <p class="figure">Table <xsl:value-of select="$n"/><xsl:if test="@title!=''">: <xsl:value-of select="@title" /></xsl:if></p>
+    </xsl:if>
+  </div>
+  
 </xsl:template>
 
 <xsl:template match="ttcol">
-  <th valign="top">
+  <th>
     <xsl:variable name="width">
       <xsl:if test="@width">width: <xsl:value-of select="@width" />; </xsl:if>
     </xsl:variable>
@@ -3640,7 +3717,7 @@ table.closedissue {
       <xsl:value-of select="/rfc/front/title/@abbrev" />
     </xsl:when>
     <xsl:otherwise>
-      <xsl:value-of select="/rfc/front/title" />
+      <xsl:apply-templates select="/rfc/front/title" mode="get-text-content" />
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -3658,11 +3735,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.218 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.218 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.224 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.224 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/04/03 17:15:14 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/04/03 17:15:14 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/06/18 07:59:14 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/06/18 07:59:14 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
@@ -3735,6 +3812,34 @@ table.closedissue {
   </xsl:choose>
 </xsl:template>
 
+<xsl:template name="get-table-anchor">
+  <xsl:value-of select="$anchor-prefix"/>
+  <xsl:text>.table.</xsl:text>
+  <xsl:choose>
+    <xsl:when test="@title!='' or @anchor!=''">
+      <xsl:number level="any" count="texttable[@title!='' or @anchor!='']" />
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:text>u.</xsl:text>
+      <xsl:number level="any" count="texttable[not(@title!='' or @anchor!='')]" />
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<xsl:template name="get-figure-anchor">
+  <xsl:value-of select="$anchor-prefix"/>
+  <xsl:text>.figure.</xsl:text>
+  <xsl:choose>
+    <xsl:when test="@title!='' or @anchor!=''">
+      <xsl:number level="any" count="figure[@title!='' or @anchor!='']" />
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:text>u.</xsl:text>
+      <xsl:number level="any" count="figure[not(@title!='' or @anchor!='')]" />
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template name="insert-conditional-pagebreak">
   <xsl:if test="$xml2rfc-compact!='yes'">
     <xsl:attribute name="class">np</xsl:attribute>
@@ -3746,5 +3851,19 @@ table.closedissue {
     <hr class="noprint" />
   </xsl:if>
 </xsl:template>
+
+<!-- get text content from marked-up text -->
+
+<xsl:template match="text()" mode="get-text-content">
+  <xsl:value-of select="."/>
+</xsl:template>
+
+<xsl:template match="*" mode="get-text-content">
+  <xsl:apply-templates mode="get-text-content"/>
+</xsl:template>
+
+<xsl:template match="ed:del" mode="get-text-content">
+</xsl:template>
+
 
 </xsl:stylesheet>

@@ -66,6 +66,15 @@
     2005-02-05  julian.reschke@greenbytes.de
     
     Bring in sync with cosmetic changes in rfc2629.xslt.
+    
+    2005-05-07  julian.reschke@greenbytes.de
+    
+    Minor fix for change tracking in document title.  Support for table
+    styles.
+    
+    2005-06-18  julian.reschke@greenbytes.de
+    
+    Fix references to tables.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -244,21 +253,16 @@
 
 
 <xsl:template match="figure">
-  <fo:block space-before=".5em" space-after=".5em">
+
+  <xsl:variable name="anch">
+    <xsl:call-template name="get-figure-anchor"/>
+  </xsl:variable>
+
+  <fo:block space-before=".5em" space-after=".5em" id="{$anch}">
     <xsl:if test="not(ancestor::t)">
       <xsl:attribute name="start-indent">2em</xsl:attribute>
     </xsl:if>
     <xsl:call-template name="add-anchor"/>
-    <xsl:choose>
-      <xsl:when test="@title!='' or @anchor!=''">
-        <xsl:variable name="n"><xsl:number level="any" count="figure[@title!='' or @anchor!='']" /></xsl:variable>
-        <fo:block id="{$anchor-prefix}.figure.{$n}" />
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:variable name="n"><xsl:number level="any" count="figure[not(@title!='' or @anchor!='')]" /></xsl:variable>
-        <fo:block id="{$anchor-prefix}.figure.u.{$n}" />
-      </xsl:otherwise>
-    </xsl:choose>
   	<xsl:apply-templates />
     <xsl:if test="@title!='' or @anchor!=''">
       <xsl:variable name="n"><xsl:number level="any" count="figure[@title!='' or @anchor!='']" /></xsl:variable>
@@ -313,7 +317,7 @@
   </xsl:if>
       
   <fo:block text-align="center" font-weight="bold" font-size="18pt" space-before="3em" space-after="3em">
-    <xsl:value-of select="/rfc/front/title" />
+    <xsl:apply-templates select="/rfc/front/title" mode="get-text-content" />
     <xsl:if test="/rfc/@docName">
       <fo:block font-size="15pt"><xsl:value-of select="/rfc/@docName" /></fo:block>
     </xsl:if>
@@ -986,6 +990,24 @@
           </xsl:otherwise>
         </xsl:choose>
       </xsl:when>
+      <xsl:when test="local-name($node)='texttable'">
+        <xsl:variable name="tabcnt">
+          <xsl:for-each select="$node">
+            <xsl:number level="any" count="texttable[@title!='' or @anchor!='']" />
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:choose>
+          <xsl:when test="@format='counter'">
+            <xsl:value-of select="$tabcnt" />
+          </xsl:when>
+          <xsl:when test="@format='title'">
+            <xsl:value-of select="$node/@title" />
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="normalize-space(concat('Table&#160;',$tabcnt))"/>
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:when>
       <xsl:otherwise>
         <xsl:call-template name="referencename"><xsl:with-param name="node" select="/rfc/back/references//reference[@anchor=$target]" /></xsl:call-template>
       </xsl:otherwise>
@@ -1156,13 +1178,6 @@
 <xsl:template match="back" mode="toc">
 
   <!-- <xsl:apply-templates select="references" mode="toc" /> -->
-
-  <xsl:if test="//cref and $xml2rfc-comments='yes' and $xml2rfc-inline!='yes'">
-    <xsl:call-template name="insert-toc-line">
-      <xsl:with-param name="target" select="concat($anchor-prefix,'.comments')"/>
-      <xsl:with-param name="title" select="'Editorial Comments'"/>
-    </xsl:call-template>
-  </xsl:if>
 
   <xsl:if test="$xml2rfc-ext-authors-section!='end'">
     <xsl:apply-templates select="/rfc/front" mode="toc" />
@@ -1659,8 +1674,39 @@
   </xsl:choose>
 </xsl:template>
 
+<!--
+<xsl:attribute-set name="all-borders-solid">
+  <xsl:attribute name="border-left-style">solid</xsl:attribute>
+  <xsl:attribute name="border-right-style">solid</xsl:attribute>
+  <xsl:attribute name="border-top-style">solid</xsl:attribute>
+  <xsl:attribute name="border-bottom-style">solid</xsl:attribute>
+  <xsl:attribute name="border-left-width">thin</xsl:attribute>
+  <xsl:attribute name="border-right-width">thin</xsl:attribute>
+  <xsl:attribute name="border-top-width">thin</xsl:attribute>
+  <xsl:attribute name="border-bottom-width">thin</xsl:attribute>
+  <xsl:attribute name="padding-left">0.5em</xsl:attribute>
+  <xsl:attribute name="padding-right">0.5em</xsl:attribute>
+</xsl:attribute-set>
+
+-->
+
 <xsl:template match="texttable">
-  <fo:block space-before=".5em" space-after=".5em" start-indent="2em">
+
+  <xsl:variable name="style">
+    <xsl:choose>
+      <xsl:when test="@style!=''">
+        <xsl:value-of select="@style"/>
+      </xsl:when>
+      <xsl:otherwise>full</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+
+  <xsl:variable name="anch">
+    <xsl:call-template name="get-table-anchor"/>
+  </xsl:variable>
+
+  <fo:block space-before=".5em" space-after=".5em" start-indent="2em" id="{$anch}">
+    <xsl:call-template name="add-anchor"/>
     <xsl:apply-templates select="preamble" />
     <fo:table>
       <xsl:variable name="total-specified">
@@ -1680,17 +1726,39 @@
           </xsl:choose>
         </fo:table-column>
       </xsl:for-each>
-      <fo:table-header space-after=".5em">
+      <fo:table-header start-indent="0em" space-after=".5em">
         <fo:table-row>
           <xsl:apply-templates select="ttcol" />
         </fo:table-row>
       </fo:table-header>
-      <fo:table-body>
+      <fo:table-body start-indent="0em">
+        <xsl:if test="$style='full' or $style='headers'">
+          <xsl:attribute name="border-left-style">solid</xsl:attribute>
+          <xsl:attribute name="border-right-style">solid</xsl:attribute>
+          <xsl:attribute name="border-top-style">solid</xsl:attribute>
+          <xsl:attribute name="border-bottom-style">solid</xsl:attribute>
+          <xsl:attribute name="border-left-width">thin</xsl:attribute>
+          <xsl:attribute name="border-right-width">thin</xsl:attribute>
+          <xsl:attribute name="border-top-width">thin</xsl:attribute>
+          <xsl:attribute name="border-bottom-width">thin</xsl:attribute>
+        </xsl:if>
         <xsl:variable name="columns" select="count(ttcol)" />
         <xsl:for-each select="c[(position() mod $columns) = 1]">
           <fo:table-row>
             <xsl:for-each select=". | following-sibling::c[position() &lt; $columns]">
-              <fo:table-cell>
+              <fo:table-cell padding-left="0.5em" padding-right="0.5em">
+                <xsl:if test="$style='full' or $style='headers'">
+                  <xsl:attribute name="border-left-style">solid</xsl:attribute>
+                  <xsl:attribute name="border-right-style">solid</xsl:attribute>
+                  <xsl:attribute name="border-left-width">thin</xsl:attribute>
+                  <xsl:attribute name="border-right-width">thin</xsl:attribute>
+                </xsl:if>
+                <xsl:if test="$style='full'">
+                  <xsl:attribute name="border-top-style">solid</xsl:attribute>
+                  <xsl:attribute name="border-bottom-style">solid</xsl:attribute>
+                  <xsl:attribute name="border-top-width">thin</xsl:attribute>
+                  <xsl:attribute name="border-bottom-width">thin</xsl:attribute>
+                </xsl:if>
                 <fo:block>
                   <xsl:variable name="pos" select="position()" />
                   <xsl:variable name="col" select="../ttcol[position() = $pos]" />
@@ -1698,7 +1766,6 @@
                     <xsl:attribute name="text-align"><xsl:value-of select="$col/@align" /></xsl:attribute>
                   </xsl:if>
                   <xsl:apply-templates select="node()" />
-                  &#0160;
                 </fo:block>
               </fo:table-cell>
             </xsl:for-each>
@@ -1707,11 +1774,34 @@
       </fo:table-body>
     </fo:table>
     <xsl:apply-templates select="postamble" />
+    <xsl:if test="@title!='' or @anchor!=''">
+      <xsl:variable name="n"><xsl:number level="any" count="texttable[@title!='' or @anchor!='']" /></xsl:variable>
+      <fo:block text-align="center" space-before="1em" space-after="1em">Table <xsl:value-of select="$n"/><xsl:if test="@title!=''">: <xsl:value-of select="@title" /></xsl:if></fo:block>
+    </xsl:if>
   </fo:block>
 </xsl:template>
 
 <xsl:template match="ttcol">
-  <fo:table-cell>
+  <xsl:variable name="style">
+    <xsl:choose>
+      <xsl:when test="../@style!=''">
+        <xsl:value-of select="../@style"/>
+      </xsl:when>
+      <xsl:otherwise>full</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+
+  <fo:table-cell padding-left="0.5em" padding-right="0.5em">
+    <xsl:if test="$style='full' or $style='headers'">
+      <xsl:attribute name="border-left-style">solid</xsl:attribute>
+      <xsl:attribute name="border-right-style">solid</xsl:attribute>
+      <xsl:attribute name="border-top-style">solid</xsl:attribute>
+      <xsl:attribute name="border-bottom-style">solid</xsl:attribute>
+      <xsl:attribute name="border-left-width">thin</xsl:attribute>
+      <xsl:attribute name="border-right-width">thin</xsl:attribute>
+      <xsl:attribute name="border-top-width">thin</xsl:attribute>
+      <xsl:attribute name="border-bottom-width">thin</xsl:attribute>
+    </xsl:if>
 <!--    <xsl:if test="@width">
       <xsl:attribute name="width"><xsl:value-of select="@width" /></xsl:attribute>
     </xsl:if> -->
