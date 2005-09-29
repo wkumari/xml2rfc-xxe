@@ -155,12 +155,15 @@ section {
 	not-collapsible-head: 1;
 	margin: 0.33em 1em;
 }
-section::attribute(toc) {
-	attribute-content-left: "[toc:";
+section::attribute {
+	attribute-content-left: "[" attribute-label() ":";
 	attribute-content-middle: value-editor(attribute, attribute());
 	attribute-content-right: "] ";
 	color: #ff9900;
 	font-size: 80%;
+}
+section::attribute(title) {
+	show-attribute: never;
 }
 /* Handle 5-level-embedded sections; anything beyond 5 will be marked
  * as failing.  Too bad "counters" doesn't work. */
@@ -223,10 +226,16 @@ xref, eref {
 xref::attribute(target),
 eref::attribute(target) {
 	attribute-content-left: " [" element-label() " to:";
-	attribute-content-middle: value-editor(attribute, attribute());
-	attribute-content-right: "]";
 	show-attribute: always;
 	color: purple;
+}
+xref::attribute,
+eref::attribute {
+	attribute-content-left: " [" attribute-label();
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "]";
+	show-attribute: when-added;
+	color: #ff9900;
 	font-size: 80%;
 }
 /*
