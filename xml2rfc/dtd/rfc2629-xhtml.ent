@@ -125,19 +125,24 @@
 <!ENTITY Yuml    "&#376;"><!-- U+0178 LATIN CAPITAL LETTER Y WITH DIAERESIS      ("Y")                -->
 
 <!-- Other Unicode (including some characters from the windows-1252 repertoire) -->
+<!ENTITY fnof    "&#402;"><!-- U+0192 LATIN SMALL LETTER F WITH HOOK             ("f")                -->
+<!ENTITY tilde   "&#732;"><!-- U+02DC SMALL TILDE                                ("~")                -->
 <!ENTITY ensp   "&#8194;"><!-- U+2002 EN SPACE                                   (" ")                -->
 <!ENTITY emsp   "&#8195;"><!-- U+2003 EM SPACE                                   (" ")                -->
 <!ENTITY thinsp "&#8201;"><!-- U+2009 THIN SPACE                                 (" ")                -->
 <!ENTITY ndash  "&#8211;"><!-- U+2013 EN DASH                                    ("-")                -->
-<!ENTITY mdash  "&#8212;"><!-- U+2014 EM DASH                                    ("-\u+002D")               -->
+<!ENTITY mdash  "&#8212;"><!-- U+2014 EM DASH                                    ("-\u002D")          -->
 <!ENTITY lsquo  "&#8216;"><!-- U+2018 LEFT SINGLE QUOTATION MARK                 ("'")                -->
 <!ENTITY rsquo  "&#8217;"><!-- U+2019 RIGHT SINGLE QUOTATION MARK                ("'")                -->
+<!ENTITY sbquo  "&#8218;"><!-- U+201A SINGLE LOW-9 QUOTATION MARK                ("'")                -->
 <!ENTITY ldquo  "&#8220;"><!-- U+201C LEFT DOUBLE QUOTATION MARK                 ('"')                -->
 <!ENTITY rdquo  "&#8221;"><!-- U+201D RIGHT DOUBLE QUOTATION MARK                ('"')                -->
+<!ENTITY bdquo  "&#8222;"><!-- U+201E DOUBLE LOW-9 QUOTATION MARK                ('"')                -->
 <!ENTITY dagger "&#8224;"><!-- U+2020 DAGGER                                     ("*!*")              -->
 <!ENTITY Dagger "&#8225;"><!-- U+2021 DOUBLE DAGGER                              ("*!!*")             -->
 <!ENTITY bull   "&#8226;"><!-- U+2022 BULLET                                     ("o")                -->
 <!ENTITY hellip "&#8230;"><!-- U+2026 HORIZONTAL ELLIPSIS                        ("...")              -->
+<!ENTITY permil "&#8242;"><!-- U+2030 PER MILLE SIGN                             ("[/1000]")          -->
 <!ENTITY prime  "&#8242;"><!-- U+2032 PRIME                                      ("'")                -->
 <!ENTITY Prime  "&#8243;"><!-- U+2033 DOUBLE PRIME                               ('"')                -->
 <!ENTITY lsaquo "&#8249;"><!-- U+2039 SINGLE LEFT-POINTING ANGLE QUOTATION MARK  ("<")                -->
@@ -145,8 +150,8 @@
 <!ENTITY frasl  "&#8260;"><!-- U+2044 FRACTION SLASH                             ("/")                -->
 <!ENTITY euro   "&#8364;"><!-- U+20AC EURO SIGN                                  ("EUR")              -->
 <!ENTITY trade  "&#8482;"><!-- U+2122 TRADE MARK SIGN                            ("[TM]")             -->
-<!ENTITY larr   "&#8592;"><!-- U+2190 LEFTWARDS ARROW                            ("<-\u+002D")              -->
-<!ENTITY rarr   "&#8594;"><!-- U+2192 RIGHTWARDS ARROW                           ("-\u+002D\u003E")         -->
+<!ENTITY larr   "&#8592;"><!-- U+2190 LEFTWARDS ARROW                            ("<-\u002D")         -->
+<!ENTITY rarr   "&#8594;"><!-- U+2192 RIGHTWARDS ARROW                           ("\u002D->")         -->
 <!ENTITY harr   "&#8596;"><!-- U+2194 LEFT RIGHT ARROW                           ("<->")              -->
 <!ENTITY lArr   "&#8656;"><!-- U+21D0 LEFTWARDS DOUBLE ARROW                     ("<==")              -->
 <!ENTITY rArr   "&#8658;"><!-- U+21D2 RIGHTWARDS DOUBLE ARROW                    ("==>")              -->
