@@ -644,11 +644,6 @@
     </macro>
   </command>
 
-  <binding>
-    <keyPressed code="F7" />
-    <command name="xml2rfc.insertAfterAsParagraphs" parameter="t" />
-  </binding>
-
   <menu label="XML2RFC" mnemonic="X">
     <item command="xml2rfc.preview" label="HTML Preview" mnemonic="v">
       <accelerator code="F5"/>
