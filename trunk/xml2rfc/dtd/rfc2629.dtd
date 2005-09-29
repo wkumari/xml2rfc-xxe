@@ -128,7 +128,8 @@
  
 <!ELEMENT address     (postal?,phone?,facsimile?,email?,uri?)>
 
-<!-- at most one of each the city, region, code, and country
+<!-- this content model should be more strict:
+     at most one of each the city, region, code, and country
      elements may be present -->
 <!ELEMENT postal      (street+,(city|region|code|country)*)>
 <!ELEMENT street      (%CTEXT;)>
