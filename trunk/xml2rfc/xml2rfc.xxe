@@ -39,7 +39,7 @@
   <saveOptions cdataSectionElements="artwork" encoding="US-ASCII"/>
 
   <!-- make sure that artwork is loaded with space preserved -->
-  <preserveSpace xmlns="" elements="artwork" />
+  <cfg:preserveSpace xmlns="" elements="artwork" />
 
   <!-- Template blank documents adapted from xml2rfc distribution's
        contrib/fred.baker/new-draft.xml -->
@@ -57,6 +57,12 @@
     <keyPressed code="ENTER"/>
 
     <command name="xml2rfc.splitOrInsertNewLine"/>
+  </binding>
+
+  <binding>
+    <keyPressed code="ENTER" modifiers="shift"/>
+
+    <command name="xml2rfc.insertSectionSameLevel"/>
   </binding>
 
   <binding>
@@ -83,6 +89,24 @@
     <command name="selectNode" parameter="extendToPreviousSiblingOrElement"/>
   </binding>
 
+  <binding>
+    <keyPressed code="EQUALS" modifiers="shift meta"/>
+
+    <command name="xml2rfc.incrSectionLevel"/>
+  </binding>
+
+  <binding>
+    <keyPressed code="EQUALS" modifiers="meta"/>
+
+    <command name="xml2rfc.incrSectionLevel"/>
+  </binding>
+
+  <binding>
+    <keyPressed code="MINUS" modifiers="meta"/>
+
+    <command name="xml2rfc.decrSectionLevel"/>
+  </binding>
+
   <command name="xml2rfc.splitOrInsertNewLine">
     <macro>
       <choice>
@@ -98,19 +122,37 @@
     </macro>
   </command>
 
-  <binding>
-    <keyPressed code="F8"/>
-
-    <command name="xml2rfc.increaseSectionLevel"/>
-  </binding>
-
-  <command name="xml2rfc.increaseSectionLevel">
-    <macro undoable="true" trace="true">
+  <command name="xml2rfc.decrSectionLevel">
+    <macro undoable="true">
       <sequence>
-        <!-- to do: only allowed if preceding-sibling::section and
-	     preceding-sibling::section//section[position()=last()]
-	     != current() -->
-	<test expression="$implicitElement/ancestor-or-self::section[position()=1]/preceding-sibling::section[position()=1] and not($implicitElement/ancestor-or-self::section[position()=1]/preceding-sibling::section[position()=1]//section[position()=last()] = $implicitElement/ancestor-or-self::section[position()=1])"/>
+	<!-- Can I run: does my enclosing section (or myself) have
+	     a parent? -->
+	<test expression="$implicitElement/ancestor-or-self::section[position()=1]/parent::section[position()=1]"/>
+	<!-- select the section containing the cursor -->
+	<command name="selectNode" parameter="ancestorOrSelf[implicitElement] section"/>
+	<!-- Remember where the parent section is -->
+	<set variable="anchor" expression="$selected/parent::section"/>
+	<!-- cut the original section -->
+	<command name="cut" />
+	<!-- select the original parent section -->
+	<set variable="selected" expression="$anchor"/>
+	<!-- paste the old section after -->
+	<command name="paste" parameter="after"/>
+      </sequence>
+    </macro>
+  </command>
+
+  <!-- to do: if I'm the last child, insert an empty section above me? -->
+  <command name="xml2rfc.incrSectionLevel">
+    <macro undoable="true">
+      <sequence>
+	<!-- Call "currentsection" either me (if I'm a section) or my
+              first ancestor section.
+	     That's the first ./ancestor-or-self bit.
+	     Permission to run: currentsection has a preceding sibling
+	      section.
+	     -->
+	<test expression="$implicitElement/ancestor-or-self::section[position()=1]/preceding-sibling::section[position()=1]"/>
 	<!-- select the section containing the cursor -->
 	<command name="selectNode" parameter="ancestorOrSelf[implicitElement] section"/>
 	<!-- find the previous sibling's last section (or content element)
@@ -165,6 +207,17 @@
 
         <command name="deleteSelectionOrDeleteChar" parameter="%0"/>
       </choice>
+    </macro>
+  </command>
+
+  <command name="xml2rfc.insertSectionSameLevel">
+    <macro undoable="true">
+      <sequence>
+	<!-- 1. select parent section -->
+	<command name="selectNode" parameter="ancestorOrSelf[implicitElement] section"/>
+	<!-- 2. insertAfter section -->
+	<command name="insert" parameter="after section"/>
+      </sequence>
     </macro>
   </command>
 
@@ -326,7 +379,7 @@
     <process>
       <copyDocument to="__doc.xml"/>
 
-      <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd"/>
+      <copyProcessResources resources="dtd/*.*" to="."/>
 
       <transform file="__doc.xml" stylesheet="xsl/expand-pi-rfc-include.xslt"
                  to="__doc2.xml"/>
@@ -390,7 +443,7 @@
     <process>
       <copyDocument to="__doc.xml"/>
 
-      <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd"/>
+      <copyProcessResources resources="dtd/*.*" to="."/>
 
       <transform file="__doc.xml" stylesheet="xsl/expand-pi-rfc-include.xslt"
                  to="__doc2.xml"/>
@@ -423,7 +476,7 @@
     <process>
       <copyDocument to="__doc.xml"/>
 
-      <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd"/>
+      <copyProcessResources resources="dtd/*.*" to="."/>
 
       <transform file="__doc.xml" stylesheet="xsl/expand-pi-rfc-include.xslt"
                  to="__doc2.xml"/>
@@ -458,7 +511,7 @@
     <process>
       <copyDocument to="__doc.xml"/>
 
-      <copyProcessResources resources="dtd/rfc2629.dtd" to="rfc2629.dtd"/>
+      <copyProcessResources resources="dtd/*.*" to="."/>
 
       <transform file="__doc.xml" stylesheet="xsl/expand-pi-rfc-include.xslt"
                  to="__doc2.xml"/>
@@ -714,14 +767,12 @@
       <command name="xml2rfc.addBlock" parameter="section"/>
     </button>
 
-    <!-- ??? - can insert <para> - should I write my own? -->
     <button icon="icons/decrsectlevel.gif" toolTip="Decrease section level">
-      <command name="decrSectionLevel" param="section - t" />
+      <command name="xml2rfc.decrSectionLevel"/>
     </button>
 
-    <!-- to do: option to be added after previous sibling's last child -->
     <button icon="icons/incrsectlevel.gif" toolTip="Increase section level">
-      <command name="incrSectionLevel" param="section - t" />
+      <command name="xml2rfc.incrSectionLevel"/>
     </button>
 
     <separator/>
