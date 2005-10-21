@@ -29,9 +29,8 @@
 
     <para>This xxe plugin attempts to support most of the rfc2629bis DTD, as
     of xml2rfc release 1.29, April 5, 2005. This documentation for plugin
-    version %%VERSION%%. The plugin requires at least xxe 2.9 (released
-    February 7, 2005) and has been tested up to 2.11 (released July 11,
-    2005).</para>
+    version %%VERSION%%. The plugin requires at least xxe 2.10 (released June
+    2, 2005) and has been tested up to 3.0 (released October 6, 2005).</para>
 
     <para>This plugin can create text or HTML output using xml2rfc, if
     installed; it can also use xmlmind's native XSL support to generate HTML.
@@ -824,6 +823,20 @@ r2c2: table</literallayout>
     <title>Change Log</title>
 
     <variablelist>
+      <varlistentry>
+        <term>0.7.1 - October 21, 2005</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Delete &lt;load&gt; element from configuration file, in
+              order to work with xxe-3.0. This means the plugin now requires a
+              minimum xxe version of 2.10.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
       <varlistentry>
         <term>0.7 - September 29, 2005</term>
 
