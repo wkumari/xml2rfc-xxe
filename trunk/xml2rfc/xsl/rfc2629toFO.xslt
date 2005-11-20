@@ -75,6 +75,10 @@
     2005-06-18  julian.reschke@greenbytes.de
     
     Fix references to tables.
+
+    2005-10-15  julian.reschke@greenbytes.de
+    
+    Process t/@anchor.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -461,6 +465,7 @@
 
 <xsl:template match="list[@style='hanging']/t" priority="1">
   <fo:list-item space-before=".25em" space-after=".25em">
+    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <fo:list-item-label end-indent="label-end()"><fo:block><xsl:value-of select="@hangText" /></fo:block></fo:list-item-label>
     <fo:list-item-body start-indent="body-start()"><fo:block><xsl:apply-templates /></fo:block></fo:list-item-body>
   </fo:list-item>
@@ -474,6 +479,7 @@
 
 <xsl:template match="list[@style='symbols']/t" priority="1">
   <fo:list-item space-before=".25em" space-after=".25em">
+    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <fo:list-item-label end-indent="label-end()"><fo:block>&#x2022;</fo:block></fo:list-item-label>
     <fo:list-item-body start-indent="body-start()"><fo:block><xsl:apply-templates /></fo:block></fo:list-item-body>
   </fo:list-item>
@@ -490,6 +496,7 @@
 
 <xsl:template match="list/t">
   <fo:list-item space-before=".25em" space-after=".25em">
+    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <fo:list-item-label end-indent="label-end()"><fo:block></fo:block></fo:list-item-label>
     <fo:list-item-body start-indent="body-start()"><fo:block><xsl:apply-templates /></fo:block></fo:list-item-body>
   </fo:list-item>
@@ -503,6 +510,7 @@
 
 <xsl:template match="list[@style='numbers']/t" priority="1">
   <fo:list-item space-before=".25em" space-after=".25em">
+    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <fo:list-item-label end-indent="label-end()"><fo:block><xsl:number/>.</fo:block></fo:list-item-label>
     <fo:list-item-body start-indent="body-start()"><fo:block><xsl:apply-templates /></fo:block></fo:list-item-body>
   </fo:list-item>
@@ -510,6 +518,7 @@
 
 <xsl:template match="list[@style='letters']/t" priority="1">
   <fo:list-item space-before=".25em" space-after=".25em">
+    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <fo:list-item-label end-indent="label-end()"><fo:block><xsl:number format="a"/>.</fo:block></fo:list-item-label>
     <fo:list-item-body start-indent="body-start()"><fo:block><xsl:apply-templates /></fo:block></fo:list-item-body>
   </fo:list-item>
@@ -518,6 +527,7 @@
 <!-- special case: nested -->
 <xsl:template match="list//t//list[@style='letters']/t" priority="9">
   <fo:list-item space-before=".25em" space-after=".25em">
+    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <fo:list-item-label end-indent="label-end()"><fo:block><xsl:number format="A"/>.</fo:block></fo:list-item-label>
     <fo:list-item-body start-indent="body-start()"><fo:block><xsl:apply-templates /></fo:block></fo:list-item-body>
   </fo:list-item>
@@ -543,6 +553,7 @@
     </xsl:choose>
   </xsl:variable>
   <fo:list-item space-before=".25em" space-after=".25em">
+    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <fo:list-item-label end-indent="label-end()">
       <fo:block>
         <xsl:choose>
@@ -920,6 +931,7 @@
 
 <xsl:template match="t">
 	<fo:block space-before=".5em" space-after=".5em" start-indent="2em">
+    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <xsl:apply-templates />
   </fo:block>
 </xsl:template>

@@ -463,6 +463,23 @@
     
     Use (-moz-)column-count when printing the index.
 
+    2005-10-04  julian.reschke@greenbytes.de
+    
+    Report missing element templates with xsl:message.
+    
+    2005-10-15  julian.reschke@greenbytes.de
+    
+    Process t/@anchor.
+    
+    2005-10-23  julian.reschke@greenbytes.de
+    
+    More workarounds for Mozilla's broken del/ins handling (this time for
+    figures).
+    
+    2005-10-27  julian.reschke@greenbytes.de
+    
+    lowercase hCard class names
+
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -771,6 +788,7 @@
     <xsl:when test="@align='right'">
       <div style="display:table; margin-left: auto; margin-right: 0pt; width: 0pt;">
         <pre style="margin-left: 0em;">
+          <xsl:call-template name="insertInsDelClass"/>
           <xsl:copy-of select="$display"/>
         </pre>          
       </div>
@@ -778,12 +796,14 @@
     <xsl:when test="@align='center'">
       <div style="display:table; margin-left: auto; margin-right: auto; width: 0pt;">
         <pre style="margin-left: 0em;">
+          <xsl:call-template name="insertInsDelClass"/>
           <xsl:copy-of select="$display"/>
         </pre>          
       </div>
     </xsl:when>
     <xsl:otherwise>
       <pre>
+        <xsl:call-template name="insertInsDelClass"/>
         <xsl:copy-of select="$display"/>
       </pre>
     </xsl:otherwise>
@@ -832,14 +852,14 @@
         </xsl:if>
         <!-- components of name (hidden from display -->
         <span class="n" style="display: none">
-          <span class="Family-Name"><xsl:value-of select="@surname"/></span>
+          <span class="family-name"><xsl:value-of select="@surname"/></span>
           <!-- given-name family-name -->
           <xsl:if test="@surname=substring(@fullname,1 + string-length(@fullname) - string-length(@surname))">
-            <span class="Given-Name"><xsl:value-of select="normalize-space(substring(@fullname,1,string-length(@fullname) - string-length(@surname)))"/></span>
+            <span class="given-name"><xsl:value-of select="normalize-space(substring(@fullname,1,string-length(@fullname) - string-length(@surname)))"/></span>
           </xsl:if>
           <!-- family-name given-name -->
           <xsl:if test="starts-with(@fullname,@surname)">
-            <span class="Given-Name"><xsl:value-of select="normalize-space(substring-after(@fullname,@surname))"/></span>
+            <span class="given-name"><xsl:value-of select="normalize-space(substring-after(@fullname,@surname))"/></span>
           </xsl:if>
         </span>
       </span>
@@ -848,7 +868,7 @@
       </span>
       <span class="adr vcardline">
         <xsl:if test="address/postal/street!=''">
-          <span class="street Street-Address vcardline">
+          <span class="street street-address vcardline">
             <xsl:for-each select="address/postal/street">
               <xsl:value-of select="." />
             </xsl:for-each>
@@ -856,13 +876,13 @@
         </xsl:if>
         <xsl:if test="address/postal/city|address/postal/region|address/postal/code">
           <span class="vcardline">
-            <xsl:if test="address/postal/city"><span class="Locality"><xsl:value-of select="address/postal/city" /></span>, </xsl:if>
-            <xsl:if test="address/postal/region"><span class="Region"><xsl:value-of select="address/postal/region" /></span>&#160;</xsl:if>
-            <xsl:if test="address/postal/code"><span class="Postal-Code"><xsl:value-of select="address/postal/code" /></span></xsl:if>
+            <xsl:if test="address/postal/city"><span class="locality"><xsl:value-of select="address/postal/city" /></span>, </xsl:if>
+            <xsl:if test="address/postal/region"><span class="region"><xsl:value-of select="address/postal/region" /></span>&#160;</xsl:if>
+            <xsl:if test="address/postal/code"><span class="postal-code"><xsl:value-of select="address/postal/code" /></span></xsl:if>
           </span>
         </xsl:if>
         <xsl:if test="address/postal/country">
-          <span class="Country vcardline"><xsl:value-of select="address/postal/country" /></span>
+          <span class="country-name vcardline"><xsl:value-of select="address/postal/country" /></span>
         </xsl:if>
       </span>
       <xsl:if test="address/phone">
@@ -1130,18 +1150,21 @@
 
 <xsl:template match="list[@style='empty' or not(@style)]/t">
   <dd style="margin-top: .5em">
+    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <xsl:apply-templates />
   </dd>
 </xsl:template>
 
 <xsl:template match="list[@style='numbers' or @style='symbols' or @style='letters']/t">
   <li>
+    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <xsl:apply-templates />
   </li>
 </xsl:template>
 
 <xsl:template match="list[@style='hanging']/t">
   <dt style="margin-top: .5em">
+    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <xsl:value-of select="@hangText" />
   </dt>
   <dd>
@@ -1167,6 +1190,7 @@
     </xsl:choose>
   </xsl:variable>
   <dt>
+    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <xsl:choose>
       <xsl:when test="contains($format,'%c')">
         <xsl:value-of select="substring-before($format,'%c')"/><xsl:number value="$pos" format="a" /><xsl:value-of select="substring-after($format,'%c')"/>
@@ -1194,6 +1218,7 @@
 
 <xsl:template match="postamble">
   <p>
+    <xsl:call-template name="insertInsDelClass"/>
     <xsl:call-template name="editingMark" />
     <xsl:apply-templates />
   </p>
@@ -1201,6 +1226,7 @@
 
 <xsl:template match="preamble">
   <p>
+    <xsl:call-template name="insertInsDelClass"/>
     <xsl:call-template name="editingMark" />
     <xsl:apply-templates />
   </p>
@@ -1515,7 +1541,14 @@
 
 
 <xsl:template match="t">
-  <xsl:apply-templates mode="t-content" select="node()[1]" />
+  <xsl:choose>
+    <xsl:when test="@anchor">
+      <span id="{@anchor}"><xsl:apply-templates mode="t-content" select="node()[1]" /></span>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:apply-templates mode="t-content" select="node()[1]" />
+    </xsl:otherwise>
+  </xsl:choose>
 </xsl:template>
 
 <!-- for t-content, dispatch to default templates if it's block-level content -->
@@ -1788,9 +1821,10 @@
 <!-- mark unmatched elements red -->
 
 <xsl:template match="*">
-     <font color="red"><tt>&lt;<xsl:value-of select="name()" />&gt;</tt></font>
-    <xsl:copy><xsl:apply-templates select="node()|@*" /></xsl:copy>
-     <font color="red"><tt>&lt;/<xsl:value-of select="name()" />&gt;</tt></font>
+  <xsl:message>ERROR: no XSLT template for element: &lt;<xsl:value-of select="name()"/>&gt;</xsl:message>    
+  <tt class="error">&lt;<xsl:value-of select="name()" />&gt;</tt>
+  <xsl:copy><xsl:apply-templates select="node()|@*" /></xsl:copy>
+  <tt class="error">&lt;/<xsl:value-of select="name()" />&gt;</tt>
 </xsl:template>
 
 <xsl:template match="/">
@@ -3747,11 +3781,11 @@ table.closedissue {
   <xsl:variable name="gen">
     <xsl:text>http://greenbytes.de/tech/webdav/rfc2629.xslt, </xsl:text>
     <!-- when RCS keyword substitution in place, add version info -->
-    <xsl:if test="contains('$Revision: 1.225 $',':')">
-      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.225 $', 'Revision: '),'$','')),', ')" />
+    <xsl:if test="contains('$Revision: 1.229 $',':')">
+      <xsl:value-of select="concat('Revision ',normalize-space(translate(substring-after('$Revision: 1.229 $', 'Revision: '),'$','')),', ')" />
     </xsl:if>
-    <xsl:if test="contains('$Date: 2005/09/25 18:28:41 $',':')">
-      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/09/25 18:28:41 $', 'Date: '),'$','')),', ')" />
+    <xsl:if test="contains('$Date: 2005/10/27 16:43:05 $',':')">
+      <xsl:value-of select="concat(normalize-space(translate(substring-after('$Date: 2005/10/27 16:43:05 $', 'Date: '),'$','')),', ')" />
     </xsl:if>
     <xsl:value-of select="concat('XSLT vendor: ',system-property('xsl:vendor'),' ',system-property('xsl:vendor-url'))" />
   </xsl:variable>
