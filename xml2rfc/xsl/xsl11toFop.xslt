@@ -56,6 +56,16 @@
   <fox:destination internal-destination="{.}"/>
 </xsl:template>
 
+<xsl:template match="fo:list-item/@id">
+  <!-- dunno how to in list items, so move into list-item-body -->
+</xsl:template>
+
+<xsl:template match="fo:list-item[@id]/fo:list-item-body">
+  <xsl:copy>
+    <xsl:attribute name="id"><xsl:value-of select="../@id"/></xsl:attribute>
+    <xsl:apply-templates select="@*|node()"/>
+  </xsl:copy>
+</xsl:template>
 
 <!-- page index -->
 
