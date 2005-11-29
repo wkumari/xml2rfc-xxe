@@ -420,6 +420,35 @@ artwork::attribute() {
 	color: purple;
 	show-attribute: when-added;
 }
+/* to do: figure::attribute(src), except that's not in the DTD so xxe
+          won't permit it anyway. */
+artwork::attribute(src) {
+	attribute-content-middle: file-drop-site(text, "Drop image here:",
+						icon, icon(drop),
+						icon-position, right,
+						command, "putAttribute",
+						parameters, "src %{url}");
+}
+artwork[src]:after {
+	display: block;
+	content: division(content(paragraph("This image will be used in HTML/PDF output instead of the ASCII one.", text-align, center),
+				division(image-viewport(attribute, src,
+					data-type, anyURI,
+					viewport-width, 100%,
+					content-width,
+					       xpath("if(@width, @width, 'scale-to-fit')"),
+					content-height,
+					       xpath("if(@height, @height, 'scale-to-fit')"),
+					preserve-aspect-ratio, yes),
+				border-width, 2px,
+				border-style, groove,
+				border-color, gray),
+				paragraph(xpath('if(not(@alt),"NOTE: src but no alt will result in unpredictable output","")'), text-align, center)));
+	white-space: normal;
+	font-family: sans-serif;
+	color: black;
+	background-color: white;
+}
 figure artwork:before {
 	display: block;
 	content: attributes();
