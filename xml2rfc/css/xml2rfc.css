@@ -10,6 +10,14 @@
 * {
 	display: block;
 }
+/*
+ * Workaround for xxe 3.0's leakage of
+ * structure.css's display: none
+ */
+*:comment,
+*:processing-instruction {
+	display: block;
+}
 
 /*
  * Need to write a gadget to handle processing-instructions inside the
