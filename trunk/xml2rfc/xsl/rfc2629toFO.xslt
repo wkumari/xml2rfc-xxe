@@ -1,84 +1,32 @@
 <!-- 
   	XSLT transformation from RFC2629 XML format to XSL-FO
       
-    Copyright (c) 2001-2005 Julian F. Reschke (julian.reschke@greenbytes.de)
-      
-    placed into the public domain
-    
-    change history:
+    Copyright (c) 2006, Julian Reschke (julian.reschke@greenbytes.de)
+    All rights reserved.
 
-    2003-11-16  julian.reschke@greenbytes.de
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
 
-    Initial release.
-    
-    2003-11-29  julian.reschke@greenbytes.de
-    
-    Enhance handling of unknown list styles.
+    * Redistributions of source code must retain the above copyright notice,
+      this list of conditions and the following disclaimer.
+    * Redistributions in binary form must reproduce the above copyright notice,
+      this list of conditions and the following disclaimer in the documentation
+      and/or other materials provided with the distribution.
+    * Neither the name of Julian Reschkenor the names of its contributors
+      may be used to endorse or promote products derived from this software
+      without specific prior written permission.
 
-    2004-04-04  julian.reschke@greenbytes.de
-    
-    Update reference section handling.
-    
-    2004-04-17  julian.reschke@greenbytes.de
-    
-    Use XSL-WD-1.1-style fo:bookmark and index handling and add postprocessors for
-    existing implementations. Unify PDF info generation by using XEP (postprocessors)
-    will convert.
-    
-    2004-04-20  julian.reschke@greenbytes.de
-
-    Add experimental cref support.
-    
-    2004-06-14  julian.reschke@greenbytes.de
-    
-    Set correct index-item defaults.
-    
-    2004-07-18  julian.reschke@greenbytes.de
-    
-    Add list style=letters.
-    
-    2004-09-03  julian.reschke@greenbytes.de
-    
-    Make URLs in text break where they are allowed to break by inserting
-    zero-width spaces.
-
-    2004-09-26  julian.reschke@greenbytes.de
-    
-    Fix letter-style inside nested lists.
-    
-    2004-10-31  julian.reschke@greenbytes.de
-    
-    Update handling of artwork.
-
-    2004-11-13  julian.reschke@greenbytes.de
-    
-    Fix handling of references inside ed:* markup.  Fix whitespace handling
-    in artwork.
-    
-    2004-11-27  julian.reschke@greenbytes.de
-    
-    Irefs in artwork generate monospaced entries in index.
-    
-    2005-01-31  julian.reschke@greenbytes.de
-    
-    Fix TOC generation that was broken after changes in main XSLT.
-    
-    2005-02-05  julian.reschke@greenbytes.de
-    
-    Bring in sync with cosmetic changes in rfc2629.xslt.
-    
-    2005-05-07  julian.reschke@greenbytes.de
-    
-    Minor fix for change tracking in document title.  Support for table
-    styles.
-    
-    2005-06-18  julian.reschke@greenbytes.de
-    
-    Fix references to tables.
-
-    2005-10-15  julian.reschke@greenbytes.de
-    
-    Process t/@anchor.
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+    AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+    IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+    ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
+    LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+    CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+    SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+    INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+    ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    POSSIBILITY OF SUCH DAMAGE.
 -->
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -688,6 +636,7 @@
 					<xsl:otherwise>
             <xsl:value-of select="@name" />
             <xsl:if test="@value!=''">&#0160;<xsl:value-of select="@value" /></xsl:if>
+            <xsl:if test="translate(@name,$ucase,$lcase)='internet-draft'"> (work in progress)</xsl:if>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:for-each>
@@ -1884,6 +1833,25 @@
   </xsl:if>
 </xsl:template>
 
+<!-- experimental internal ref support -->
+<xsl:template match="ed:ref">
+  <xsl:variable name="val" select="."/>
+  <xsl:variable name="target" select="//*[(@anchor and ed:anchor-alias/@value=$val) or (@anchor=$val)]"/>
+  <xsl:choose>
+    <xsl:when test="$target">
+      <fo:basic-link internal-destination="{$target/@anchor}" xsl:use-attribute-sets="internal-link">
+        <xsl:apply-templates/>
+      </fo:basic-link>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:message>WARNING: internal link target for '<xsl:value-of select="."/>' does not exist.</xsl:message>
+      <xsl:apply-templates/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<!-- Nothing to do here -->
+<xsl:template match="ed:anchor-alias" />
 
 
 
