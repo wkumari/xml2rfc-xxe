@@ -70,7 +70,7 @@
 
 <!ENTITY % TEXT       "#PCDATA">
 
-<!ENTITY   rfc.number "XXXX">
+<!ENTITY   rfc.number PUBLIC "" "num.xml">
 
 
 <!--
