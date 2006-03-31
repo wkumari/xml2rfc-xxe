@@ -233,23 +233,27 @@
           title       %ATEXT;            "">
 
 <!ELEMENT preamble    (%TEXT;|xref|eref|iref|cref|spanx)*>
+<!-- wcf s/(left|center|right)/%ATEXT;/ for align 20060109 -->
 <!ELEMENT artwork     (%TEXT;)*>
 <!ATTLIST artwork
           xml:space   (default|preserve) "preserve"
           name        %ATEXT;            ""
           type        %ATEXT;            ""
           src         %URI;              #IMPLIED
-          align       (left|center|right) "left"
+          align       %ATEXT;            "left"
           alt         %ATEXT;            ""
           width       %ATEXT;            ""
           height      %ATEXT;            "">
 
 <!ELEMENT postamble   (%TEXT;|xref|eref|iref|cref|spanx)*>
     
+<!-- wcf added style and align 20060109 -->
 <!ELEMENT texttable   (preamble?,ttcol+,c*,postamble?)>
 <!ATTLIST texttable
           anchor      ID                 #IMPLIED
-          title       %ATEXT;            "">
+          title       %ATEXT;            ""
+          style       %ATEXT;            ""
+          align       %ATEXT;            "center">
 <!ELEMENT ttcol       (%CTEXT;)>
 <!ATTLIST ttcol
           width       %ATEXT;           #IMPLIED
