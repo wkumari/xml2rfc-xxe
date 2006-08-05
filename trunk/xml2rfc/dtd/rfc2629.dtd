@@ -269,7 +269,13 @@
 <!-- sections, if present, are appendices -->
 <!ELEMENT back        (references*,section*)>
 
-<!ELEMENT references  (reference+)>
+<!-- Pretend that an empty references is valid.
+     It's not, but <?rfc include?> is transparent
+     to xxe, so a references section composed fully
+     of <?rfc include?> looks empty so invalid,
+     and xxe is much happier when editing
+     [apparently-]valid documents. -->
+<!ELEMENT references  (reference*)>
 <!ATTLIST references
           title       %ATEXT;            "References">
 <!ELEMENT reference   (front,seriesInfo*,format*,annotation*)>
