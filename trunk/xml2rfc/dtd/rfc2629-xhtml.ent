@@ -10,14 +10,13 @@
 
      Conversion to txt or nroff format will replace
      these entities by the parenthesized text.
--->
 
-<!-- ASCII -->
-<!ENTITY quot     "&#34;"><!-- U+0022 QUOTATION MARK                             ('"')                -->
-<!ENTITY amp  "&#38;#38;"><!-- U+0026 AMPERSAND                                  ("&")                -->
-<!ENTITY apos     "&#39;"><!-- U+0027 APOSTROPHE           [XHMTL only]          ("'")                -->
-<!ENTITY lt   "&#38;#60;"><!-- U+003C LESS-THAN SIGN                             ("<")                -->
-<!ENTITY gt       "&#62;"><!-- U+003E GREATER-THAN SIGN                          (">")                -->
+     Typical invocation:
+       <!ENTITY % rfc2629-xhtml
+                PUBLIC "-//IETF//ENTITIES XHTML subset for RFC 2629//EN"
+                       "http://xml.resource.org/authoring/rfc2629-xhtml.ent">
+       %rfc2629-xhtml;
+-->
 
 <!-- All of ISO Latin 1 -->
 <!ENTITY nbsp    "&#160;"><!-- U+00A0 NO-BREAK SPACE                             (special " ")        -->
@@ -117,7 +116,7 @@
 <!ENTITY thorn   "&#254;"><!-- U+00FE LATIN SMALL LETTER THORN                   ("[thorn]")          -->
 <!ENTITY yuml    "&#255;"><!-- U+00FF LATIN SMALL LETTER Y WITH DIAERESIS        ("y")                -->
 
-<!-- Some of ISO Latin 10 -->
+<!-- Some of ISO Latin 9 and 10 -->
 <!ENTITY OElig   "&#338;"><!-- U+0152 LATIN CAPITAL LIGATURE OE                  ("OE")               -->
 <!ENTITY oelig   "&#339;"><!-- U+0153 LATIN SMALL LIGATURE OE                    ("oe")               -->
 <!ENTITY Scaron  "&#352;"><!-- U+0160 LATIN CAPITAL LETTER S WITH CARON          ("S")                -->
