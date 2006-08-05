@@ -12,7 +12,7 @@
     * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name of Julian Reschkenor the names of its contributors
+    * Neither the name of Julian Reschke nor the names of its contributors
       may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
@@ -28,7 +28,7 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 
-    $Revision: 1.6 $
+    $Revision: 1.8 $
 -->
 
 <xsl:transform xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
@@ -71,18 +71,18 @@
   </xep:page-index>
 </xsl:template>
 
-<xsl:template match="fo:index-item">
+<xsl:template match="fo:index-key-reference">
   <xep:index-item ref-key="{@ref-index-key}" merge-subsequent-page-numbers="true" link-back="true">
-    <xsl:apply-templates select="@*[name()!='ref-index-key' and name()!='create-index-link' and name()!='merge-sequential-index-page-numbers']"/>
+    <xsl:apply-templates select="@*[name()!='ref-index-key' and name()!='page-number-treatment']"/>
     <xsl:apply-templates select="*"/>
   </xep:index-item>
 </xsl:template>
 
-<xsl:template match="fo:begin-index-range">
+<xsl:template match="fo:index-range-begin">
   <xep:begin-index-range id="{@id}" xep:key="{@index-key}" />
 </xsl:template>
 
-<xsl:template match="fo:end-index-range">
+<xsl:template match="fo:index-range-end">
   <xep:end-index-range ref-id="{@ref-id}" />
 </xsl:template>
 

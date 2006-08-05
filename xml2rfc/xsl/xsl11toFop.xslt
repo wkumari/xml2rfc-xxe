@@ -12,7 +12,7 @@
     * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name of Julian Reschkenor the names of its contributors
+    * Neither the name of Julian Reschke nor the names of its contributors
       may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
@@ -84,14 +84,14 @@
   </xsl:copy>
 </xsl:template>
 
-<!-- page index -->
+<!-- index-page-citation-list -->
 
 <xsl:attribute-set name="internal-link">
   <xsl:attribute name="color">#000080</xsl:attribute>
 </xsl:attribute-set>
 
-<xsl:template match="fo:page-index">
-  <xsl:variable name="items" select="fo:index-item"/>
+<xsl:template match="fo:index-page-citation-list">
+  <xsl:variable name="items" select="fo:index-key-reference"/>
   <xsl:variable name="entries" select="//*[@index-key=$items/@ref-index-key]"/>
   <xsl:for-each select="$entries">
     <fo:basic-link internal-destination="{@id}" xsl:use-attribute-sets="internal-link">
@@ -106,8 +106,8 @@
 
 <!-- suppress and map-->
 <xsl:template match="@index-key" />
-<xsl:template match="fo:end-index-range" />
-<xsl:template match="fo:begin-index-range">
+<xsl:template match="fo:index-range-end" />
+<xsl:template match="fo:index-range-begin">
   <fo:wrapper id="{@id}"/>
 </xsl:template>
 
