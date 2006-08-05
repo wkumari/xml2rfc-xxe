@@ -1,5 +1,18 @@
 <!--
-  revised DTD for the RFC document series, draft of 2004-04-04
+  revised DTD for the RFC document series, draft of 2005-10-05
+  -->
+
+
+<!--
+  Typical invocation:
+      <!DOCTYPE rfc PUBLIC "-//IETF//DTD RFC 2629//EN"
+                           "http://xml.resource.org/authoring/rfc2629.dtd" [
+        ... dtd subset ...
+      ]>
+    or
+      <!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+        ... dtd subset ...
+      ]>
   -->
 
 
@@ -71,6 +84,7 @@
 <!ENTITY % TEXT       "#PCDATA">
 
 <!ENTITY   rfc.number PUBLIC "" "num.xml">
+<!ENTITY   rfc2629.processor PUBLIC "" "proc.xml">
 
 
 <!--
@@ -97,6 +111,8 @@
                       |full3978|noModification3978|noDerivatives3978)
                                          #IMPLIED
           iprExtract  IDREF              #IMPLIED
+          submissionType
+                      (IETF|independent) "IETF"
           docName     %ATEXT;            #IMPLIED
           xml:lang    %ATEXT;            "en">
 
@@ -146,7 +162,7 @@
 <!ATTLIST date
           day         %DAY;              #IMPLIED
           month       %MONTH;            #IMPLIED
-          year        %YEAR;             #REQUIRED>
+          year        %YEAR;             #IMPLIED>
 
 <!-- meta-data... -->
 <!ELEMENT area        (%CTEXT;)>
@@ -230,7 +246,12 @@
 <!ELEMENT figure      (preamble?,artwork,postamble?)>
 <!ATTLIST figure
           anchor      ID                 #IMPLIED
-          title       %ATEXT;            "">
+          title       %ATEXT;            ""
+          src         %URI;              #IMPLIED
+          align       (left|center|right) "left"
+          alt         %ATEXT;            ""
+          width       %ATEXT;            ""
+          height      %ATEXT;            "">
 
 <!ELEMENT preamble    (%TEXT;|xref|eref|iref|cref|spanx)*>
 <!-- wcf s/(left|center|right)/%ATEXT;/ for align 20060109 -->
