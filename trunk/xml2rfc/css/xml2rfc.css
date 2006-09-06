@@ -256,6 +256,7 @@ eref::attribute {
  *   - 2 parts: if the target begins with RFC, check for reference.RFC.n
  *   - else, check for reference.@target
  * - Else, render "(not found)".
+ * XXX need to check for reference.___.xml
  */
 xref:after {
 	display: inline;
@@ -350,12 +351,17 @@ list::attribute() {
 /* A handle for the list */
 /* todo: offer an easy way to convert[wrap] <t> if needed? */
 list:before {
-	content: icon(right) "[list style " attr(style) attributes() xpath('if(local-name(..) = "t", "", " NOTE: list must be inside <t>")') "]";
+	content: icon(right) "[list style " xpath('if(@style,@style,if(ancestor::list[@style],concat(ancestor::list/@style, " [**inherited**]"),"empty [implicit]"))') attributes() xpath('if(local-name(..) = "t", "", " NOTE: list must be inside <t>")') "]";
 	font-size: 80%;
-	color: concatenate(xpath('if(local-name(..) = "t","#ff9900","red")'));
+	color: concatenate(xpath('if(local-name(..) = "t" and not(not(@style) and ancestor::list[@style]),"#ff9900","red")'));
 }
 list t {
 	margin: 0.33em 2em;
+}
+/* No style attribute.  To do: see if we can render the inherited style. */
+list > t:before {
+	display: marker;
+	content: "-?-";
 }
 /* Catch-all for formats that we don't handle. */
 list[style] > t:before {
