@@ -1,7 +1,8 @@
+<?xml version="1.0"?>
 <a:addon location="xml2rfc-xxe-%%VERSION%%.zip"
          xmlns:a="http://www.xmlmind.com/xmleditor/schema/addon">
   <a:category><a:configuration /></a:category>
   <a:name>A configuration for creating RFC2629 (xml2rfc) documents</a:name>
   <a:version>%%VERSION%%</a:version>
-  <a:xxeVersion>2.10+</a:xxeVersion>
+  <a:xxeVersion>3.0+</a:xxeVersion>
 </a:addon>
