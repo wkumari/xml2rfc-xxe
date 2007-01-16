@@ -188,15 +188,15 @@ public class WebForm implements Command {
 		}
 		catch (MalformedURLException ex)
 		{
-			ShowStatus.showStatus("Internal Error" + ex);
-			Alert.showError(component, "Internal Error" + ex);
+			ShowStatus.showStatus("Internal Error: " + ex);
+			Alert.showError(component, "Internal Error\n\n" + ex);
 			return null;
 		}
 		
 		catch (IOException ioe)
 		{
-			ShowStatus.showStatus("Upload Error" + ioe);
-			Alert.showError(component, "Upload Error" + ioe);
+			ShowStatus.showStatus("Upload Error: " + ioe);
+			Alert.showError(component, "Upload Error\n\n" + ioe);
 			return null;
 		}
 		
@@ -238,8 +238,8 @@ public class WebForm implements Command {
 		}
 		catch (IOException ioe)
 		{
-			ShowStatus.showStatus("Download Error" + ioe);
-			Alert.showError(component, "Download Error" + ioe);
+			ShowStatus.showStatus("Download Error: " + ioe);
+			Alert.showError(component, "Download Error\n\n" + ioe);
 			return null;
 		}
 		ShowStatus.showStatus("Conversion using " + urlString + " completed, output in " + outfile);
