@@ -100,9 +100,12 @@ public class StyleSheetExtension extends StyleSpecsBase {
 	
 	private static HashMap listToSet = new HashMap();
 	
+	// XXX need a hashmap per document?
+	// multiple documents with overlapping counter or formats make
+	//  this reallllly confusing.
 	private static TreeSet setForList(Element list) {
 		// return the TreeSet for that counter, or null
-		String format = list.getTokenAttribute(STYLE, "empty");	// XXX NMTOKEN or TOKEN?
+		String format = list.getTokenAttribute(STYLE, "empty");
 		if (format.length() > 7 && "format ".equals(format.substring(0, 7))) {
 			format = format.substring(7);
 		} else {
