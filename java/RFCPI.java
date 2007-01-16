@@ -12,18 +12,17 @@ import com.xmlmind.xmledit.gadget.Gadget;
 import com.xmlmind.xmledit.styledview.GadgetFactory2;
 import com.xmlmind.xmledit.styledview.StyledViewFactory;
 
-import com.att.research.fenner.xmleditapp.xml2rfc.Constants;
-
-public class RFCPI implements GadgetFactory2, Constants {
+public class RFCPI implements GadgetFactory2 {
     public Gadget createGadget(TextNodeView view,
                                Style style, StyleValue[] parameters,
                                StyledViewFactory viewFactory) {
         TextNode textNode = view.getTextNode();
         if (!(textNode instanceof ProcessingInstruction) ||
-            !RFC_PI_TARGET.equals(
+            !"rfc".equals(
                 ((ProcessingInstruction) textNode).getTarget()))
             return null;
 
-	/* create gadget and return it */
+		/* create gadget and return it */
+		return null;
     }
 }
