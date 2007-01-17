@@ -76,7 +76,19 @@ public class WebForm implements Command {
 		String[] args = StringUtil.splitArguments(parameter);
 		String infile = args[0];
 		String format = args.length > 1 ? args[1] : "txt";
-		String outfile = args.length > 2 ? args[2] : PlatformUtil.tmpFileName("." + format);
+		String outfile;
+		if (args.length > 2) {
+			outfile = args[2];
+		} else {
+			try {
+				File tmpfile = File.createTempFile("xml2rfc-xxe-", "." + format);
+				tmpfile.deleteOnExit();
+				outfile = tmpfile.toString();
+			} catch (java.io.IOException e) {
+				Alert.showError(component, "Can't generate temp filename: " + e);
+				return null;
+			}
+		}
 		
 		String lineEnd = "\r\n";
 		String twoHyphens = "--";
@@ -101,8 +113,8 @@ public class WebForm implements Command {
 		// unreasonable about this, yay!
 		try {
 			//XXX
-			System.err.println("http.proxyHost property = " + systemProperties.getProperty("http.proxyHost"));
-			System.err.println("http_proxy env var = " + System.getenv("http_proxy"));
+			//System.err.println("http.proxyHost property = " + systemProperties.getProperty("http.proxyHost"));
+			//System.err.println("http_proxy env var = " + System.getenv("http_proxy"));
 			if (systemProperties.getProperty("http.proxyHost") == null &&
 				System.getenv("http_proxy") != null) {
 				URL proxyurl = new URL(System.getenv("http_proxy"));
