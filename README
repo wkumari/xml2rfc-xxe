@@ -1,6 +1,0 @@
-Prerequisites:
-
-- For building java help:
-  xsltproc (and libxml2)
-  docbook-xsl style sheets
-  javahelp-2.0 (possibly earlier)
