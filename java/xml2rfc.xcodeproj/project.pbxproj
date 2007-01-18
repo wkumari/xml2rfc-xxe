@@ -9,12 +9,10 @@
 /* Begin PBXBuildFile section */
 		550A88CF07FCE40D00AE8259 /* StyleSheetExtension.java in Sources */ = {isa = PBXBuildFile; fileRef = 550A88CE07FCE40D00AE8259 /* StyleSheetExtension.java */; };
 		55148D84080DDAF40070412C /* PreRootPI.java in Sources */ = {isa = PBXBuildFile; fileRef = 55148D83080DDAF40070412C /* PreRootPI.java */; };
-		55246B3707F0A47700C1ABD1 /* Os.java in Sources */ = {isa = PBXBuildFile; fileRef = 55802B9907F07AB600B496A2 /* Os.java */; };
-		55246B3807F0A48400C1ABD1 /* WebForm.java in Sources */ = {isa = PBXBuildFile; fileRef = 55EC2A2B07C57DF700812B53 /* WebForm.java */; };
-		55246B3A07F0A4BF00C1ABD1 /* Msg.java in Sources */ = {isa = PBXBuildFile; fileRef = 557CFD45073FA73400BB7481 /* Msg.java */; };
-		55246B6D07F0A60700C1ABD1 /* xml2rfc.java in Sources */ = {isa = PBXBuildFile; fileRef = 010341B7FEEF030011DB9C8B /* xml2rfc.java */; };
 		55246B8C07F0A6B800C1ABD1 /* xml2rfc.java in Sources */ = {isa = PBXBuildFile; fileRef = 010341B7FEEF030011DB9C8B /* xml2rfc.java */; };
-		55246B9207F0A8F000C1ABD1 /* Manifest in JavaArchive */ = {isa = PBXBuildFile; fileRef = 556FC58207CFF67A00149B26 /* Manifest */; settings = {JAVA_ARCHIVE_SUBDIR = ""; }; };
+		5528A1C70B5DB1F200E1FEBC /* RunFormatter.java in Sources */ = {isa = PBXBuildFile; fileRef = 5528A1C60B5DB1F200E1FEBC /* RunFormatter.java */; };
+		5528A1D50B5DB43D00E1FEBC /* TestFormatter.java in Sources */ = {isa = PBXBuildFile; fileRef = 5528A1D40B5DB43D00E1FEBC /* TestFormatter.java */; };
+		5528A1EF0B5ECE6100E1FEBC /* GetTmpFile.java in Sources */ = {isa = PBXBuildFile; fileRef = 5528A1EE0B5ECE6100E1FEBC /* GetTmpFile.java */; };
 		556FC58307CFF67A00149B26 /* Manifest in JavaArchive */ = {isa = PBXBuildFile; fileRef = 556FC58207CFF67A00149B26 /* Manifest */; settings = {JAVA_ARCHIVE_SUBDIR = ""; }; };
 		55802B9A07F07AB600B496A2 /* Os.java in Sources */ = {isa = PBXBuildFile; fileRef = 55802B9907F07AB600B496A2 /* Os.java */; };
 		55EC2A2C07C57DF700812B53 /* WebForm.java in Sources */ = {isa = PBXBuildFile; fileRef = 55EC2A2B07C57DF700812B53 /* WebForm.java */; };
@@ -62,23 +60,18 @@
 /* Begin PBXFileReference section */
 		010341B7FEEF030011DB9C8B /* xml2rfc.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = xml2rfc.java; sourceTree = "<group>"; };
 		550A88CE07FCE40D00AE8259 /* StyleSheetExtension.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = StyleSheetExtension.java; sourceTree = "<group>"; };
-		550ED11E07FB5F8D005FACEE /* xxe-2.8.jar */ = {isa = PBXFileReference; explicitFileType = archive.jar; includeInIndex = 0; path = "xxe-2.8.jar"; sourceTree = BUILT_PRODUCTS_DIR; };
 		55148D83080DDAF40070412C /* PreRootPI.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = PreRootPI.java; sourceTree = "<group>"; };
+		5528A1C60B5DB1F200E1FEBC /* RunFormatter.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = RunFormatter.java; sourceTree = "<group>"; };
+		5528A1D40B5DB43D00E1FEBC /* TestFormatter.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = TestFormatter.java; sourceTree = "<group>"; };
+		5528A1EE0B5ECE6100E1FEBC /* GetTmpFile.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = GetTmpFile.java; sourceTree = "<group>"; };
 		556FC58207CFF67A00149B26 /* Manifest */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Manifest; sourceTree = "<group>"; };
-		557CFD39073FA71800BB7481 /* AddBlock.java */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.java; path = AddBlock.java; sourceTree = "<group>"; };
 		557CFD3A073FA71800BB7481 /* ButtonGroupUtil.java */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.java; path = ButtonGroupUtil.java; sourceTree = "<group>"; };
 		557CFD3B073FA71800BB7481 /* CrossReference.java */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.java; path = CrossReference.java; sourceTree = "<group>"; };
 		557CFD3C073FA71800BB7481 /* Input.java */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.java; path = Input.java; sourceTree = "<group>"; };
-		557CFD3D073FA71800BB7481 /* LimitedDocument.java */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.java; path = LimitedDocument.java; sourceTree = "<group>"; };
 		557CFD45073FA73400BB7481 /* Msg.java */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.java; path = Msg.java; sourceTree = "<group>"; };
 		557CFD46073FA73400BB7481 /* Preview.java */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.java; path = Preview.java; sourceTree = "<group>"; };
 		557CFD47073FA73400BB7481 /* Select.java */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.java; path = Select.java; sourceTree = "<group>"; };
 		557CFD48073FA73400BB7481 /* StyleSpecsImpl.java */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.java; path = StyleSpecsImpl.java; sourceTree = "<group>"; };
-		557CFD49073FA73400BB7481 /* TableColumn.java */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.java; path = TableColumn.java; sourceTree = "<group>"; };
-		557CFD4A073FA73400BB7481 /* TableCommand.java */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.java; path = TableCommand.java; sourceTree = "<group>"; };
-		557CFD4B073FA73400BB7481 /* TableObserver.java */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.java; path = TableObserver.java; sourceTree = "<group>"; };
-		557CFD4C073FA73400BB7481 /* TableRow.java */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.java; path = TableRow.java; sourceTree = "<group>"; };
-		557CFD4D073FA73400BB7481 /* TableSupport.java */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.java; path = TableSupport.java; sourceTree = "<group>"; };
 		557CFD4E073FA73400BB7481 /* TextArea.java */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.java; path = TextArea.java; sourceTree = "<group>"; };
 		55802B9907F07AB600B496A2 /* Os.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = Os.java; sourceTree = "<group>"; };
 		55C085BC0818B1010090E7EB /* DocPI.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; path = DocPI.java; sourceTree = "<group>"; };
@@ -97,29 +90,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		55246B3307F0A2D700C1ABD1 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		00E6828FFEC88D1A11DB9C8B = {
 			isa = PBXGroup;
 			children = (
+				5528A1EE0B5ECE6100E1FEBC /* GetTmpFile.java */,
+				5528A1D40B5DB43D00E1FEBC /* TestFormatter.java */,
+				5528A1C60B5DB1F200E1FEBC /* RunFormatter.java */,
 				55C085BC0818B1010090E7EB /* DocPI.java */,
 				55148D83080DDAF40070412C /* PreRootPI.java */,
 				550A88CE07FCE40D00AE8259 /* StyleSheetExtension.java */,
-				557CFD39073FA71800BB7481 /* AddBlock.java */,
 				557CFD3A073FA71800BB7481 /* ButtonGroupUtil.java */,
 				557CFD3B073FA71800BB7481 /* CrossReference.java */,
 				6A0644A002C7BD230CC91562 /* Documentation */,
 				55F41D0B07CBC7E7009ACFD5 /* ExpandRFCPI.java */,
 				557CFD3C073FA71800BB7481 /* Input.java */,
-				557CFD3D073FA71800BB7481 /* LimitedDocument.java */,
 				556FC58207CFF67A00149B26 /* Manifest */,
 				557CFD45073FA73400BB7481 /* Msg.java */,
 				55802B9907F07AB600B496A2 /* Os.java */,
@@ -128,11 +115,6 @@
 				55F41D2307CBE613009ACFD5 /* RFCInclude.java */,
 				557CFD47073FA73400BB7481 /* Select.java */,
 				557CFD48073FA73400BB7481 /* StyleSpecsImpl.java */,
-				557CFD49073FA73400BB7481 /* TableColumn.java */,
-				557CFD4A073FA73400BB7481 /* TableCommand.java */,
-				557CFD4B073FA73400BB7481 /* TableObserver.java */,
-				557CFD4C073FA73400BB7481 /* TableRow.java */,
-				557CFD4D073FA73400BB7481 /* TableSupport.java */,
 				557CFD4E073FA73400BB7481 /* TextArea.java */,
 				55EC2A2B07C57DF700812B53 /* WebForm.java */,
 				010341B7FEEF030011DB9C8B /* xml2rfc.java */,
@@ -143,7 +125,6 @@
 			isa = PBXGroup;
 			children = (
 				6A9ED92C02B0286D0CC91562 /* xml2rfc.jar */,
-				550ED11E07FB5F8D005FACEE /* xxe-2.8.jar */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -168,56 +149,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		55246B3207F0A2D700C1ABD1 /* JavaArchive */ = {
-			isa = PBXJavaArchiveBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				55246B9207F0A8F000C1ABD1 /* Manifest in JavaArchive */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXJavaArchiveBuildPhase section */
-
-/* Begin PBXLibraryTarget section */
-		55246B3407F0A2D700C1ABD1 /* xxe-28 */ = {
-			isa = PBXLibraryTarget;
-			buildConfigurationList = 55003D82092BD4650075F8B6 /* Build configuration list for PBXLibraryTarget "xxe-28" */;
-			buildPhases = (
-				55246B3107F0A2D700C1ABD1 /* Sources */,
-				55246B3207F0A2D700C1ABD1 /* JavaArchive */,
-				55246B3307F0A2D700C1ABD1 /* Frameworks */,
-			);
-			buildSettings = {
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				JAVA_ARCHIVE_CLASSES = YES;
-				JAVA_ARCHIVE_TYPE = JAR;
-				JAVA_COMPILER = /usr/bin/javac;
-				JAVA_SOURCE_SUBDIR = .;
-				LIBRARY_STYLE = STATIC;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOL_FLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "xxe-2.8";
-				PURE_JAVA = YES;
-				REZ_EXECUTABLE = YES;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			comments = "An attempt to build a jar file that's compatible with xxe 2.8 given the AddBlock differences.\n\nTo do:\n- get the jar files for xxe 2.8 earlier in the search path, so that the AddBlock API works\n- Solve the problem of public Class AddBlock vs. AddBlock-28.java\n";
-			dependencies = (
-			);
-			name = "xxe-28";
-			productInstallPath = /usr/local/lib;
-			productName = "xxe-2.8";
-			productReference = 550ED11E07FB5F8D005FACEE /* xxe-2.8.jar */;
-		};
-/* End PBXLibraryTarget section */
 
 /* Begin PBXProject section */
 		00E6828EFEC88D1A11DB9C8B /* Project object */ = {
@@ -235,7 +167,6 @@
 			projectDirPath = "";
 			targets = (
 				130F8B90001BDF0A11CA292A /* xml2rfc */,
-				55246B3407F0A2D700C1ABD1 /* xxe-28 */,
 			);
 		};
 /* End PBXProject section */
@@ -250,17 +181,9 @@
 				55246B8C07F0A6B800C1ABD1 /* xml2rfc.java in Sources */,
 				550A88CF07FCE40D00AE8259 /* StyleSheetExtension.java in Sources */,
 				55148D84080DDAF40070412C /* PreRootPI.java in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		55246B3107F0A2D700C1ABD1 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				55246B3A07F0A4BF00C1ABD1 /* Msg.java in Sources */,
-				55246B3707F0A47700C1ABD1 /* Os.java in Sources */,
-				55246B3807F0A48400C1ABD1 /* WebForm.java in Sources */,
-				55246B6D07F0A60700C1ABD1 /* xml2rfc.java in Sources */,
+				5528A1C70B5DB1F200E1FEBC /* RunFormatter.java in Sources */,
+				5528A1D50B5DB43D00E1FEBC /* TestFormatter.java in Sources */,
+				5528A1EF0B5ECE6100E1FEBC /* GetTmpFile.java in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -311,6 +234,7 @@
 				JAVA_ARCHIVE_CLASSES = YES;
 				JAVA_ARCHIVE_COMPRESSION = NO;
 				JAVA_ARCHIVE_TYPE = JAR;
+				JAVA_CLASS_SEARCH_PATHS = "\"$(SYSTEM_APPS_DIR)/LocalApps/Editors/XMLEditor.app/Contents/Resources/Java/xxe_app.jar\" \"$(SYSTEM_APPS_DIR)/LocalApps/Editors/XMLEditor.app/Contents/Resources/Java/xxe.jar\"";
 				JAVA_COMPILER = /usr/bin/javac;
 				JAVA_COMPILER_DEPRECATED_WARNINGS = YES;
 				JAVA_MANIFEST_FILE = Manifest;
@@ -359,93 +283,6 @@
 			};
 			name = Default;
 		};
-		55003D83092BD4650075F8B6 /* Development */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				JAVA_ARCHIVE_CLASSES = YES;
-				JAVA_ARCHIVE_TYPE = JAR;
-				JAVA_COMPILER = /usr/bin/javac;
-				JAVA_SOURCE_SUBDIR = .;
-				LIBRARY_STYLE = STATIC;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOL_FLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "xxe-2.8";
-				PURE_JAVA = YES;
-				REZ_EXECUTABLE = YES;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				ZERO_LINK = YES;
-			};
-			name = Development;
-		};
-		55003D84092BD4650075F8B6 /* Deployment */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				JAVA_ARCHIVE_CLASSES = YES;
-				JAVA_ARCHIVE_TYPE = JAR;
-				JAVA_COMPILER = /usr/bin/javac;
-				JAVA_SOURCE_SUBDIR = .;
-				LIBRARY_STYLE = STATIC;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOL_FLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "xxe-2.8";
-				PURE_JAVA = YES;
-				REZ_EXECUTABLE = YES;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-				ZERO_LINK = NO;
-			};
-			name = Deployment;
-		};
-		55003D85092BD4650075F8B6 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				JAVA_ARCHIVE_CLASSES = YES;
-				JAVA_ARCHIVE_TYPE = JAR;
-				JAVA_COMPILER = /usr/bin/javac;
-				JAVA_SOURCE_SUBDIR = .;
-				LIBRARY_STYLE = STATIC;
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOL_FLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "xxe-2.8";
-				PURE_JAVA = YES;
-				REZ_EXECUTABLE = YES;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
-				);
-			};
-			name = Default;
-		};
 		55003D87092BD4650075F8B6 /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -473,16 +310,6 @@
 				55003D7F092BD4650075F8B6 /* Development */,
 				55003D80092BD4650075F8B6 /* Deployment */,
 				55003D81092BD4650075F8B6 /* Default */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
-		};
-		55003D82092BD4650075F8B6 /* Build configuration list for PBXLibraryTarget "xxe-28" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				55003D83092BD4650075F8B6 /* Development */,
-				55003D84092BD4650075F8B6 /* Deployment */,
-				55003D85092BD4650075F8B6 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;
