@@ -94,11 +94,11 @@
   <xsl:variable name="items" select="fo:index-key-reference"/>
   <xsl:variable name="entries" select="//*[@index-key=$items/@ref-index-key]"/>
   <xsl:for-each select="$entries">
-    <fo:basic-link internal-destination="{@id}" xsl:use-attribute-sets="internal-link">
+    <fo:basic-link internal-destination="{ancestor-or-self::*/@id}" xsl:use-attribute-sets="internal-link">
       <xsl:if test="contains(@index-key,',primary') and substring-after(@index-key,',primary')=''">
         <xsl:attribute name="font-weight">bold</xsl:attribute>
       </xsl:if>
-      <fo:page-number-citation ref-id="{@id}"/>
+      <fo:page-number-citation ref-id="{ancestor-or-self::*/@id}"/>
     </fo:basic-link>
     <xsl:if test="position()!=last()"><xsl:text>, </xsl:text></xsl:if>
   </xsl:for-each>
