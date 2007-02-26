@@ -12,7 +12,7 @@
     * Redistributions in binary form must reproduce the above copyright notice,
       this list of conditions and the following disclaimer in the documentation
       and/or other materials provided with the distribution.
-    * Neither the name of Julian Reschken or the names of its contributors
+    * Neither the name of Julian Reschke nor the names of its contributors
       may be used to endorse or promote products derived from this software
       without specific prior written permission.
 
@@ -114,10 +114,42 @@
   </xsl:choose>
 </xsl:template>
 
+<xsl:template name="add-artwork-attr">
+  <xsl:choose>
+    <xsl:when test="@type='abnf' or @type='abnf2616' or @type='application/xml-dtd' or @type='rnc'">
+      <!-- just display inline -->
+    </xsl:when>
+
+    <xsl:when test="starts-with(@type,'message/http') and contains(@type,'msgtype=&quot;request&quot;')">
+      <xsl:attribute name="background-color">#f0f0f0</xsl:attribute>
+      <xsl:attribute name="border-style">dotted</xsl:attribute>
+      <xsl:attribute name="border-width">thin</xsl:attribute>
+    </xsl:when>
+
+    <xsl:when test="starts-with(@type,'message/http')">
+      <xsl:attribute name="background-color">#f8f8f8</xsl:attribute>
+      <xsl:attribute name="border-style">dotted</xsl:attribute>
+      <xsl:attribute name="border-width">thin</xsl:attribute>
+    </xsl:when>
+
+    <xsl:when test="starts-with(@type,'text/plain') or @type='example' or @type='code'">
+      <xsl:attribute name="background-color">#f8f8f8</xsl:attribute>
+      <xsl:attribute name="border-style">dotted</xsl:attribute>
+      <xsl:attribute name="border-width">thin</xsl:attribute>
+    </xsl:when>
+
+    <xsl:otherwise>
+      <xsl:attribute name="background-color">#dddddd</xsl:attribute>
+      <xsl:attribute name="font-size">9pt</xsl:attribute>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="artwork">
-	<fo:block font-family="monospace" font-size="9pt" background-color="#dddddd"
+	<fo:block font-family="monospace" padding=".5em"
     white-space-treatment="preserve" linefeed-treatment="preserve"
     white-space-collapse="false">
+    <xsl:call-template name="add-artwork-attr"/>
     <xsl:apply-templates/>
   </fo:block>
 </xsl:template>
@@ -412,6 +444,23 @@
   </fo:list-block>
 </xsl:template>
 
+<xsl:template match="list[@style='hanging']/x:lt" priority="1">
+  <fo:list-item space-before=".25em" space-after=".25em">
+    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
+    <fo:list-item-label end-indent="label-end()"><fo:block><xsl:value-of select="@hangText" /></fo:block></fo:list-item-label>
+    <fo:list-item-body start-indent="body-start()">
+      <xsl:for-each select="t">
+        <fo:block>
+          <xsl:if test="position()!=1">
+            <xsl:attribute name="space-before">.25em</xsl:attribute>
+          </xsl:if>
+          <xsl:apply-templates />
+        </fo:block>
+      </xsl:for-each>
+    </fo:list-item-body>
+  </fo:list-item>
+</xsl:template>
+
 <xsl:template match="list[@style='hanging']/t" priority="1">
   <fo:list-item space-before=".25em" space-after=".25em">
     <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
@@ -457,19 +506,44 @@
   </fo:list-block>
 </xsl:template>
 
-<xsl:template match="list[@style='numbers']/t" priority="1">
+<xsl:template match="list[@style='numbers' or @style='letters']/t" priority="1">
   <fo:list-item space-before=".25em" space-after=".25em">
     <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
-    <fo:list-item-label end-indent="label-end()"><fo:block><xsl:number/>.</fo:block></fo:list-item-label>
+    <fo:list-item-label end-indent="label-end()">
+      <fo:block>
+        <xsl:choose>
+          <xsl:when test="ancestor::list/@style='numbers'"><xsl:number/>.</xsl:when>
+          <xsl:when test="ancestor::list/@style='letters'"><xsl:number format="a"/>.</xsl:when>
+          <xsl:otherwise>???</xsl:otherwise>
+        </xsl:choose>
+      </fo:block>
+    </fo:list-item-label>
     <fo:list-item-body start-indent="body-start()"><fo:block><xsl:apply-templates /></fo:block></fo:list-item-body>
   </fo:list-item>
 </xsl:template>
 
-<xsl:template match="list[@style='letters']/t" priority="1">
+<xsl:template match="list[@style='numbers' or @style='letters']/x:lt" priority="1">
   <fo:list-item space-before=".25em" space-after=".25em">
     <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
-    <fo:list-item-label end-indent="label-end()"><fo:block><xsl:number format="a"/>.</fo:block></fo:list-item-label>
-    <fo:list-item-body start-indent="body-start()"><fo:block><xsl:apply-templates /></fo:block></fo:list-item-body>
+    <fo:list-item-label end-indent="label-end()">
+      <fo:block>
+        <xsl:choose>
+          <xsl:when test="ancestor::list/@style='numbers'"><xsl:number/>.</xsl:when>
+          <xsl:when test="ancestor::list/@style='letters'"><xsl:number format="a"/>.</xsl:when>
+          <xsl:otherwise>???</xsl:otherwise>
+        </xsl:choose>
+      </fo:block>
+    </fo:list-item-label>
+    <fo:list-item-body start-indent="body-start()">
+      <xsl:for-each select="t">
+        <fo:block>
+          <xsl:if test="position()!=1">
+            <xsl:attribute name="space-before">.25em</xsl:attribute>
+          </xsl:if>
+          <xsl:apply-templates />
+        </fo:block>
+      </xsl:for-each>
+    </fo:list-item-body>
   </fo:list-item>
 </xsl:template>
 
@@ -564,6 +638,11 @@
   <fo:list-item space-after=".5em">
     <fo:list-item-label end-indent="label-end()">
       <fo:block id="{@anchor}">
+        <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
+          <xsl:attribute name="index-key">
+            <xsl:value-of select="concat('xrefitem=',@anchor)"/>
+          </xsl:attribute>
+        </xsl:if>
         <xsl:call-template name="referencename">
           <xsl:with-param name="node" select="." />
         </xsl:call-template>
@@ -627,14 +706,6 @@
       </xsl:choose>
       <xsl:text>"</xsl:text>
       
-      <xsl:if test="@target">
-        <xsl:text>, &lt;</xsl:text>
-        <xsl:call-template name="format-uri">
-          <xsl:with-param name="s" select="@target"/>
-        </xsl:call-template>
-        <xsl:text>&gt;</xsl:text>
-      </xsl:if>
-
       <xsl:for-each select="seriesInfo">
         <xsl:text>, </xsl:text>
         <xsl:choose>
@@ -652,6 +723,14 @@
         <xsl:value-of select="front/date/@month" />&#0160;<xsl:value-of select="front/date/@year" />
       </xsl:if>
       
+      <xsl:if test="@target">
+        <xsl:text>, &lt;</xsl:text>
+        <xsl:call-template name="format-uri">
+          <xsl:with-param name="s" select="@target"/>
+        </xsl:call-template>
+        <xsl:text>&gt;</xsl:text>
+      </xsl:if>
+
       <xsl:text>.</xsl:text>
       
       <xsl:for-each select="annotation">
@@ -795,7 +874,7 @@
 			</fo:flow>
     </fo:page-sequence>
     
-    <xsl:if test="//iref">
+    <xsl:if test="$has-index">
       <fo:page-sequence master-reference="other-pages-dc" language="{$lang}">
         <xsl:call-template name="insertHeader" />
         <xsl:call-template name="insertFooter" />
@@ -918,51 +997,127 @@
   <fo:block/>
 </xsl:template>
 
+<xsl:template name="render-section-ref">
+  <xsl:param name="from" />
+  <xsl:param name="to" />
+  <xsl:variable name="target" select="$from/@target" />
+
+  <xsl:variable name="refname">
+    <xsl:for-each select="$to">
+      <xsl:call-template name="get-section-type">
+        <xsl:with-param name="prec" select="$from/preceding-sibling::node()[1]" />
+      </xsl:call-template>
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:variable name="refnum">
+    <xsl:for-each select="$to">
+      <xsl:call-template name="get-section-number" />
+    </xsl:for-each>
+  </xsl:variable>
+  <xsl:choose>
+    <xsl:when test="@format='counter'">
+      <xsl:value-of select="$refnum"/>
+    </xsl:when>
+    <xsl:when test="@format='title'">
+      <xsl:value-of select="$to/@title"/>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:value-of select="normalize-space(concat($refname,'&#160;',$refnum))"/>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
 <xsl:template match="xref[node()]">
 	<xsl:variable name="target" select="@target" />
   <xsl:variable name="node" select="//*[@anchor=$target]" />
-  <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
-    <xsl:value-of select="." />
-  </fo:basic-link>
-  <xsl:for-each select="//reference[@anchor=$target]">
-    &#160;<xsl:call-template name="referencename"><xsl:with-param name="node" select="." /></xsl:call-template>
-  </xsl:for-each>
+  <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
+  <xsl:choose>
+    <xsl:when test="@x:fmt='none'">
+      <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
+        <xsl:if test="local-name($node)='reference' and $xml2rfc-ext-include-references-in-index='yes'">
+          <xsl:attribute name="id">
+            <xsl:value-of select="$anchor"/>
+          </xsl:attribute>
+          <xsl:attribute name="index-key">
+            <xsl:value-of select="concat('xrefitem=',@target)"/>
+          </xsl:attribute>
+        </xsl:if>
+        <!-- insert id when a backlink to this xref is needed in the index -->
+        <xsl:variable name="ireftargets" select="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"/>
+        <xsl:if test="$ireftargets">
+          <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+        </xsl:if>
+        <xsl:for-each select="$ireftargets">
+          <fo:wrapper index-key="{concat('item=',@item,',subitem=',@subitem)}" />
+        </xsl:for-each>
+        <xsl:apply-templates/>
+      </fo:basic-link>
+    </xsl:when>
+    <xsl:when test="local-name($node)='section' or local-name($node)='appendix'">
+      <xsl:apply-templates/>
+      <xsl:variable name="context" select="."/>
+      <xsl:text> (</xsl:text>
+      <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
+        <!-- insert id when a backlink to this xref is needed in the index -->
+        <xsl:variable name="ireftargets" select="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"/>
+        <xsl:if test="$ireftargets">
+          <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+        </xsl:if>
+        <xsl:for-each select="$ireftargets">
+          <fo:wrapper index-key="{concat('item=',@item,',subitem=',@subitem)}" />
+        </xsl:for-each>
+        <xsl:call-template name="render-section-ref">
+          <xsl:with-param name="from" select="."/>
+          <xsl:with-param name="to" select="$node"/>
+        </xsl:call-template>
+      </fo:basic-link>
+      <xsl:text>)</xsl:text>
+    </xsl:when>
+    <xsl:otherwise>
+      <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
+        <xsl:value-of select="." />
+      </fo:basic-link>
+      <xsl:for-each select="//reference[@anchor=$target]">
+        &#160;<xsl:call-template name="referencename"><xsl:with-param name="node" select="." /></xsl:call-template>
+      </xsl:for-each>
+    </xsl:otherwise>
+  </xsl:choose>
+
 </xsl:template>
 
 <xsl:template match="xref[not(node())]">
+
   <xsl:variable name="context" select="." />
 	<xsl:variable name="target" select="@target" />
+  <xsl:variable name="anchor"><xsl:value-of select="$anchor-prefix"/>.xref.<xsl:value-of select="@target"/>.<xsl:number level="any" count="xref[@target=$target]"/></xsl:variable>
   <xsl:variable name="node" select="//*[@anchor=$target]" />
-	<!-- should check for undefined targets -->
+  <xsl:if test="count($node)=0 and not(ancestor::ed:del)">
+    <xsl:message>Undefined target: <xsl:value-of select="@target" /></xsl:message>
+    <span class="error">Undefined target: <xsl:value-of select="@target" /></span>
+  </xsl:if>
+
   <xsl:choose>
-    <xsl:when test="local-name($node)='section'">
+
+    <!-- Section links -->
+    <xsl:when test="name($node)='section' or name($node)='appendix'">
       <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
-        <xsl:variable name="refname">
-          <xsl:for-each select="$node">
-            <xsl:call-template name="get-section-type">
-              <xsl:with-param name="prec" select="$context/preceding-sibling::node()[1]" />
-            </xsl:call-template>
-          </xsl:for-each>
-        </xsl:variable>
-        <xsl:variable name="refnum">
-          <xsl:for-each select="$node">
-            <xsl:call-template name="get-section-number" />
-          </xsl:for-each>
-        </xsl:variable>
-        <xsl:choose>
-          <xsl:when test="@format='counter'">
-            <xsl:value-of select="$refnum"/>
-          </xsl:when>
-          <xsl:when test="@format='title'">
-            <xsl:value-of select="$node/@title"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="normalize-space(concat($refname,'&#160;',$refnum))"/>
-          </xsl:otherwise>
-        </xsl:choose>
+        <!-- insert id when a backlink to this xref is needed in the index -->
+        <xsl:variable name="ireftargets" select="//iref[@x:for-anchor=$target] | //iref[@x:for-anchor='' and ../@anchor=$target]"/>
+        <xsl:if test="$ireftargets">
+          <xsl:attribute name="id"><xsl:value-of select="$anchor"/></xsl:attribute>
+        </xsl:if>
+        <xsl:for-each select="$ireftargets">
+          <fo:wrapper index-key="{concat('item=',@item,',subitem=',@subitem)}" />
+        </xsl:for-each>
+        <xsl:call-template name="render-section-ref">
+          <xsl:with-param name="from" select="."/>
+          <xsl:with-param name="to" select="$node"/>
+        </xsl:call-template>
       </fo:basic-link>
     </xsl:when>
-    <xsl:when test="local-name($node)='figure'">
+
+    <!-- Figure links -->
+    <xsl:when test="name($node)='figure'">
       <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
         <xsl:variable name="figcnt">
           <xsl:for-each select="$node">
@@ -982,7 +1137,9 @@
         </xsl:choose>
       </fo:basic-link>
     </xsl:when>
-    <xsl:when test="local-name($node)='texttable'">
+
+    <!-- Table links -->
+    <xsl:when test="name($node)='texttable'">
       <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
         <xsl:variable name="tabcnt">
           <xsl:for-each select="$node">
@@ -1002,7 +1159,9 @@
         </xsl:choose>
       </fo:basic-link>
     </xsl:when>
-    <xsl:otherwise>
+
+    <!-- Reference links -->
+    <xsl:when test="name($node)='reference'">
       <!--
       Formats:
       
@@ -1035,7 +1194,28 @@
 
       <xsl:if test="not(@x:sec) or (@x:fmt!='sec' and @x:fmt!='number')">
         <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
-          <xsl:call-template name="referencename"><xsl:with-param name="node" select="/rfc/back/references//reference[@anchor=$target]" /></xsl:call-template>
+          <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
+            <xsl:attribute name="id">
+              <xsl:value-of select="$anchor"/>
+            </xsl:attribute>
+            <xsl:attribute name="index-key">
+              <xsl:value-of select="concat('xrefitem=',@target)"/>
+            </xsl:attribute>
+          </xsl:if>
+          <xsl:variable name="val">
+            <xsl:call-template name="referencename">
+              <xsl:with-param name="node" select="$node" />
+            </xsl:call-template>
+          </xsl:variable>
+          <xsl:choose>
+            <xsl:when test="@x:fmt='anchor'">
+              <!-- remove brackets -->
+              <xsl:value-of select="substring($val,2,string-length($val)-2)"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="$val"/>
+            </xsl:otherwise>
+          </xsl:choose>
         </fo:basic-link>
       </xsl:if>
 
@@ -1054,6 +1234,10 @@
         </xsl:choose>
       </xsl:if>
 
+    </xsl:when>
+    
+    <xsl:otherwise>
+      <xsl:message>xref to unknown element: <xsl:value-of select="name($node)"/></xsl:message>
     </xsl:otherwise>
   </xsl:choose>
 </xsl:template>
@@ -1126,88 +1310,120 @@
     Index
   </fo:block>
 
-  <xsl:variable name="lcase" select="'abcdefghijklmnopqrstuvwxyz'" />
-  <xsl:variable name="ucase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'" />       
-	
-  <xsl:for-each select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase)))]">
-	  <xsl:sort select="translate(@item,$lcase,$ucase)" />
+  <xsl:variable name="irefs" select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase)))]"/>
+  <xsl:variable name="xrefs" select="//reference[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@anchor,1,1),$lcase,$ucase)))]"/>
+
+  <xsl:for-each select="$irefs | $xrefs">
+    <xsl:sort select="translate(concat(@item,@anchor),$lcase,$ucase)" />
+    <xsl:variable name="letter" select="translate(substring(concat(@item,@anchor),1,1),$lcase,$ucase)"/>
             
-    <fo:block space-before="1em" font-weight="bold">
-      <xsl:value-of select="translate(substring(@item,1,1),$lcase,$ucase)" />
-    </fo:block>
-          
-    <xsl:for-each select="key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase))">
-		<xsl:sort select="translate(@item,$lcase,$ucase)" />
-  
-  	  <xsl:if test="generate-id(.) = generate-id(key('index-item',@item))">
-      
-        <xsl:variable name="item" select="@item"/>
-        <xsl:variable name="in-artwork" select="count(//iref[@item=$item and @primary='true' and ancestor::artwork])!=0"/>
-  
-        <fo:block start-indent="1em" hyphenate="true">
-          <xsl:choose>
-            <xsl:when test="$in-artwork">
-              <fo:wrapper font-family="monospace"><xsl:value-of select="concat(@item,' ')" /></fo:wrapper>
-            </xsl:when>
-            <xsl:otherwise>
-              <xsl:value-of select="concat(@item,' ')" />
-            </xsl:otherwise>
-          </xsl:choose>
-          
-          <xsl:variable name="entries" select="key('index-item',@item)[not(@subitem) or @subitem='']" />
-                                  
-          <xsl:if test="$entries">
-            <fo:index-page-citation-list merge-sequential-page-numbers="merge">
-              <xsl:if test="$entries[@primary='true']">
-                <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem,',primary')}" font-weight="bold"/>
-              </xsl:if>
-              <xsl:if test="$entries[not(@primary='true')]">
-                <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem)}"/>
-              </xsl:if>
-            </fo:index-page-citation-list>
+    <xsl:variable name="showit">
+      <xsl:choose>
+        <xsl:when test="$xml2rfc-ext-include-references-in-index!='yes'">
+          <xsl:if test="$irefs[starts-with(translate(@item,$lcase,$ucase),$letter)]">
+            <xsl:text>yes</xsl:text>
           </xsl:if>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>yes</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:variable>
 
-        </fo:block>
-              
-        <xsl:for-each select="key('index-item',@item)[@subitem and @subitem!='']">
-			  <xsl:sort select="translate(@subitem,$lcase,$ucase)" />
-      
-      	  <xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem)))">
-          
-            <xsl:variable name="itemsubitem" select="concat(@item,'..',@subitem)"/>
-            <xsl:variable name="in-artwork2" select="count(//iref[concat(@item,'..',@subitem)=$itemsubitem and @primary='true' and ancestor::artwork])!=0"/>
-                        
-            <fo:block start-indent="2em" hyphenate="true">
+    <xsl:if test="$showit='yes'">
+      <fo:block space-before="1em" font-weight="bold">
+        <xsl:value-of select="$letter" />
+      </fo:block>
             
-              <xsl:choose>
-                <xsl:when test="$in-artwork">
-                  <fo:wrapper font-family="monospace"><xsl:value-of select="concat(@subitem,' ')" /></fo:wrapper>
-                </xsl:when>
-                <xsl:otherwise>
-                  <xsl:value-of select="concat(@subitem,' ')" />
-                </xsl:otherwise>
-              </xsl:choose>
-
-              <xsl:variable name="entries2" select="key('index-item-subitem',concat(@item,'..',@subitem))" />
+      <xsl:for-each select="key('index-first-letter',translate(substring(concat(@item,@anchor),1,1),$lcase,$ucase))">
+  
+  		<xsl:sort select="translate(concat(@item,@anchor),$lcase,$ucase)" />
+      
+        <xsl:choose>
+          <xsl:when test="self::reference">
+            <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
+            
+              <xsl:variable name="entries" select="//xref[@target=current()/@anchor and not(ancestor::ed:del)]" />
               
-              <xsl:if test="$entries2">
-                <fo:index-page-citation-list merge-sequential-page-numbers="merge">
-                  <xsl:if test="$entries2[@primary='true']">
+              <xsl:if test="$entries">
+                <fo:block start-indent="1em" hyphenate="true">
+                  <fo:wrapper font-style="italic"><xsl:value-of select="concat(@anchor,' ')" /></fo:wrapper>
+  
+                  <fo:index-page-citation-list merge-sequential-page-numbers="merge">
+                    <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('xrefitem=',@anchor,',primary')}" font-weight="bold"/>
+                    <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('xrefitem=',@anchor)}"/>
+                  </fo:index-page-citation-list>
+                </fo:block>
+              </xsl:if>
+
+            </xsl:if>
+          </xsl:when>
+          <xsl:otherwise>
+        	  <xsl:if test="generate-id(.) = generate-id(key('index-item',@item))">
+            
+              <xsl:variable name="item" select="@item"/>
+              <xsl:variable name="in-artwork" select="count(//iref[@item=$item and @primary='true' and ancestor::artwork])!=0"/>
+        
+              <fo:block start-indent="1em" hyphenate="true">
+                <xsl:choose>
+                  <xsl:when test="$in-artwork">
+                    <fo:wrapper font-family="monospace"><xsl:value-of select="concat(@item,' ')" /></fo:wrapper>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:value-of select="concat(@item,' ')" />
+                  </xsl:otherwise>
+                </xsl:choose>
+                
+                <xsl:variable name="entries" select="key('index-item',@item)[not(@subitem) or @subitem='']"/>
+                                        
+                <xsl:if test="$entries">
+                  <fo:index-page-citation-list merge-sequential-page-numbers="merge">
                     <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem,',primary')}" font-weight="bold"/>
-                  </xsl:if>
-                  <xsl:if test="$entries2[not(@primary='true')]">
-                    <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem)}" />
-                  </xsl:if>
-                </fo:index-page-citation-list>
-              </xsl:if>
-
-            </fo:block>
-          </xsl:if>
-        </xsl:for-each>
+                    <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem)}"/>
+                  </fo:index-page-citation-list>
+                </xsl:if>
+      
+              </fo:block>
+                    
+              <xsl:for-each select="key('index-item',@item)[@subitem and @subitem!='']">
+      			  <xsl:sort select="translate(@subitem,$lcase,$ucase)" />
+            
+            	  <xsl:if test="generate-id(.) = generate-id(key('index-item-subitem',concat(@item,'..',@subitem)))">
                 
-      </xsl:if>
-                
-    </xsl:for-each>            
+                  <xsl:variable name="itemsubitem" select="concat(@item,'..',@subitem)"/>
+                  <xsl:variable name="in-artwork2" select="count(//iref[concat(@item,'..',@subitem)=$itemsubitem and @primary='true' and ancestor::artwork])!=0"/>
+                              
+                  <fo:block start-indent="2em" hyphenate="true">
+                  
+                    <xsl:choose>
+                      <xsl:when test="$in-artwork">
+                        <fo:wrapper font-family="monospace"><xsl:value-of select="concat(@subitem,' ')" /></fo:wrapper>
+                      </xsl:when>
+                      <xsl:otherwise>
+                        <xsl:value-of select="concat(@subitem,' ')" />
+                      </xsl:otherwise>
+                    </xsl:choose>
+      
+                    <xsl:variable name="entries2" select="key('index-item-subitem',concat(@item,'..',@subitem))" />
+                    
+                    <xsl:if test="$entries2">
+                      <fo:index-page-citation-list merge-sequential-page-numbers="merge">
+                        <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem,',primary')}" font-weight="bold"/>
+                        <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('item=',@item,',subitem=',@subitem)}" />
+                      </fo:index-page-citation-list>
+                    </xsl:if>
+      
+                  </fo:block>
+                </xsl:if>
+              </xsl:for-each>
+                      
+            </xsl:if>
+          </xsl:otherwise>
+        </xsl:choose>
+    
+                  
+      </xsl:for-each>            
+    </xsl:if>
   </xsl:for-each>
 </xsl:template>
 
@@ -1245,7 +1461,7 @@
   </xsl:if>
   
   <!-- insert the index if index entries exist -->
-  <xsl:if test="//iref">
+  <xsl:if test="$has-index">
     <xsl:call-template name="insert-toc-line">
       <xsl:with-param name="target" select="concat($anchor-prefix,'.index')"/>
       <xsl:with-param name="title" select="'Index'"/>
@@ -1507,6 +1723,7 @@
 
 <!-- change tracking -->
 
+<xsl:template match="ed:annotation" />
 <xsl:template match="ed:del" />
 <xsl:template match="ed:issue" />
 <xsl:template match="ed:ins">
@@ -1581,7 +1798,7 @@
   </xsl:if>
   
   <!-- insert the index if index entries exist -->
-  <xsl:if test="//iref">
+  <xsl:if test="$has-index">
     <fo:bookmark internal-destination="{concat($anchor-prefix,'.index')}">
       <fo:bookmark-title>Index</fo:bookmark-title>
     </fo:bookmark>
