@@ -7,15 +7,22 @@
   <help location="xml2rfc_help.jar"/>
 
   <!-- Claim an XML document if:
-       - it has a DOCTYPE referring to the rfc2629.dtd
+       - it has a DOCTYPE referring to the rfc2629.dtd or the website version
+       - it has a DOCTYPE referring to the public ID -//IETF//DTD RFC 2629
        - its root element is <rfc> with no namespace
        - its root element is <reference> with no namespace
          (this is for editing the include files directly)
+       - its root element is <section> with no namespace
+         (this is for editing a multi-file document directly)
   -->
 
   <detect>
     <or>
       <dtdSystemId>rfc2629.dtd</dtdSystemId>
+
+      <dtdSystemId>http://xml.resource.org/authoring/rfc2629.dtd</dtdSystemId>
+
+      <dtdPublicId substring="true">-//IETF//DTD RFC 2629</dtdPublicId>
 
       <and>
         <rootElementLocalName>rfc</rootElementLocalName>
@@ -28,12 +35,20 @@
 
         <rootElementNamespace xsi:nil="true"/>
       </and>
+
+      <and>
+        <rootElementLocalName>section</rootElementLocalName>
+
+        <rootElementNamespace xsi:nil="true"/>
+      </and>
     </or>
   </detect>
 
   <dtd systemId="dtd/rfc2629.dtd"/>
 
   <css location="css/xml2rfc.css" name="xml2rfc"/>
+
+  <css alternate="true" location="css/structure.css" name="Document structure"/>
 
   <!-- make sure that artwork is saved as CDATA.
        Also, since xml2rfc pre-1.29 doesn't support UTF-8, make sure
@@ -45,6 +60,14 @@
   <!-- make sure that artwork is loaded with space preserved -->
 
   <preserveSpace elements="artwork"/>
+
+  <!-- figure/@src and artwork/@src point to embedded images -->
+
+  <documentResources>
+    <resource path="//figure/@src"/>
+
+    <resource path="//artwork/@src"/>
+  </documentResources>
 
   <!-- Template blank documents adapted from xml2rfc distribution's
        contrib/fred.baker/new-draft.xml -->
@@ -319,6 +342,8 @@
     <macro undoable="true">
       <sequence>
         <choice>
+          <command name="insertNode" parameter="piInto[implicitNode] rfc"/>
+
           <command name="insertNode" parameter="piInto[implicitElement] rfc"/>
 
           <command name="insertNode" parameter="piAfter[implicitNode] rfc"/>
@@ -340,6 +365,8 @@
   <!--
        Preview using xml2html using a process.
     -->
+
+  <!-- XXX no longer used -->
 
   <command name="xml2rfc.preview">
     <process>
@@ -391,6 +418,8 @@
        Use xml2rfc to convert document to text or html.
     -->
 
+  <!-- XXX no longer used. -->
+
   <command name="xml2rfc.convertDoc">
     <process>
       <!-- US-ASCII because xml2rfc pre-1.29 doesn't support UTF-8, but does
@@ -413,6 +442,8 @@
   <!--
        Preview as .txt.  This is almost like convert.
     -->
+
+  <!-- XXX no longer used -->
 
   <command name="xml2rfc.previewTXT">
     <process>
@@ -446,7 +477,20 @@
 
   <command name="xml2rfc.previewXSL">
     <process>
-      <copyDocument to="__doc.xml"/>
+      <mkdir dir="resources"/>
+
+      <mkdir dir="raw"/>
+
+      <copyDocument to="__doc.xml">
+        <resources copyTo="resources" match=".+\.(png|jpg|jpeg|gif)"/>
+
+        <resources copyTo="raw" match="(?:.+/)?(.+)\.(\w+)"
+                   referenceAs="resources/$1.png"/>
+
+        <resources copyTo="resources" match=".+"/>
+      </copyDocument>
+
+      <convertImage format="png" from="raw" to="resources"/>
 
       <copyProcessResources resources="dtd/*.*" to="."/>
 
@@ -492,19 +536,19 @@
 
         <command name="selectFile" parameter="saveFileURL %p/%_.html"/>
 
-        <command name="xml2rfc.doXSL" parameter="%_"/>
+        <command name="xml2rfc.doXSLtoHTML" parameter="%_"/>
       </sequence>
     </macro>
   </command>
 
-  <command name="xml2rfc.toPDFUsingXSL">
+  <command name="xml2rfc.toSomethingUsingXSLFO">
     <macro>
       <sequence>
         <command name="xml2rfc.draftname"/>
 
-        <command name="selectFile" parameter="saveFileURL %p/%_.pdf"/>
+        <command name="selectFile" parameter="saveFileURL %p/%_.%0"/>
 
-        <command name="xml2rfc.doPDF" parameter="%_"/>
+        <command name="xml2rfc.doXSLFOtoSomething" parameter="%_ %0"/>
       </sequence>
     </macro>
   </command>
@@ -541,9 +585,22 @@
     </process>
   </command>
 
-  <command name="xml2rfc.doPDF">
+  <command name="xml2rfc.doXSLFOtoSomething">
     <process>
-      <copyDocument to="__doc.xml"/>
+      <mkdir dir="resources"/>
+
+      <mkdir dir="raw"/>
+
+      <copyDocument to="__doc.xml">
+        <resources copyTo="resources" match=".+\.(png|jpg|jpeg|gif)"/>
+
+        <resources copyTo="raw" match="(?:.+/)?(.+)\.(\w+)"
+                   referenceAs="resources/$1.png"/>
+
+        <resources copyTo="resources" match=".+"/>
+      </copyDocument>
+
+      <convertImage format="png" from="raw" to="resources"/>
 
       <copyProcessResources resources="dtd/*.*" to="."/>
 
@@ -559,29 +616,42 @@
       <transform file="__doc.fo" stylesheet="xsl/xsl11toFop.xslt"
                  to="__doc.fop"/>
 
-      <processFO file="__doc.xep" processor="XEP" to="draft.pdf">
-        <parameter name="OUTPUT_FORMAT">pdf</parameter>
+      <processFO file="__doc.xep" processor="XEP" to="draft.%1">
+        <parameter name="OUTPUT_FORMAT">%1</parameter>
 
         <parameter name="H4PS.LANGUAGE_LEVEL">2</parameter>
 
         <!-- If XEP plug-in has not been installed, try FOP plug-in. -->
 
-        <processFO file="__doc.fop" processor="FOP" to="draft.pdf">
-          <parameter name="renderer">pdf</parameter>
+        <processFO file="__doc.fop" processor="FOP" to="draft.%1">
+          <parameter name="renderer">%1</parameter>
         </processFO>
       </processFO>
 
       <upload base="file:///">
         <!-- we always get a fully-qualified %0 -->
 
-        <copyFile file="draft.pdf" to="%0"/>
+        <copyFile file="draft.%1" to="%0"/>
       </upload>
     </process>
   </command>
 
-  <command name="xml2rfc.doXSL">
+  <command name="xml2rfc.doXSLtoHTML">
     <process>
-      <copyDocument to="__doc.xml"/>
+      <mkdir dir="resources"/>
+
+      <mkdir dir="raw"/>
+
+      <copyDocument to="__doc.xml">
+        <resources copyTo="resources" match=".+\.(png|jpg|jpeg|gif)"/>
+
+        <resources copyTo="raw" match="(?:.+/)?(.+)\.(\w+)"
+                   referenceAs="resources/$1.png"/>
+
+        <resources copyTo="resources" match=".+"/>
+      </copyDocument>
+
+      <convertImage format="png" from="raw" to="resources"/>
 
       <copyProcessResources resources="dtd/*.*" to="."/>
 
@@ -591,10 +661,12 @@
       <transform file="__doc2.xml" stylesheet="xsl/rfc2629.xslt"
                  to="draft.html"/>
 
-      <upload base="file:///">
+      <upload base="%0">
         <!-- we always get a fully-qualified %0 -->
 
         <copyFile file="draft.html" to="%0"/>
+
+        <copyFiles files="resources/*" toDir="resources"/>
       </upload>
     </process>
   </command>
@@ -611,24 +683,93 @@
     </macro>
   </command>
 
+  <!-- could have convertToSomething take an extra arg instead of
+       nearly repeating the code here -->
+
+  <command name="xml2rfc.convertToUnpg">
+    <macro>
+      <sequence>
+        <command name="xml2rfc.draftname"/>
+
+        <command name="selectFile" parameter="saveFileURL %p/%_.txt"/>
+
+        <command name="xml2rfc.convertDoc" parameter="%_ rfc unpg"/>
+      </sequence>
+    </macro>
+  </command>
+
   <command name="xml2rfc.webform">
     <class>com.att.research.fenner.xmleditapp.xml2rfc.WebForm</class>
+  </command>
+
+  <command name="xml2rfc.testformatter">
+    <class>com.att.research.fenner.xmleditapp.xml2rfc.TestFormatter</class>
+  </command>
+
+  <command name="xml2rfc.runformatter">
+    <class>com.att.research.fenner.xmleditapp.xml2rfc.RunFormatter</class>
+  </command>
+
+  <command name="xml2rfc.gettmpfile">
+    <class>com.att.research.fenner.xmleditapp.xml2rfc.GetTmpFile</class>
+  </command>
+
+  <command name="xml2rfc.pickfile">
+    <macro trace="true">
+      <sequence>
+        <choice>
+          <sequence>
+            <test expression="&quot;%0&quot; == &quot;unpg&quot;"/>
+
+            <set expression="txt" plainString="true" variable="extension"/>
+          </sequence>
+
+          <set expression="%0" plainString="true" variable="extension"/>
+        </choice>
+
+        <command name="xml2rfc.draftname"/>
+
+        <get expression="concat('%_', '.', $extension)"/>
+
+        <command name="selectFile" parameter="saveFile %p/%_"/>
+      </sequence>
+    </macro>
   </command>
 
   <command name="xml2rfc.convertViaWebForm">
     <macro>
       <sequence>
-        <command name="xml2rfc.draftname"/>
-
-        <!-- todo: saveFileURL and have WebForm save using xxe primitives -->
-
-        <command name="selectFile" parameter="saveFile %p/%_.%0"/>
+        <command name="xml2rfc.pickfile" parameter="%0"/>
 
         <command name="xml2rfc.webform" parameter="'%D' %0 '%_'"/>
 
         <test expression="'%_' != ''"/>
 
         <command name="alert" parameter="Conversion Completed, output in %_"/>
+      </sequence>
+    </macro>
+  </command>
+
+  <command name="xml2rfc.convertViaFormatter">
+    <macro trace="true">
+      <sequence>
+        <command name="xml2rfc.pickfile" parameter="%0"/>
+
+        <command name="xml2rfc.runformatter" parameter="'%D' %0 '%_'"/>
+
+        <set expression="%_" plainString="true" variable="result"/>
+
+        <choice>
+          <sequence>
+            <test expression="$result != &quot;&quot;"/>
+
+            <get expression="$result"/>
+
+            <command name="alert" parameter="%_"/>
+          </sequence>
+
+          <command name="alert" parameter="Conversion Complete."/>
+        </choice>
       </sequence>
     </macro>
   </command>
@@ -687,10 +828,44 @@
     </macro>
   </command>
 
-  <command name="xml2rfc.previewTXTViaWebForm">
+  <command name="xml2rfc.previewViaFormatter">
     <macro>
       <sequence>
-        <command name="xml2rfc.webform" parameter="'%D' txt"/>
+        <command name="xml2rfc.gettmpfile" parameter="%0"/>
+
+        <set expression="%_" plainString="true" variable="tmpfile"/>
+
+        <get expression="$tmpfile"/>
+
+        <command name="xml2rfc.runformatter" parameter="'%D' %0 '%_'"/>
+
+        <set expression="%_" plainString="true" variable="result"/>
+
+        <!-- runformatter returns null when it fails -->
+
+        <choice>
+          <sequence>
+            <test expression="$result != &quot;&quot;"/>
+
+            <get expression="$result"/>
+
+            <command name="alert" parameter="%_"/>
+          </sequence>
+
+          <sequence>
+            <get expression="$tmpfile"/>
+
+            <command name="viewHTML" parameter="%_"/>
+          </sequence>
+        </choice>
+      </sequence>
+    </macro>
+  </command>
+
+  <command name="xml2rfc.previewViaWebForm">
+    <macro>
+      <sequence>
+        <command name="xml2rfc.webform" parameter="'%D' %0"/>
 
         <set expression="%_" plainString="true" variable="tmpfile"/>
 
@@ -698,54 +873,9 @@
 
         <test expression="$tmpfile != ''"/>
 
-        <choice>
-          <sequence>
-            <command name="xml2rfc.os" parameter="windows"/>
+        <get expression="$tmpfile"/>
 
-            <get expression="$tmpfile"/>
-
-            <command name="start"
-                     parameter="start &quot;&quot; &quot;%_&quot;"/>
-          </sequence>
-
-          <sequence>
-            <command name="xml2rfc.os" parameter="mac"/>
-
-            <get expression="$tmpfile"/>
-
-            <command name="start" parameter="open &quot;%_&quot;"/>
-          </sequence>
-
-          <sequence>
-            <command name="xml2rfc.os" parameter="genericunix"/>
-
-            <get expression="$tmpfile"/>
-
-            <command name="start" parameter="xterm -e &quot;less '%_'&quot;"/>
-          </sequence>
-        </choice>
-
-        <choice>
-          <sequence>
-            <command name="xml2rfc.os" parameter="windows"/>
-
-            <command name="run" parameter="ping -n 10 127.0.0.1 &gt; NUL:"/>
-
-            <get expression="$tmpfile"/>
-
-            <command name="run" parameter="del %_"/>
-          </sequence>
-
-          <sequence>
-            <command name="xml2rfc.os" parameter="unix"/>
-
-            <command name="run" parameter="sleep 10"/>
-
-            <get expression="$tmpfile"/>
-
-            <command name="run" parameter="rm %_"/>
-          </sequence>
-        </choice>
+        <command name="viewHTML" parameter="%_"/>
       </sequence>
     </macro>
   </command>
@@ -763,14 +893,19 @@
   </command>
 
   <menu label="XML2RFC">
-    <item command="xml2rfc.preview" label="HTML Preview"/>
+    <item command="xml2rfc.previewViaFormatter" label="HTML Preview"
+          parameter="html"/>
 
-    <item command="xml2rfc.previewTXT" label="Text Preview"/>
+    <item command="xml2rfc.previewViaFormatter" label="Text Preview"
+          parameter="txt"/>
 
     <item command="xml2rfc.previewXSL" label="HTML Preview using XSL"/>
 
-    <item command="xml2rfc.previewTXTViaWebForm"
-          label="Text Preview using xml.resource.org"/>
+    <item command="xml2rfc.previewViaWebForm"
+          label="Text Preview using xml.resource.org" parameter="txt"/>
+
+    <item command="xml2rfc.previewViaWebForm"
+          label="HTML Preview using xml.resource.org" parameter="html"/>
 
     <item command="xml2rfc.addRFCInclude"
           label="Insert &lt;?rfc include=''?&gt;"/>
@@ -798,17 +933,32 @@
 
         <item command="xml2rfc.convertViaWebForm"
               label="Convert to &quot;canonical&quot; XML" parameter="xml"/>
+
+        <item command="xml2rfc.convertViaWebForm"
+              label="Convert to unpaginated text" parameter="unpg"/>
       </menu>
 
-      <item command="xml2rfc.convertToSomething" label="Convert to Text"
-            parameter="rfc txt"/>
+      <item command="xml2rfc.convertViaFormatter" label="Convert to Text"
+            parameter="txt"/>
 
-      <item command="xml2rfc.convertToSomething" label="Convert to HTML"
-            parameter="html html"/>
+      <item command="xml2rfc.convertViaFormatter" label="Convert to HTML"
+            parameter="html"/>
 
       <item command="xml2rfc.toHTMLUsingXSL" label="Convert to HTML using XSL"/>
 
-      <item command="xml2rfc.toPDFUsingXSL" label="Convert to PDF using XSL"/>
+      <item command="xml2rfc.toSomethingUsingXSLFO"
+            label="Convert to PDF using XSL-FO" parameter="pdf"/>
+
+      <item command="xml2rfc.convertViaFormatter"
+            label="Convert to &quot;canonical&quot; XML" parameter="xml"/>
+
+      <!-- FOP's txt mode doesn't really work... maybe it would with more tuning.
+      <item command="xml2rfc.toSomethingUsingXSLFO" label="Convert to TXT using XSL-FO"
+            parameter="txt"/>
+-->
+
+      <item command="xml2rfc.convertViaFormatter"
+            label="Convert to unpaginated text" parameter="unpg"/>
     </menu>
   </menu>
 
@@ -967,7 +1117,7 @@
 
   <elementTemplate name="reference" selectable="override">
     <reference anchor="Anchor" xmlns=""><front><title>
-    </title><author><organization> </organization></author><date year="2005"/></front></reference>
+    </title><author><organization> </organization></author><date/></front></reference>
   </elementTemplate>
 
   <elementTemplate name="vspace" selectable="override">
