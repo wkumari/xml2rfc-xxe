@@ -4,7 +4,6 @@
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xmlns:xs="http://www.w3.org/2001/XMLSchema"
                xmlns:cfg="http://www.xmlmind.com/xmleditor/schema/configuration">
-
   <help location="xml2rfc_help.jar"/>
 
   <!-- Claim an XML document if:
@@ -13,16 +12,21 @@
        - its root element is <reference> with no namespace
          (this is for editing the include files directly)
   -->
+
   <detect>
     <or>
       <dtdSystemId>rfc2629.dtd</dtdSystemId>
+
       <and>
-	<rootElementLocalName>rfc</rootElementLocalName>
-	<rootElementNamespace xsi:nil='true' />
+        <rootElementLocalName>rfc</rootElementLocalName>
+
+        <rootElementNamespace xsi:nil="true"/>
       </and>
+
       <and>
-	<rootElementLocalName>reference</rootElementLocalName>
-	<rootElementNamespace xsi:nil='true' />
+        <rootElementLocalName>reference</rootElementLocalName>
+
+        <rootElementNamespace xsi:nil="true"/>
       </and>
     </or>
   </detect>
@@ -35,15 +39,18 @@
        Also, since xml2rfc pre-1.29 doesn't support UTF-8, make sure
        that the file is saved in US-ASCII with non-ASCII characters
        entity-encoded. -->
+
   <saveOptions cdataSectionElements="artwork" encoding="US-ASCII"/>
 
   <!-- make sure that artwork is loaded with space preserved -->
-  <cfg:preserveSpace xmlns="" elements="artwork" />
+
+  <preserveSpace elements="artwork"/>
 
   <!-- Template blank documents adapted from xml2rfc distribution's
        contrib/fred.baker/new-draft.xml -->
 
   <template location="empty-draft.xml" name="Empty Internet-Draft"/>
+
   <template location="new-draft.xml" name="Baker Sample Internet-Draft"/>
 
   <!-- Bindings =========================================================== -->
@@ -124,57 +131,91 @@
   <command name="xml2rfc.decrSectionLevel">
     <macro undoable="true">
       <sequence>
-	<!-- Can I run: does my enclosing section (or myself) have
+        <!-- Can I run: does my enclosing section (or myself) have
 	     a parent? -->
-	<test expression="$implicitElement/ancestor-or-self::section[position()=1]/parent::section[position()=1]"/>
-	<!-- select the section containing the cursor -->
-	<command name="selectNode" parameter="ancestorOrSelf[implicitElement] section"/>
-	<!-- Remember where the parent section is -->
-	<set variable="anchor" expression="$selected/parent::section"/>
-	<!-- cut the original section -->
-	<command name="cut" />
-	<!-- select the original parent section -->
-	<set variable="selected" expression="$anchor"/>
-	<!-- paste the old section after -->
-	<command name="paste" parameter="after"/>
+
+        <test expression="$implicitElement/ancestor-or-self::section[position()=1]/parent::section[position()=1]"/>
+
+        <!-- select the section containing the cursor -->
+
+        <command name="selectNode"
+                 parameter="ancestorOrSelf[implicitElement] section"/>
+
+        <!-- Remember where the parent section is -->
+
+        <set expression="$selected/parent::section" variable="anchor"/>
+
+        <!-- cut the original section -->
+
+        <command name="cut"/>
+
+        <!-- select the original parent section -->
+
+        <set expression="$anchor" variable="selected"/>
+
+        <!-- paste the old section after -->
+
+        <command name="paste" parameter="after"/>
       </sequence>
     </macro>
   </command>
 
   <!-- to do: if I'm the last child, insert an empty section above me? -->
+
   <command name="xml2rfc.incrSectionLevel">
     <macro undoable="true">
       <sequence>
-	<!-- Call "currentsection" either me (if I'm a section) or my
+        <!-- Call "currentsection" either me (if I'm a section) or my
               first ancestor section.
 	     That's the first ./ancestor-or-self bit.
 	     Permission to run: currentsection has a preceding sibling
 	      section.
 	     -->
-	<test expression="$implicitElement/ancestor-or-self::section[position()=1]/preceding-sibling::section[position()=1]"/>
-	<!-- select the section containing the cursor -->
-	<command name="selectNode" parameter="ancestorOrSelf[implicitElement] section"/>
-	<!-- find the previous sibling's last section (or content element)
+
+        <test expression="$implicitElement/ancestor-or-self::section[position()=1]/preceding-sibling::section[position()=1]"/>
+
+        <!-- select the section containing the cursor -->
+
+        <command name="selectNode"
+                 parameter="ancestorOrSelf[implicitElement] section"/>
+
+        <!-- find the previous sibling's last section (or content element)
 	     either we want //section[position()=last()] or if
 	     there is no section child, we want //*[position()=last()]
 	     I feel like this choice is a hack, to try the second pattern
 	     if the first one failed. -->
-	<set variable="anchor" context="$selected" expression="preceding-sibling::section[position()=1]//section[position()=last()]"/>
-	<choice>
-	  <sequence>
-	    <test expression="not($anchor)"/>
-	    <set variable="anchor" context="$selected" expression="preceding-sibling::section[position()=1]/*[position()=last()]"/>
-	  </sequence>
-	  <test expression="1"/>
-	</choice>
-	<!-- fail if this got no result -->
-	<test expression="$anchor"/>
-	<!-- cut it -->
-	<command name="cut"/>
-	<!-- select the previos sibling's last section -->
-	<set variable="selected" expression="$anchor"/>
-	<!-- paste it -->
-	<command name="paste" parameter="after"/>
+
+        <set context="$selected"
+             expression="preceding-sibling::section[position()=1]//section[position()=last()]"
+             variable="anchor"/>
+
+        <choice>
+          <sequence>
+            <test expression="not($anchor)"/>
+
+            <set context="$selected"
+                 expression="preceding-sibling::section[position()=1]/*[position()=last()]"
+                 variable="anchor"/>
+          </sequence>
+
+          <test expression="1"/>
+        </choice>
+
+        <!-- fail if this got no result -->
+
+        <test expression="$anchor"/>
+
+        <!-- cut it -->
+
+        <command name="cut"/>
+
+        <!-- select the previos sibling's last section -->
+
+        <set expression="$anchor" variable="selected"/>
+
+        <!-- paste it -->
+
+        <command name="paste" parameter="after"/>
       </sequence>
     </macro>
   </command>
@@ -182,15 +223,23 @@
   <command name="xml2rfc.convertToList">
     <macro undoable="true">
       <sequence>
-	<match context="$selected" pattern="t"/>
-	<!-- cut the selected elements -->
-	<command name="cut" />
-	<!-- insert a new list element where the elements were removed from -->
-	<command name="insert" parameter="into list"/>
-	<!-- select the implicitly created t item inside the list -->
-	<command name="selectNode" parameter="firstChild"/>
-	<!-- replace it with what was selected -->
-	<command name="paste" parameter="to"/>
+        <match context="$selected" pattern="t"/>
+
+        <!-- cut the selected elements -->
+
+        <command name="cut"/>
+
+        <!-- insert a new list element where the elements were removed from -->
+
+        <command name="insert" parameter="into list"/>
+
+        <!-- select the implicitly created t item inside the list -->
+
+        <command name="selectNode" parameter="firstChild"/>
+
+        <!-- replace it with what was selected -->
+
+        <command name="paste" parameter="to"/>
       </sequence>
     </macro>
   </command>
@@ -212,30 +261,38 @@
   <command name="xml2rfc.insertSectionSameLevel">
     <macro undoable="true">
       <sequence>
-	<!-- 1. select parent section -->
-	<command name="selectNode" parameter="ancestorOrSelf[implicitElement] section"/>
-	<!-- 2. insertAfter section -->
-	<command name="insert" parameter="after section"/>
+        <!-- 1. select parent section -->
+
+        <command name="selectNode"
+                 parameter="ancestorOrSelf[implicitElement] section"/>
+
+        <!-- 2. insertAfter section -->
+
+        <command name="insert" parameter="after section"/>
       </sequence>
     </macro>
   </command>
 
   <!-- easy way to insert same element -->
+
   <binding>
-    <keyPressed code="ENTER" modifiers="mod" />
-    <command name="xml2rfc.appendSame" />
+    <keyPressed code="ENTER" modifiers="mod"/>
+
+    <command name="xml2rfc.appendSame"/>
   </binding>
 
   <binding>
-    <keyPressed code="ENTER" modifiers="mod shift" />
-    <command name="xml2rfc.prependSame" />
+    <keyPressed code="ENTER" modifiers="mod shift"/>
+
+    <command name="xml2rfc.prependSame"/>
   </binding>
 
   <command name="xml2rfc.appendSame">
     <macro>
       <sequence>
-        <command name="selectNode" parameter="selfOrElement" />
-        <command name="insertNode" parameter="sameElementAfter" />
+        <command name="selectNode" parameter="selfOrElement"/>
+
+        <command name="insertNode" parameter="sameElementAfter"/>
       </sequence>
     </macro>
   </command>
@@ -243,29 +300,37 @@
   <command name="xml2rfc.prependSame">
     <macro>
       <sequence>
-        <command name="selectNode" parameter="selfOrElement" />
-        <command name="insertNode" parameter="sameElementBefore" />
+        <command name="selectNode" parameter="selfOrElement"/>
+
+        <command name="insertNode" parameter="sameElementBefore"/>
       </sequence>
     </macro>
   </command>
 
   <!-- totally random binding -->
+
   <binding>
-    <keyPressed code="F6" />
-    <command name="xml2rfc.addRFCInclude" />
+    <keyPressed code="F6"/>
+
+    <command name="xml2rfc.addRFCInclude"/>
   </binding>
 
   <command name="xml2rfc.addRFCInclude">
     <macro undoable="true">
       <sequence>
         <choice>
-	  <command name="insertNode" parameter="piInto[implicitElement] rfc" />
-	  <command name="insertNode" parameter="piAfter[implicitNode] rfc" />
-	  <command name="insertNode" parameter="piAfter[implicitElement] rfc" />
+          <command name="insertNode" parameter="piInto[implicitElement] rfc"/>
+
+          <command name="insertNode" parameter="piAfter[implicitNode] rfc"/>
+
+          <command name="insertNode" parameter="piAfter[implicitElement] rfc"/>
         </choice>
-	<command name="insertString" parameter="include='reference.'" />
-	<!-- assuming the newly inserted element is selected -->
-	<set variable="dotOffset" expression="19" />
+
+        <command name="insertString" parameter="include='reference.'"/>
+
+        <!-- assuming the newly inserted element is selected -->
+
+        <set expression="19" variable="dotOffset"/>
       </sequence>
     </macro>
   </command>
@@ -280,7 +345,8 @@
     <process>
       <!-- US-ASCII because xml2rfc pre-1.29 doesn't support UTF-8, but does
            support entity-encoded characters -->
-      <copyDocument to="__doc.xml" encoding="US-ASCII"/>
+
+      <copyDocument encoding="US-ASCII" to="__doc.xml"/>
 
       <shell command="xml2html __doc.xml preview.html"/>
 
@@ -329,13 +395,16 @@
     <process>
       <!-- US-ASCII because xml2rfc pre-1.29 doesn't support UTF-8, but does
            support entity-encoded characters -->
-      <copyDocument to="__doc.xml" encoding="US-ASCII"/>
+
+      <copyDocument encoding="US-ASCII" to="__doc.xml"/>
 
       <shell command="xml2%1 __doc.xml draft.%2"/>
 
       <delete files="__doc.xml"/>
 
-      <upload base="file:///">	<!-- we always get a fully-qualified %0 -->
+      <upload base="file:///">
+        <!-- we always get a fully-qualified %0 -->
+
         <copyFile file="draft.%2" to="%0"/>
       </upload>
     </process>
@@ -349,7 +418,8 @@
     <process>
       <!-- US-ASCII because xml2rfc pre-1.29 doesn't support UTF-8, but does
            support entity-encoded characters -->
-      <copyDocument to="__doc.xml" encoding="US-ASCII"/>
+
+      <copyDocument encoding="US-ASCII" to="__doc.xml"/>
 
       <shell command="xml2rfc __doc.xml preview.txt"/>
 
@@ -382,6 +452,7 @@
 
       <transform file="__doc.xml" stylesheet="xsl/expand-pi-rfc-include.xslt"
                  to="__doc2.xml"/>
+
       <transform file="__doc2.xml" stylesheet="xsl/rfc2629.xslt"
                  to="preview.html"/>
 
@@ -448,11 +519,12 @@
                  to="__doc2.xml"/>
 
       <transform file="__doc2.xml" stylesheet="xsl/check-ietf-references.xslt"
-      		 to="reference-check.txt"/>
+                 to="reference-check.txt"/>
 
       <shell command="open reference-check.txt" platform="Mac"/>
 
-      <shell command="start &quot;&quot; reference-check.txt" platform="Windows"/>
+      <shell command="start &quot;&quot; reference-check.txt"
+             platform="Windows"/>
 
       <shell command="xterm -e &quot;less reference-check.txt&quot;"
              platform="GenericUnix"/>
@@ -469,8 +541,6 @@
     </process>
   </command>
 
-
-
   <command name="xml2rfc.doPDF">
     <process>
       <copyDocument to="__doc.xml"/>
@@ -479,6 +549,7 @@
 
       <transform file="__doc.xml" stylesheet="xsl/expand-pi-rfc-include.xslt"
                  to="__doc2.xml"/>
+
       <transform file="__doc2.xml" stylesheet="xsl/rfc2629toFO.xslt"
                  to="__doc.fo"/>
 
@@ -500,7 +571,9 @@
         </processFO>
       </processFO>
 
-      <upload base="file:///">	<!-- we always get a fully-qualified %0 -->
+      <upload base="file:///">
+        <!-- we always get a fully-qualified %0 -->
+
         <copyFile file="draft.pdf" to="%0"/>
       </upload>
     </process>
@@ -514,10 +587,13 @@
 
       <transform file="__doc.xml" stylesheet="xsl/expand-pi-rfc-include.xslt"
                  to="__doc2.xml"/>
+
       <transform file="__doc2.xml" stylesheet="xsl/rfc2629.xslt"
                  to="draft.html"/>
 
-      <upload base="file:///">	<!-- we always get a fully-qualified %0 -->
+      <upload base="file:///">
+        <!-- we always get a fully-qualified %0 -->
+
         <copyFile file="draft.html" to="%0"/>
       </upload>
     </process>
@@ -544,14 +620,15 @@
       <sequence>
         <command name="xml2rfc.draftname"/>
 
-	<!-- todo: saveFileURL and have WebForm save using xxe primitives -->
+        <!-- todo: saveFileURL and have WebForm save using xxe primitives -->
+
         <command name="selectFile" parameter="saveFile %p/%_.%0"/>
 
         <command name="xml2rfc.webform" parameter="'%D' %0 '%_'"/>
 
-	<test expression="'%_' != ''" />
+        <test expression="'%_' != ''"/>
 
-	<command name="alert" parameter="Conversion Completed, output in %_" />
+        <command name="alert" parameter="Conversion Completed, output in %_"/>
       </sequence>
     </macro>
   </command>
@@ -563,30 +640,49 @@
   <command name="xml2rfc.externalEdit">
     <macro>
       <sequence>
-	<!-- This command is only executable if the file is local -->
-	<test expression="'%D' != ''" />
-	<!-- to do: use the os return value to decide on a file that has the pick list -->
-	<!-- (mostly for user modification convenience; we already need to do a per-OS startup method) -->
-	<command name="XXE.save" parameter="[ifNeeded]" />
-	<choice>
-	  <sequence>
-	    <command name="xml2rfc.os" parameter="windows" />
-	    <command name="pick" parameter="Application false Notepad XMLSpy" />
-	    <command name="start" parameter='start "" "%_" "%D"' />
-	  </sequence>
-	  <sequence>
-	    <command name="xml2rfc.os" parameter="mac" />
-	    <command name="pick" parameter="Application false TextEdit TextWrangler BBEdit" />
-	    <command name="start" parameter='open -a "%_" "%D"' />
-	  </sequence>
-	  <sequence>
-	    <command name="xml2rfc.os" parameter="genericunix" />
-	    <command name="pick" parameter="Application false vi emacs" />
-	    <command name="start" parameter='xterm -e "&apos;%_&apos; &apos;%D&apos;"' />
-	  </sequence>
-	</choice>
-	<command name="alert" parameter="Click OK when done editing and saved." />
-	<command name="XXE.open" parameter="[reopenIfNewer]" />
+        <!-- This command is only executable if the file is local -->
+
+        <test expression="'%D' != ''"/>
+
+        <!-- to do: use the os return value to decide on a file that has the pick list -->
+
+        <!-- (mostly for user modification convenience; we already need to do a per-OS startup method) -->
+
+        <command name="XXE.save" parameter="[ifNeeded]"/>
+
+        <choice>
+          <sequence>
+            <command name="xml2rfc.os" parameter="windows"/>
+
+            <command name="pick" parameter="Application false Notepad XMLSpy"/>
+
+            <command name="start"
+                     parameter="start &quot;&quot; &quot;%_&quot; &quot;%D&quot;"/>
+          </sequence>
+
+          <sequence>
+            <command name="xml2rfc.os" parameter="mac"/>
+
+            <command name="pick"
+                     parameter="Application false TextEdit TextWrangler BBEdit"/>
+
+            <command name="start"
+                     parameter="open -a &quot;%_&quot; &quot;%D&quot;"/>
+          </sequence>
+
+          <sequence>
+            <command name="xml2rfc.os" parameter="genericunix"/>
+
+            <command name="pick" parameter="Application false vi emacs"/>
+
+            <command name="start" parameter="xterm -e &quot;'%_' '%D'&quot;"/>
+          </sequence>
+        </choice>
+
+        <command name="alert"
+                 parameter="Click OK when done editing and saved."/>
+
+        <command name="XXE.open" parameter="[reopenIfNewer]"/>
       </sequence>
     </macro>
   </command>
@@ -595,90 +691,115 @@
     <macro>
       <sequence>
         <command name="xml2rfc.webform" parameter="'%D' txt"/>
-	<set variable="tmpfile" expression="%_" plainString="true"/>
-	<!-- webform returns null when it fails -->
-	<test expression="$tmpfile != ''"/>
-	<choice>
-	  <sequence>
-	    <command name="xml2rfc.os" parameter="windows"/>
-	    <get expression="$tmpfile"/>
-	    <command name="start" parameter='start "" "%_"'/>
-	  </sequence>
-	  <sequence>
-	    <command name="xml2rfc.os" parameter="mac"/>
-	    <get expression="$tmpfile"/>
-	    <command name="start" parameter='open "%_"'/>
-	  </sequence>
-	  <sequence>
-	    <command name="xml2rfc.os" parameter="genericunix"/>
-	    <get expression="$tmpfile"/>
-	    <command name="start" parameter='xterm -e "less &apos;%_&apos;"'/>
-	  </sequence>
-	</choice>
-	<choice>
-	  <sequence>
-	    <command name="xml2rfc.os" parameter="windows"/>
-	    <command name="run" parameter="ping -n 10 127.0.0.1 &gt; NUL:"/>
-	    <get expression="$tmpfile"/>
-	    <command name="run" parameter="del %_" />
-	  </sequence>
-	  <sequence>
-	    <command name="xml2rfc.os" parameter="unix"/>
-	    <command name="run" parameter="sleep 10"/>
-	    <get expression="$tmpfile"/>
-	    <command name="run" parameter="rm %_" />
-	  </sequence>
-	</choice>
+
+        <set expression="%_" plainString="true" variable="tmpfile"/>
+
+        <!-- webform returns null when it fails -->
+
+        <test expression="$tmpfile != ''"/>
+
+        <choice>
+          <sequence>
+            <command name="xml2rfc.os" parameter="windows"/>
+
+            <get expression="$tmpfile"/>
+
+            <command name="start"
+                     parameter="start &quot;&quot; &quot;%_&quot;"/>
+          </sequence>
+
+          <sequence>
+            <command name="xml2rfc.os" parameter="mac"/>
+
+            <get expression="$tmpfile"/>
+
+            <command name="start" parameter="open &quot;%_&quot;"/>
+          </sequence>
+
+          <sequence>
+            <command name="xml2rfc.os" parameter="genericunix"/>
+
+            <get expression="$tmpfile"/>
+
+            <command name="start" parameter="xterm -e &quot;less '%_'&quot;"/>
+          </sequence>
+        </choice>
+
+        <choice>
+          <sequence>
+            <command name="xml2rfc.os" parameter="windows"/>
+
+            <command name="run" parameter="ping -n 10 127.0.0.1 &gt; NUL:"/>
+
+            <get expression="$tmpfile"/>
+
+            <command name="run" parameter="del %_"/>
+          </sequence>
+
+          <sequence>
+            <command name="xml2rfc.os" parameter="unix"/>
+
+            <command name="run" parameter="sleep 10"/>
+
+            <get expression="$tmpfile"/>
+
+            <command name="run" parameter="rm %_"/>
+          </sequence>
+        </choice>
       </sequence>
     </macro>
   </command>
 
   <!-- copied from xxe documentation -->
+
   <command name="xml2rfc.insertAfterAsParagraphs">
     <macro>
-      <sequence> 
-        <command name="makeParagraphs" parameter="[blocks] %0" />
-        <command name="paste" parameter="after[implicitElement] %_" />
+      <sequence>
+        <command name="makeParagraphs" parameter="[blocks] %0"/>
+
+        <command name="paste" parameter="after[implicitElement] %_"/>
       </sequence>
     </macro>
   </command>
 
-  <menu label="XML2RFC" mnemonic="X">
-    <item command="xml2rfc.preview" label="HTML Preview" mnemonic="v">
-      <accelerator code="F5"/>
-    </item>
+  <menu label="XML2RFC">
+    <item command="xml2rfc.preview" label="HTML Preview"/>
 
     <item command="xml2rfc.previewTXT" label="Text Preview"/>
 
     <item command="xml2rfc.previewXSL" label="HTML Preview using XSL"/>
 
-    <item command="xml2rfc.previewTXTViaWebForm" label="Text Preview using xml.resource.org"/>
+    <item command="xml2rfc.previewTXTViaWebForm"
+          label="Text Preview using xml.resource.org"/>
 
-    <item command="xml2rfc.addRFCInclude" label="Insert &lt;?rfc include=''?&gt;" />
+    <item command="xml2rfc.addRFCInclude"
+          label="Insert &lt;?rfc include=''?&gt;"/>
 
     <item command="xml2rfc.externalEdit" label="Edit in..."/>
 
     <item command="xml2rfc.checkIetfReferences" label="Check IETF References"/>
 
-    <item command="xml2rfc.insertAfterAsParagraphs" label="Paste as Paragraphs"
-	  parameter="t"/>
+    <item command="xml2rfc.insertAfterAsParagraphs"
+          label="Paste as Paragraphs" parameter="t"/>
 
-    <item command="xml2rfc.convertToList" label="Convert Selected Paragraphs to List"/>
+    <item command="xml2rfc.convertToList"
+          label="Convert Selected Paragraphs to List"/>
 
     <menu label="Convert">
       <menu label="...using xml.resource.org">
-	<item command="xml2rfc.convertViaWebForm" label="Convert to Text"
-	      parameter="txt"/>
+        <item command="xml2rfc.convertViaWebForm" label="Convert to Text"
+              parameter="txt"/>
 
-	<item command="xml2rfc.convertViaWebForm" label="Convert to HTML"
-	      parameter="html"/>
+        <item command="xml2rfc.convertViaWebForm" label="Convert to HTML"
+              parameter="html"/>
 
-	<item command="xml2rfc.convertViaWebForm" label="Convert to nroff"
-	      parameter="nr"/>
+        <item command="xml2rfc.convertViaWebForm" label="Convert to nroff"
+              parameter="nr"/>
 
-	<item command="xml2rfc.convertViaWebForm" label="Convert to &quot;canonical&quot; XML"
-	      parameter="xml"/>
+        <item command="xml2rfc.convertViaWebForm"
+              label="Convert to &quot;canonical&quot; XML" parameter="xml"/>
       </menu>
+
       <item command="xml2rfc.convertToSomething" label="Convert to Text"
             parameter="rfc txt"/>
 
@@ -718,8 +839,9 @@
   <command name="xml2rfc.addBlock">
     <macro>
       <choice>
-	<command name="insert" parameter="into %0"/>
-	<command name="insert" parameter="after[implicitElement] %0"/>
+        <command name="insert" parameter="into %0"/>
+
+        <command name="insert" parameter="after[implicitElement] %0"/>
       </choice>
     </macro>
   </command>
@@ -785,7 +907,8 @@
       <command name="selectById" parameter="swapIdAndReference"/>
     </button>
 
-    <button icon="icons/navigatePrevious2.gif" toolTip="Prev xref to same target">
+    <button icon="icons/navigatePrevious2.gif"
+            toolTip="Prev xref to same target">
       <command name="selectById" parameter="previousReference"/>
     </button>
 
@@ -817,8 +940,7 @@
   <!-- Templates ========================================================== -->
 
   <elementTemplate name="figure" selectable="override">
-    <figure
-    xmlns=""><preamble>(preamble)</preamble><artwork>artwork</artwork><postamble>(postamble)</postamble></figure>
+    <figure xmlns=""><preamble>(preamble)</preamble><artwork>artwork</artwork><postamble>(postamble)</postamble></figure>
   </elementTemplate>
 
   <elementTemplate name="section" selectable="override">
@@ -845,14 +967,12 @@
 
   <elementTemplate name="reference" selectable="override">
     <reference anchor="Anchor" xmlns=""><front><title>
-    </title><author><organization> </organization></author><date
-    year="2005"/></front></reference>
+    </title><author><organization> </organization></author><date year="2005"/></front></reference>
   </elementTemplate>
 
   <elementTemplate name="vspace" selectable="override">
     <vspace blankLines="1" xmlns=""/>
   </elementTemplate>
-
 </configuration>
 <!-- To Do:
      - see css for formatting todo list
