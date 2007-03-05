@@ -1089,7 +1089,7 @@
 
   <!-- Templates ========================================================== -->
 
-  <elementTemplate name="figure" selectable="override">
+  <elementTemplate name="pre_postambles" selectable="true">
     <figure xmlns=""><preamble>(preamble)</preamble><artwork>artwork</artwork><postamble>(postamble)</postamble></figure>
   </elementTemplate>
 
@@ -1098,9 +1098,11 @@
   </elementTemplate>
 
   <elementTemplate name="texttable" selectable="override">
-    <texttable xmlns=""><preamble>(preamble)</preamble><ttcol>Column
-    1</ttcol><ttcol>Column 2</ttcol><c>Data 1</c><c>Data
-    2</c><postamble>(postamble)</postamble></texttable>
+    <texttable xmlns=""><ttcol>C1</ttcol><ttcol>C2</ttcol><c>D1</c><c>D2</c></texttable>
+  </elementTemplate>
+
+  <elementTemplate name="pre_postambles" selectable="true">
+    <texttable xmlns=""><preamble>(preamble)</preamble><ttcol>C1</ttcol><ttcol>C2</ttcol><c>D1</c><c>D2</c><postamble>(postamble)</postamble></texttable>
   </elementTemplate>
 
   <elementTemplate name="author" parent="front" selectable="override">
