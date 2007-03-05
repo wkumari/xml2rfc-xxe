@@ -150,6 +150,7 @@ date {
  * Make it all red if it's a reference element that's not referenced, or
  *  if it's a duplicate.
  */
+/* to do: "add anchor" button, icon(left-target) */
 *::attribute(anchor) {
 	attribute-content-left: "[a:";
 	attribute-content-middle: text-field(attribute, anchor, columns, 10);
@@ -260,7 +261,7 @@ eref::attribute {
  */
 xref:after {
 	display: inline;
-	content: attributes() " [" xpath("if(id(@target)/@title, id(@target)/@title, id(@target)/front/title, id(@target)/front/title, id(@target), 'ok', //processing-instruction('rfc')[starts-with(normalize-space(.),'include=') and substring(normalize-space(.), 10, 10)='reference.' and ((starts-with(current()/@target, 'RFC') and substring-after(substring(normalize-space(.), 20, string-length(normalize-space(.))-20), 'RFC.')=substring-after(current()/@target, 'RFC')) or (starts-with(current()/@target, 'RFC')=false and substring(normalize-space(.), 20, string-length(normalize-space(.))-20)=current()/@target))], 'included', '(not found)')") "]";
+	content: attributes() command-button(icon, icon(target-right), command, "putAttribute", parameter, "target") " [" xpath("if(id(@target)/@title, id(@target)/@title, id(@target)/front/title, id(@target)/front/title, id(@target), 'ok', //processing-instruction('rfc')[starts-with(normalize-space(.),'include=') and substring(normalize-space(.), 10, 10)='reference.' and ((starts-with(current()/@target, 'RFC') and substring-after(substring(normalize-space(.), 20, string-length(normalize-space(.))-20), 'RFC.')=substring-after(current()/@target, 'RFC')) or (starts-with(current()/@target, 'RFC')=false and substring(normalize-space(.), 20, string-length(normalize-space(.))-20)=current()/@target))], 'included', '(not found)')") "]";
 	color: purple;
 }
 eref:after {
@@ -351,7 +352,9 @@ list::attribute() {
 /* A handle for the list */
 /* todo: offer an easy way to convert[wrap] <t> if needed? */
 list:before {
-	content: icon(right) "[list style " xpath('if(@style,@style,if(ancestor::list[@style],concat(ancestor::list/@style, " [**inherited**]"),"empty [implicit]"))') attributes() xpath('if(local-name(..) = "t", "", " NOTE: list must be inside <t>")') "]";
+	content: icon(right) "[list style " xpath('if(@style,@style,if(ancestor::list[@style],concat(ancestor::list/@style, " [**inherited**]"),"empty [implicit]"))') attributes() xpath('if(local-name(..) = "t", "", " NOTE: list must be inside <t>")') combo-box(attribute,style,labels,"Emtpy\A Symbols\A Numbers\A Letters\A Hanging\A Format",values,"empty\A symbols\A numbers\A letters\A hanging\A format %d:") "]";
+	/* would like to have a text field for style if it starts with format */
+	/* would like the combobox to really be a menu underneath the element */
 	font-size: 80%;
 	color: concatenate(xpath('if(local-name(..) = "t" and not(not(@style) and ancestor::list[@style]),"#ff9900","red")'));
 }
