@@ -618,7 +618,7 @@ texttable > ttcol {
 }
 texttable > ttcol:before {
 	display: inline;
-	content: "  c" xpath("count(preceding-sibling::ttcol) + 1") ": ";
+	content: "  c" label(xpath,"count(preceding-sibling::ttcol) + 1") ": ";
 }
 texttable > c {
 	display: table-cell;
@@ -628,8 +628,8 @@ texttable > c:before {
 	display: inline;
 	/* to do: come up with better way to fix the result of mod */
 	content:
-		"r" xpath("round((count(preceding-sibling::c) + 1) div count(../ttcol) + 0.49)")
-		"c" xpath("if((count(preceding-sibling::c) + 1) mod count(../ttcol) = 0, count(../ttcol), (count(preceding-sibling::c) + 1) mod count(../ttcol))")
+		"r" label(xpath,"round((count(preceding-sibling::c) + 1) div count(../ttcol) + 0.49)")
+		"c" label(xpath,"if((count(preceding-sibling::c) + 1) mod count(../ttcol) = 0, count(../ttcol), (count(preceding-sibling::c) + 1) mod count(../ttcol))")
 		": ";
 }
 texttable:after {
