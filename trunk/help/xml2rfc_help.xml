@@ -28,9 +28,9 @@
     <title>Overview</title>
 
     <para>This xxe plugin attempts to support most of the rfc2629bis DTD, as
-    of xml2rfc release 1.29, April 5, 2005. This documentation for plugin
-    version %%VERSION%%. The plugin requires at least xxe 2.10 (released June
-    2, 2005) and has been tested up to 3.0 (released October 6, 2005).</para>
+    of xml2rfc release 1.31, July 27, 2006. This documentation is for plugin
+    version %%VERSION%%. The plugin requires at least xxe 3.3 (released June
+    15, 2006) and has been tested up to 3.4 (released July 28, 2006).</para>
 
     <para>This plugin can create text or HTML output using xml2rfc, if
     installed; it can also use xmlmind's native XSL support to generate HTML.
@@ -56,14 +56,7 @@
         include= in particular. (Wish: to be able to handle this like external
         entity references) (Partial &lt;?rfc include= support is described in
         <xref linkend="extref" />). The &lt;?rfc ?&gt; processing instructions
-        before the root element are supported by a custom editor</para>
-      </listitem>
-
-      <listitem>
-        <para>The RFC's description of &lt;list&gt; specifies that style is
-        inherited from nearest parent; DTD says that it defaults to empty. The
-        editor currently uses the DTD definition; java might be able to help
-        implement the other way.</para>
+        before the root element are supported by a custom editor.</para>
       </listitem>
     </itemizedlist>
 
@@ -787,6 +780,140 @@ r2c2: table</literallayout>
   </section>
 
   <section>
+    <title>Customization</title>
+
+    <para>There are a variety of customizations that can be accomplished with
+    files in the addon/ directory.</para>
+
+    <section>
+      <title>Pointing to other data sources</title>
+
+      <para>The xml2rfc plugin looks for various data using made up URI
+      prefixes; this allows for easy reconfiguration using XML Catalogs if you
+      have, e.g., a local bibliography mirror. To customize these, create a
+      file that looks like the following (with the URLs changed, of course) in
+      <filename>addon/my_xml2rfc_catalog.xml</filename>.<literallayout>&lt;?xml version="1.0"?&gt;
+&lt;catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog"
+         prefer="public"&gt;
+
+  &lt;rewriteURI uriStartString="xml2rfc-bibxml:"
+              rewritePrefix="http://xml.resource.org/public/rfc/bibxml/" /&gt;
+  &lt;rewriteURI uriStartString="xml2rfc-bibxml3:"
+              rewritePrefix="http://xml.resource.org/public/rfc/bibxml3/" /&gt;
+
+  &lt;rewriteURI uriStartString="xml2rfc-rfcindex:"
+              rewritePrefix="ftp://ftp.isi.edu/in-notes/" /&gt;
+  &lt;rewriteURI uriStartString="xml2rfc-ietfidstatus:"
+              rewritePrefix="http://rtg.ietf.org/~fenner/ietf/" /&gt;
+
+&lt;/catalog&gt;
+</literallayout>To do: give examples.</para>
+    </section>
+
+    <section>
+      <title>Configuring HTTP proxy, web conversion service, custom xsl,
+      etc.</title>
+
+      <para>These items go in the user configuration file for xxe, which is
+      named <filename>addon/customize.xxe</filename>. If you already have one,
+      add the lines inside the &lt;configuration&gt;...&lt;/configuration&gt;
+      below; if you don't have one, create it including the
+      &lt;configuration&gt; lines.<literallayout>&lt;?xml version='1.0' encoding='ISO-8859-1'?&gt;
+&lt;configuration
+ xmlns="http://www.xmlmind.com/xmleditor/schema/configuration"&gt;
+
+  &lt;property name="http.proxyHost"&gt;10.0.2.1&lt;/property&gt;
+  &lt;property name="http.proxyPort"&gt;3128&lt;/property&gt;
+  &lt;property name="xml2rfc.cgi"&gt;http://xml.resource.org/cgi-bin/xml2rfc-dev.cgi&lt;/property&gt;
+
+&lt;/configuration&gt;
+</literallayout>Properties that can be set:</para>
+
+      <informaltable>
+        <tgroup cols="2">
+          <thead>
+            <row>
+              <entry align="center">Property</entry>
+
+              <entry align="center">Meaning</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>http.proxyHost</entry>
+
+              <entry>Address or name of your HTTP proxy</entry>
+            </row>
+
+            <row>
+              <entry>http.proxyPort</entry>
+
+              <entry>Port number of your HTTP proxy</entry>
+            </row>
+
+            <row>
+              <entry>xml2rfc.cgi</entry>
+
+              <entry>URL for the online document converter</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+    </section>
+
+    <section>
+      <title>Customizing elements to add and other aspects of the
+      plugin</title>
+
+      <para>For more info, see the xxe documentation which uses a sample of
+      customizing docbook. This is a sample file, which would be installed as
+      <filename>addon/myxml2rfc/myxml2rfc.xxe</filename>. It adds a sample
+      template, makes the default view always include the document structure
+      at the bottom, and includes templates for adding myself as an author and
+      a comment attributed to me.</para>
+
+      <literallayout>&lt;?xml version="1.0"?&gt;
+&lt;configuration name="xml2rfc"
+  xmlns="http://www.xmlmind.com/xmleditor/schema/configuration"
+  xmlns:cfg="http://www.xmlmind.com/xmleditor/schema/configuration"&gt;
+
+  &lt;include location="../xml2rfc/xml2rfc.xxe"/&gt;
+
+  &lt;template location="my-starter-document.xml" name="A Great Starter Internet-Draft"/&gt;
+
+  &lt;windowLayout&gt;
+    &lt;center css="xml2rfc" /&gt;
+    &lt;bottom css="Document structure" size="0.15" /&gt;
+  &lt;/windowLayout&gt;
+
+  &lt;elementTemplate name="mine" selectable="true" xmlns=""&gt;
+    &lt;author fullname="Bill Fenner" initials="B." surname="Fenner"&gt;
+      &lt;organization&gt;AT&amp;amp;T Labs - Research&lt;/organization&gt;
+      &lt;address&gt;
+        &lt;postal&gt;
+          &lt;street&gt;75 Willow Rd&lt;/street&gt;
+          &lt;city&gt;Menlo Park&lt;/city&gt;
+          &lt;region&gt;CA&lt;/region&gt;
+          &lt;code&gt;94025&lt;/code&gt;
+          &lt;country&gt;USA&lt;/country&gt;
+        &lt;/postal&gt;
+        &lt;phone&gt;+1 650 330-7893&lt;/phone&gt;
+        &lt;email&gt;fenner@research.att.com&lt;/email&gt;
+      &lt;/address&gt;
+    &lt;/author&gt;
+  &lt;/elementTemplate&gt;
+
+  &lt;elementTemplate name="mine" selectable="true" xmlns=""&gt;
+    &lt;cref source="wcf"&gt;...&lt;/cref&gt;
+  &lt;/elementTemplate&gt;
+
+&lt;/configuration&gt;
+</literallayout>
+    </section>
+  </section>
+
+  <section>
     <title>Known Limitations</title>
 
     <itemizedlist>
@@ -823,6 +950,92 @@ r2c2: table</literallayout>
     <title>Change Log</title>
 
     <variablelist>
+      <varlistentry>
+        <term>0.7.3 - ???</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Update DTD and Entities to those supported in xml2rfc
+              1.31</para>
+            </listitem>
+
+            <listitem>
+              <para>Include the EDU template from <ulink
+              url="???">http://idunno/where/</ulink></para>
+            </listitem>
+
+            <listitem>
+              <para>Display the inherited or implicit list style; display the
+              list style in red and use a hanging text of "-?-" if it's using
+              the xml2rfc inherited style, which this style sheet doesn't
+              currently support. (This behavior, however, is probably an
+              advancement from displaying it as empty.)</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>0.7.2 - February 20, 2006</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Change to .xxe_addon deployment method</para>
+            </listitem>
+
+            <listitem>
+              <para>Use ${http_proxy} environment variable (commonly used on
+              UNIX), if Java's proxy settings aren't set. This may only work
+              with a 1.5 runtime, since getenv was deprecated for a while. If
+              it doesn't work, it'll log something like</para>
+
+              <para>Not trying to use ${http_proxy} environment variable:
+              java.lang.Error: getenv no longer supported, use properties and
+              -D instead: http_proxy</para>
+
+              <para>The second half is the exception from the runtime. (And it
+              may not work at all, since I don't yet have a 1.5 runtime to
+              test it with.)</para>
+            </listitem>
+
+            <listitem>
+              <para>Updated webform progress indicators to work with xxe-3.0's
+              class hierarchy reshuffling. This means that it won't work on
+              2.x now.</para>
+            </listitem>
+
+            <listitem>
+              <para>Added "xml2rfc.cgi" property to specify a different online
+              conversion URL. Change with, e.g., <literal>&lt;property
+              name="xml2rfc.cgi"&gt;http://xml.resource.org/cgi-bin/xml2rfc-dev.cgi&lt;/property&gt;</literal>
+              in a customize.xxe file.</para>
+            </listitem>
+
+            <listitem>
+              <para>Add summary.css for outline view. Need to decide whether
+              split-screen is default or you have to add it.</para>
+            </listitem>
+
+            <listitem>
+              <para>Update to Julian's 1.229 xslt (2005/10/27)</para>
+            </listitem>
+
+            <listitem>
+              <para>Add configuration examples to help text.</para>
+            </listitem>
+
+            <listitem>
+              <para>Support image on artwork (but not figure yet, depending on
+              results of query on mailing list). Also support svg here,
+              converting to png for html, if the xxe Batik plugin is
+              installed.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
       <varlistentry>
         <term>0.7.1 - October 21, 2005</term>
 
