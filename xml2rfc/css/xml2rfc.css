@@ -261,7 +261,12 @@ eref::attribute {
  */
 xref:after {
 	display: inline;
-	content: attributes() command-button(icon, icon(target-right), command, "putAttribute", parameter, "target") " [" xpath("if(id(@target)/@title, id(@target)/@title, id(@target)/front/title, id(@target)/front/title, id(@target), 'ok', //processing-instruction('rfc')[starts-with(normalize-space(.),'include=') and substring(normalize-space(.), 10, 10)='reference.' and ((starts-with(current()/@target, 'RFC') and substring-after(substring(normalize-space(.), 20, string-length(normalize-space(.))-20), 'RFC.')=substring-after(current()/@target, 'RFC')) or (starts-with(current()/@target, 'RFC')=false and substring(normalize-space(.), 20, string-length(normalize-space(.))-20)=current()/@target))], 'included', '(not found)')") "]";
+	content: attributes()
+		 command-button(icon, icon(right-target),
+				command, "putAttribute", parameter, "target")
+		 " ["
+		 xpath("if(id(@target)/@title, id(@target)/@title, id(@target)/front/title, id(@target)/front/title, id(@target), 'ok', //processing-instruction('rfc')[starts-with(normalize-space(.),'include=') and substring(normalize-space(.), 10, 10)='reference.' and ((starts-with(current()/@target, 'RFC') and substring-after(substring(normalize-space(.), 20, string-length(normalize-space(.))-20), 'RFC.')=substring-after(current()/@target, 'RFC')) or (starts-with(current()/@target, 'RFC')=false and substring(normalize-space(.), 20, string-length(normalize-space(.))-20)=current()/@target))], 'included', '(not found)')")
+		 "]";
 	color: purple;
 }
 eref:after {
@@ -316,7 +321,16 @@ cref:after {
 vspace {
 	display: block;
 	/* These command-buttons are for increment and decrement operations. */
-	content: "--- vspace(" text-field(attribute, "blankLines", columns, 2) ") " command-button(icon, icon(plus-box), command, "putAttribute", parameter, xpath("concat('blankLines ', ./@blankLines + 1)")) command-button(icon, icon(minus-box), command, "putAttribute", parameter, xpath("concat('blankLines ', ./@blankLines - 1)")) " ---";
+	content: "--- vspace("
+		 text-field(attribute, "blankLines", columns, 2)
+		 ") "
+		 command-button(icon, icon(plus-box),
+				command, "putAttribute",
+				parameter, xpath("concat('blankLines ', ./@blankLines + 1)"))
+		 command-button(icon, icon(minus-box),
+				command, "putAttribute",
+				parameter, xpath("concat('blankLines ', ./@blankLines - 1)"))
+		 " ---";
 	color: purple;
 	font-size: 80%;
 	/* Whitespace at the bottom of the element */
@@ -352,7 +366,15 @@ list::attribute() {
 /* A handle for the list */
 /* todo: offer an easy way to convert[wrap] <t> if needed? */
 list:before {
-	content: icon(right) "[list style " xpath('if(@style,@style,if(ancestor::list[@style],concat(ancestor::list/@style, " [**inherited**]"),"empty [implicit]"))') attributes() xpath('if(local-name(..) = "t", "", " NOTE: list must be inside <t>")') combo-box(attribute,style,labels,"Emtpy\A Symbols\A Numbers\A Letters\A Hanging\A Format",values,"empty\A symbols\A numbers\A letters\A hanging\A format %d:") "]";
+	content: icon(right)
+		 "[list style "
+		 xpath('if(@style,@style,if(ancestor::list[@style],concat(ancestor::list/@style, " [**inherited**]"),"empty [implicit]"))')
+		 attributes()
+		 xpath('if(local-name(..) = "t", "", " NOTE: list must be inside <t>")')
+		 combo-box(attribute, style,
+			   labels, "Emtpy\A Symbols\A Numbers\A Letters\A Hanging\A Format",
+			   values, "empty\A symbols\A numbers\A letters\A hanging\A format %d:")
+		 "]";
 	/* would like to have a text field for style if it starts with format */
 	/* would like the combobox to really be a menu underneath the element */
 	font-size: 80%;
@@ -415,7 +437,14 @@ list[style=empty] > t:before {
  * deprecating <t><figure>.
  */
 figure:before {
-	content: collapser() "[figure" attributes() xpath('if(local-name(..) = "t"," NOTE: figure inside <t> is deprecated in 2629bis","")') "]";
+	content: collapser()
+		 "[figure"
+		 command-button(icon, icon(pop-down),
+				menu, menu("Insert preamble", "xml2rfc.insertinside", "preamble before artwork",
+					   "Insert postamble", "xml2rfc.insertinside", "postamble after artwork"))
+		 add-attribute-button()
+		 attributes()
+		 xpath('if(local-name(..) = "t"," NOTE: figure inside <t> is deprecated in 2629bis","")') "]";
 	color: concatenate(xpath('if(local-name(..) = "t","red","#ff9900")'));
 }
 figure::attribute(title) {
@@ -430,22 +459,28 @@ figure {
 	not-collapsible-head: 1;
 }
 /* Attributes on artwork are ugly, but rare, so fine tuning can wait. */
+figure::attribute(), 
 artwork::attribute() {
-	attribute-content-left: "[" attribute-label() ":";
+	attribute-content-left: "[" remove-attribute-button(attribute, attribute-name(), check-required, yes) attribute-label() ":";
 	attribute-content-middle: value-editor(attribute, attribute());
 	attribute-content-right: "] ";
 	color: purple;
 	show-attribute: when-added;
 }
-/* to do: figure::attribute(src), except that's not in the DTD so xxe
-          won't permit it anyway. */
+/* two divs with the drop-site and file-name-field to allow both
+   types of input */
+figure::attribute(src),
 artwork::attribute(src) {
-	attribute-content-middle: file-drop-site(text, "Drop image here:",
-						icon, icon(drop),
-						icon-position, right,
-						command, "putAttribute",
-						parameters, "src %{url}");
+	attribute-content-middle: division(content(division(
+					    drop-site(text, "Drop image here:",
+					    icon, icon(drop),
+					    icon-position, right,
+					    command, "putAttribute",
+					    parameters, "src %{url}")),
+				   division(file-name-field(
+					    attribute, src))));
 }
+figure[src]:after, 
 artwork[src]:after {
 	display: block;
 	content: division(content(paragraph("This image will be used in HTML/PDF output instead of the ASCII one.", text-align, center),
@@ -468,7 +503,7 @@ artwork[src]:after {
 }
 figure artwork:before {
 	display: block;
-	content: attributes();
+	content: add-attribute-button() attributes();
 	white-space: normal;
 	font-family: sans-serif;
 	background-color: white;
@@ -488,7 +523,7 @@ postamble:before {
 
 back > references:before {
 	display: block;
-	content: xpath("if(@title, @title, 'References')");
+	content: value-editor(attribute, title);
 	font-size: 125%;
 }
 reference::attribute(target) {
@@ -538,9 +573,21 @@ reference {
  * <ttcol> and <c> need to be virtually inside table-rows
  * <ttcol> contains the alignment for all of the <c>s
  */
+texttable::attribute {
+	attribute-content-left: "[" attribute-label() ":";
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "] ";
+	color: purple;
+	font-size: 80%;
+}
 texttable:before {
-	content: "texttable not supported";
-	color: red;
+	content: command-button(icon, icon(pop-down),
+				menu, menu("Insert preamble", "xml2rfc.insertinside", "preamble before ttcol",
+					   "Insert postamble", "xml2rfc.insertinside", "postamble after c",
+					   "Add column", "xml2rfc.insertinside", "ttcol before c"))
+		 add-attribute-button()
+		 attributes()
+		 "texttable incompletely supported";
 }
 texttable {
 	display: table;
@@ -558,14 +605,16 @@ texttable {
  */
 texttable > preamble,
 texttable > postamble {
-	display: block;
+	display: table-cell;
 	color: #004080;
 	background-color: white;
+	column-span: concatenate(xpath("count(../ttcol)"));
 }
 texttable > ttcol {
 	display: table-cell;
 	font-weight: bold;
 	color: olive;
+	start-column: concatenate(xpath("count(preceding-sibling::ttcol)"));
 }
 texttable > ttcol:before {
 	display: inline;
@@ -573,6 +622,7 @@ texttable > ttcol:before {
 }
 texttable > c {
 	display: table-cell;
+	start-column: concatenate(xpath("if((count(preceding-sibling::c) + 1) mod count(../ttcol) = 0, count(../ttcol), (count(preceding-sibling::c) + 1) mod count(../ttcol)) - 1"));
 }
 texttable > c:before {
 	display: inline;
