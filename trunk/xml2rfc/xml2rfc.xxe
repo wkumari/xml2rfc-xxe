@@ -342,13 +342,27 @@
     <macro undoable="true">
       <sequence>
         <choice>
-          <command name="insertNode" parameter="piInto[implicitNode] rfc"/>
+          <!-- If we've got a references section selected, then either:
+	       - it's empty, so we can insert piInto
+	       - it's got content, so we can select the last element
+	         and insert after. -->
 
-          <command name="insertNode" parameter="piInto[implicitElement] rfc"/>
+          <sequence>
+            <test context="$implicitNode" expression="self::references"/>
+
+            <choice>
+              <command name="insertNode" parameter="piInto rfc"/>
+
+              <sequence>
+                <command name="selectNode" parameter="lastChild"/>
+
+                <command name="insertNode"
+                         parameter="piAfter[implicitNode] rfc"/>
+              </sequence>
+            </choice>
+          </sequence>
 
           <command name="insertNode" parameter="piAfter[implicitNode] rfc"/>
-
-          <command name="insertNode" parameter="piAfter[implicitElement] rfc"/>
         </choice>
 
         <command name="insertString" parameter="include='reference.'"/>
@@ -715,7 +729,7 @@
   </command>
 
   <command name="xml2rfc.pickfile">
-    <macro trace="true">
+    <macro>
       <sequence>
         <choice>
           <sequence>
@@ -751,7 +765,7 @@
   </command>
 
   <command name="xml2rfc.convertViaFormatter">
-    <macro trace="true">
+    <macro>
       <sequence>
         <command name="xml2rfc.pickfile" parameter="%0"/>
 
