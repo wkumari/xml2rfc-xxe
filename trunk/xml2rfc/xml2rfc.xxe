@@ -151,11 +151,18 @@
     </macro>
   </command>
 
+  <!--TO DO: if there are any nodes following the selected ones, cut them
+ too and put them in their own new section. Otherwise, the new section
+ (after the parent) is after all the following text too, not quite
+ what you might have expected.
+
+TO DO: work when there are multiple sections selected-->
+
   <command name="xml2rfc.decrSectionLevel">
     <macro undoable="true">
       <sequence>
         <!-- Can I run: does my enclosing section (or myself) have
-	     a parent? -->
+             a parent? -->
 
         <test expression="$implicitElement/ancestor-or-self::section[position()=1]/parent::section[position()=1]"/>
 
@@ -183,17 +190,19 @@
     </macro>
   </command>
 
-  <!-- to do: if I'm the last child, insert an empty section above me? -->
+  <!-- to do: if I'm the last child, insert an empty section above me?
+
+to do: work if there is more than one section selected-->
 
   <command name="xml2rfc.incrSectionLevel">
     <macro undoable="true">
       <sequence>
         <!-- Call "currentsection" either me (if I'm a section) or my
               first ancestor section.
-	     That's the first ./ancestor-or-self bit.
-	     Permission to run: currentsection has a preceding sibling
-	      section.
-	     -->
+             That's the first ./ancestor-or-self bit.
+             Permission to run: currentsection has a preceding sibling
+              section.
+-->
 
         <test expression="$implicitElement/ancestor-or-self::section[position()=1]/preceding-sibling::section[position()=1]"/>
 
@@ -203,10 +212,10 @@
                  parameter="ancestorOrSelf[implicitElement] section"/>
 
         <!-- find the previous sibling's last section (or content element)
-	     either we want //section[position()=last()] or if
-	     there is no section child, we want //*[position()=last()]
-	     I feel like this choice is a hack, to try the second pattern
-	     if the first one failed. -->
+     either we want //section[position()=last()] or if
+     there is no section child, we want //*[position()=last()]
+     I feel like this choice is a hack, to try the second pattern
+     if the first one failed. -->
 
         <set context="$selected"
              expression="preceding-sibling::section[position()=1]//section[position()=last()]"
@@ -263,6 +272,29 @@
         <!-- replace it with what was selected -->
 
         <command name="paste" parameter="to"/>
+      </sequence>
+    </macro>
+  </command>
+
+  <!-- todo: is it possible to make this executable only if the insert
+       would succeed? -->
+
+  <command name="xml2rfc.insertinside">
+    <macro trace="true">
+      <sequence>
+        <choice>
+          <sequence>
+            <test expression="&quot;%1&quot; = &quot;before&quot;"/>
+
+            <set expression="$selectedElement/child::%2[position()=1]"
+                 variable="selectedElement"/>
+          </sequence>
+
+          <set expression="$selectedElement/child::%2[position()=last()]"
+               variable="selectedElement"/>
+        </choice>
+
+        <command name="insert" parameter="%1 %0"/>
       </sequence>
     </macro>
   </command>
@@ -733,7 +765,7 @@
       <sequence>
         <choice>
           <sequence>
-            <test expression="&quot;%0&quot; == &quot;unpg&quot;"/>
+            <test expression="&quot;%0&quot; = &quot;unpg&quot;"/>
 
             <set expression="txt" plainString="true" variable="extension"/>
           </sequence>
