@@ -1135,6 +1135,10 @@ to do: work if there is more than one section selected-->
 
   <!-- Templates ========================================================== -->
 
+  <elementTemplate name="figure" selectable="override">
+    <figure xmlns=""><artwork>artwork</artwork></figure>
+  </elementTemplate>
+
   <elementTemplate name="pre_postambles" selectable="true">
     <figure xmlns=""><preamble>(preamble)</preamble><artwork>artwork</artwork><postamble>(postamble)</postamble></figure>
   </elementTemplate>
@@ -1174,6 +1178,4 @@ to do: work if there is more than one section selected-->
 </configuration>
 <!-- To Do:
      - see css for formatting todo list
-     - defaults for section (e.g., put a <t /> inside a newly-created
-       section?)
   -->
