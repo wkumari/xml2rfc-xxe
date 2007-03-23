@@ -248,6 +248,19 @@ eref::attribute {
 	font-size: 80%;
 }
 /*
+ * ID-Checklist doesn't allow xref's in the abstract.
+ * This tries to be tiny and inobtrusive since you might
+ * be authoring a document for which you don't care
+ * about ID-Checklist issues.
+ */
+abstract xref:before {
+	vertical-align: top;
+	content: division(content(paragraph("xref in"),paragraph("abstract")));
+	font-size: 50%;
+	font-weight: bold;
+	color: red;
+}
+/*
  * xpath stuff for xrefs:
  * - Find the node whose anchor is our target.
  * - If there's a title (a section or an appendix or ...?), render it.
@@ -367,6 +380,9 @@ list::attribute() {
 /* todo: offer an easy way to convert[wrap] <t> if needed? */
 list:before {
 	content: icon(right)
+		 command-button(icon, icon(convert),
+                                command, "wrap",
+                                parameter, "t")
 		 "[list style "
 		 xpath('if(@style,@style,if(ancestor::list[@style],concat(ancestor::list/@style, " [**inherited**]"),"empty [implicit]"))')
 		 attributes()
@@ -514,6 +530,14 @@ figure artwork {
 	font-family: monospace;
 	background-color: #ffffcc;
 	/* can we display a vertical line at 70 characters? */
+}
+artwork:before {
+	display: block;
+	content: "artwork element needs to be wrapped inside figure so click here:"
+		 command-button(icon, icon(convert),
+                                command, "wrap",
+                                parameter, "figure");
+	color: red;
 }
 preamble:before,
 postamble:before {
