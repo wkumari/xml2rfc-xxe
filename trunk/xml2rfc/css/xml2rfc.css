@@ -163,6 +163,12 @@ section {
 	collapsible: yes;
 	not-collapsible-head: 1;
 	margin: 0.33em 1em;
+	color: red;	/* mark text that appears outside appropriate wrappers */
+}
+section:after {
+	display: block;
+	content: xpath("if(count(./text()[normalize-space(.)!='']), concat('*** Preceding section has ', count(./text()[normalize-space(.)!='']), ' instance(s) of text outside wrapper element (e.g., <t>)'), '')");
+	font-size: 150%;
 }
 section::attribute {
 	attribute-content-left: "[" attribute-label() ":";
@@ -180,6 +186,7 @@ section:before {
 	content: collapser() attributes() "Section " counter(n) ". " text-field(attribute, title);
 	font-size: 150%;
 	text-indent: -1em;	/* this doesn't outdent like it does Address: */
+	color: black;
 }
 section section:before {
 	content: collapser() attributes() "Section " counter(nn) ". " text-field(attribute, title);
@@ -214,6 +221,7 @@ back section section section section section:before {
 }
 t {
 	margin-bottom: 1em;
+	color: black;		/* t may appear in section */
 }
 /*
  * Long document titles should have an abbrev attribute.
@@ -376,17 +384,21 @@ list::attribute() {
 	attribute-content-right: "] ";
 	show-attribute: when-added;
 }
-/* A handle for the list */
-/* todo: offer an easy way to convert[wrap] <t> if needed? */
+/* If it's not inside a t (see more-specific :before next)
+ * then offer to wrap it.  */
 list:before {
-	content: icon(right)
+	content: "Lists must be inside <t> elements, so click here: "
 		 command-button(icon, icon(convert),
                                 command, "wrap",
-                                parameter, "t")
+                                parameter, "t");
+	color: red;
+}
+/* A handle for the list */
+t list:before {
+	content: icon(right)
 		 "[list style "
 		 xpath('if(@style,@style,if(ancestor::list[@style],concat(ancestor::list/@style, " [**inherited**]"),"empty [implicit]"))')
 		 attributes()
-		 xpath('if(local-name(..) = "t", "", " NOTE: list must be inside <t>")')
 		 combo-box(attribute, style,
 			   labels, "Emtpy\A Symbols\A Numbers\A Letters\A Hanging\A Format",
 			   values, "empty\A symbols\A numbers\A letters\A hanging\A format %d:")
@@ -394,7 +406,7 @@ list:before {
 	/* would like to have a text field for style if it starts with format */
 	/* would like the combobox to really be a menu underneath the element */
 	font-size: 80%;
-	color: concatenate(xpath('if(local-name(..) = "t" and not(not(@style) and ancestor::list[@style]),"#ff9900","red")'));
+	color: #ff9900;
 }
 list t {
 	margin: 0.33em 2em;
@@ -473,6 +485,7 @@ figure {
 	collapsible: yes;
 	collapsed: no;
 	not-collapsible-head: 1;
+	color: black;			/* figure may appear in section */
 }
 /* Attributes on artwork are ugly, but rare, so fine tuning can wait. */
 figure::attribute(), 
@@ -533,7 +546,7 @@ figure artwork {
 }
 artwork:before {
 	display: block;
-	content: "artwork element needs to be wrapped inside figure so click here:"
+	content: "artwork element needs to be wrapped inside <figure> so click here:"
 		 command-button(icon, icon(convert),
                                 command, "wrap",
                                 parameter, "figure");
@@ -619,6 +632,7 @@ texttable {
 	padding: 2;
 	border-spacing: 2;
 	background-color: silver;
+	color: black;			/* texttable may appear in section */
 }
 /*
  * Can't use table-caption for the postamble, since it displays
