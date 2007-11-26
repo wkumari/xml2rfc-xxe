@@ -28,13 +28,15 @@
     <title>Overview</title>
 
     <para>This xxe plugin attempts to support most of the rfc2629bis DTD, as
-    of xml2rfc release 1.31, July 27, 2006. This documentation is for plugin
+    of xml2rfc release 1.32, January, 2007. This documentation is for plugin
     version %%VERSION%%. The plugin requires at least xxe 3.3 (released June
-    15, 2006) and has been tested up to 3.4 (released July 28, 2006).</para>
+    15, 2006) and has been tested up to 3.5.1 (released December 27,
+    2006).</para>
 
     <para>This plugin can create text or HTML output using xml2rfc, if
-    installed; it can also use xmlmind's native XSL support to generate HTML.
-    It can also convert to txt, HTML, nroff or canonical XML using the
+    installed; it can also use xmlmind's native XSL support to generate HTML
+    (As of 3.5.1, this feature is limited to the Professional Edition). It can
+    also convert to txt, HTML, nroff or canonical XML using the
     xml.resource.org web form. Use the menu items <guimenuitem>Convert to HTML
     using XSL</guimenuitem>, <guimenuitem>HTML Preview using
     XSL</guimenuitem>, <guimenuitem>Text Preview using
@@ -42,13 +44,15 @@
     xml.resource.org</guisubmenu> Convert submenu if you don't have xml2rfc
     installed.</para>
 
-    <para>The following items are not yet (and may never be) supported:</para>
+    <para>The following items are not yet (and may never be) completely
+    supported:</para>
 
     <itemizedlist>
       <listitem>
         <para>texttable. This requires some extra help (probably a custom java
-        widget) to style the table for xmlmind. However, newer versions of xxe
-        are expected to have a feature to help support this.</para>
+        widget) to style the table for xmlmind. However, starting in 0.7.3,
+        the addon labels rows and columns with their numbers, and puts entries
+        in the right columns.</para>
       </listitem>
 
       <listitem>
@@ -475,7 +479,9 @@
           <para>Uses Julian Reschke's xsl transform to convert the XML to
           HTML, then opens up the rendered HTML in a web browser. This
           procedure does not require any external software, so should work on
-          any system even without the xml2rfc tool installed.</para>
+          any system even without the xml2rfc tool installed. (As of xxe
+          3.5.1, this feature is only available in Professional
+          Edition.)</para>
         </listitem>
       </varlistentry>
 
@@ -486,6 +492,15 @@
           <para>Use the xml.resource.org online converter to convert the XML
           to text, then opens up a text editor (or an xterm running less) on
           the result.</para>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>HTML Preview using xml.resource.org</term>
+
+        <listitem>
+          <para>Use the xml.resource.org online converter to convert the XML
+          to HTML, then opens up the rendered HTML in a web browser.</para>
         </listitem>
       </varlistentry>
 
@@ -654,11 +669,11 @@
     <para>as follows:</para>
 
     <literallayout>  c1: Heading One
-  c2: Heading Two
+                    c2: Heading Two
 r1c1: Hello
-r1c2: World
+                  r1c2: World
 r2c1: I am a
-r2c2: table</literallayout>
+                  r2c2: table</literallayout>
 
     <para>If there are not enough &lt;c&gt; elements to make up the content of
     the table, a warning will follow the table.</para>
@@ -807,7 +822,7 @@ r2c2: table</literallayout>
               rewritePrefix="http://rtg.ietf.org/~fenner/ietf/" /&gt;
 
 &lt;/catalog&gt;
-</literallayout>To do: give examples.</para>
+</literallayout></para>
     </section>
 
     <section>
@@ -856,6 +871,19 @@ r2c2: table</literallayout>
               <entry>xml2rfc.cgi</entry>
 
               <entry>URL for the online document converter</entry>
+            </row>
+
+            <row>
+              <entry>xml2rfc.formatter</entry>
+
+              <entry>Command to execute to convert documents locally</entry>
+            </row>
+
+            <row>
+              <entry>xml2rfc.library</entry>
+
+              <entry>XML_LIBRARY environment variable to set when using
+              xml2rfc.formatter</entry>
             </row>
           </tbody>
         </tgroup>
@@ -957,12 +985,7 @@ r2c2: table</literallayout>
           <itemizedlist>
             <listitem>
               <para>Update DTD and Entities to those supported in xml2rfc
-              1.31</para>
-            </listitem>
-
-            <listitem>
-              <para>Include the EDU template from <ulink
-              url="???">http://idunno/where/</ulink></para>
+              1.32</para>
             </listitem>
 
             <listitem>
@@ -971,6 +994,47 @@ r2c2: table</literallayout>
               the xml2rfc inherited style, which this style sheet doesn't
               currently support. (This behavior, however, is probably an
               advancement from displaying it as empty.)</para>
+            </listitem>
+
+            <listitem>
+              <para>Supports &amp;rfc.number; and &amp;rfc2629.processor;
+              entities</para>
+            </listitem>
+
+            <listitem>
+              <para>More support for images: teach xxe that images need to get
+              saved with the document, and support figure src=</para>
+            </listitem>
+
+            <listitem>
+              <para>Fix the Insert &lt;?rfc include=''&gt; menu item</para>
+            </listitem>
+
+            <listitem>
+              <para>Switch to Java code to run a locally-installed xml2rfc.
+              This allows us to control the executable and the environment, so
+              Windows users can point to their xml2rfc installation.</para>
+            </listitem>
+
+            <listitem>
+              <para>Support the "unpg" output type for conversions</para>
+            </listitem>
+
+            <listitem>
+              <para>Add combo-box to select list style</para>
+            </listitem>
+
+            <listitem>
+              <para>Make reference section titles directly editable</para>
+            </listitem>
+
+            <listitem>
+              <para>Improved texttable rendering by setting the column
+              properly</para>
+            </listitem>
+
+            <listitem>
+              <para>Updated Julian's xslt</para>
             </listitem>
           </itemizedlist>
         </listitem>
