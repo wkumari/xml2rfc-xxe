@@ -9,7 +9,7 @@ release:
 	#
 	# copy all the files from the repository, excluding CVS
 	# metadata and xmlmind editor backups.
-	tar --exclude CVS --exclude '*~' -cf - xml2rfc | tar -C dist -xvf -
+	tar --exclude .svn --exclude '*~' -cf - xml2rfc | tar -C dist -xvf -
 	#
 	# Create xxe addon file and symlink, and copy it into the zip file
 	sed -e "s/%%VERSION%%/`cat xml2rfc/version.txt`/" xml2rfc/xml2rfc.xxe_addon > dist/xml2rfc-`cat xml2rfc/version.txt`.xxe_addon
@@ -29,6 +29,11 @@ copy:
 	grep beta xml2rfc/version.txt >/dev/null || addon="dist/xml2rfc.xxe_addon"; \
 	rsync -a dist/*`cat xml2rfc/version.txt`* $$addon silk.research.att.com:external/wwwfiles/ietf/xml2rfc-xxe/
 	rsync -a help/html silk.research.att.com:external/wwwfiles/ietf/xml2rfc-xxe/xml2rfc_help/
+# new copy todo:
+# labels: Type-Addon for the addon
+#         Type-Package for the zip file
+# use googlecode_upload.py
+# figure out help2wiki
 
 getxsl:
 	wget http://greenbytes.de/tech/webdav/rfc2629xslt.zip
