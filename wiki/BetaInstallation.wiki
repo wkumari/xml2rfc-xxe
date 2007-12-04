@@ -3,7 +3,7 @@
 
 = Caveat =
 
-I'm less likely to support this.  If you want to install a supported release you may have to delete this url from the addon manager.
+I'm less likely to support this.  If you want to install a supported release you may have to delete this url from the addon manager.  (On the other hand, this is the only possible method now so hey)
 
 = How To =
 
