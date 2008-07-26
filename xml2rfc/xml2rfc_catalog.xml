@@ -12,6 +12,6 @@
   <rewriteURI uriStartString="xml2rfc-rfcindex:"
               rewritePrefix="ftp://ftp.isi.edu/in-notes/" />
   <rewriteURI uriStartString="xml2rfc-ietfidstatus:"
-              rewritePrefix="http://rtg.ietf.org/~fenner/ietf/" />
+              rewritePrefix="http://www.fenron.com/~fenner/ietf/" />
 
 </catalog>

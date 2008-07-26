@@ -11,7 +11,7 @@
 
       <surname>Fenner</surname>
 
-      <email>fenner@research.att.com</email>
+      <email>fenner@fenron.com</email>
     </author>
 
     <abstract>
@@ -21,17 +21,17 @@
       inexperienced questions about xxe's css/xml/java support.</para>
     </abstract>
 
-    <pubdate role="rcs">$Date$</pubdate>
+    <pubdate role="rcs">$Date: 2007-11-25 17:07:58 -0800 (Sun, 25 Nov 2007)
+    $</pubdate>
   </articleinfo>
 
   <section>
     <title>Overview</title>
 
     <para>This xxe plugin attempts to support most of the rfc2629bis DTD, as
-    of xml2rfc release 1.32, January, 2007. This documentation is for plugin
-    version %%VERSION%%. The plugin requires at least xxe 3.3 (released June
-    15, 2006) and has been tested up to 3.5.1 (released December 27,
-    2006).</para>
+    of xml2rfc release 1.33, March, 2008. This documentation is for plugin
+    version %%VERSION%%. The plugin requires at least xxe 4.0 (released July
+    21, 2008).</para>
 
     <para>This plugin can create text or HTML output using xml2rfc, if
     installed; it can also use xmlmind's native XSL support to generate HTML
@@ -819,7 +819,7 @@ r2c1: I am a
   &lt;rewriteURI uriStartString="xml2rfc-rfcindex:"
               rewritePrefix="ftp://ftp.isi.edu/in-notes/" /&gt;
   &lt;rewriteURI uriStartString="xml2rfc-ietfidstatus:"
-              rewritePrefix="http://rtg.ietf.org/~fenner/ietf/" /&gt;
+              rewritePrefix="http://www.fenron.com/~fenner/ietf/" /&gt;
 
 &lt;/catalog&gt;
 </literallayout></para>
@@ -917,17 +917,17 @@ r2c1: I am a
 
   &lt;elementTemplate name="mine" selectable="true" xmlns=""&gt;
     &lt;author fullname="Bill Fenner" initials="B." surname="Fenner"&gt;
-      &lt;organization&gt;AT&amp;amp;T Labs - Research&lt;/organization&gt;
+      &lt;organization&gt;Arastra, Inc.&lt;/organization&gt;
       &lt;address&gt;
         &lt;postal&gt;
-          &lt;street&gt;75 Willow Rd&lt;/street&gt;
+          &lt;street&gt;275 Middlefield Rd&lt;/street&gt;
           &lt;city&gt;Menlo Park&lt;/city&gt;
           &lt;region&gt;CA&lt;/region&gt;
           &lt;code&gt;94025&lt;/code&gt;
           &lt;country&gt;USA&lt;/country&gt;
         &lt;/postal&gt;
-        &lt;phone&gt;+1 650 330-7893&lt;/phone&gt;
-        &lt;email&gt;fenner@research.att.com&lt;/email&gt;
+        &lt;phone&gt;+1 650 462-5072&lt;/phone&gt;
+        &lt;email&gt;fenner@fenron.com&lt;/email&gt;
       &lt;/address&gt;
     &lt;/author&gt;
   &lt;/elementTemplate&gt;
@@ -963,12 +963,12 @@ r2c1: I am a
     <title>Support</title>
 
     <para>Support for this plugin is available via the
-    xml2rfc-xxe@rtg.ietf.org mailing list. See <ulink
-    url="http://rtg.ietf.org/mailman/listinfo/xml2rfc-xxe">http://rtg.ietf.org/mailman/listinfo/xml2rfc-xxe</ulink>
+    xml2rfc-xxe-users@googlegroups.com mailing list. See <ulink
+    url="http://rtg.ietf.org/mailman/listinfo/xml2rfc-xxe">http://groups.google.com/group/xml2rfc-xxe-users</ulink>
     for more info. The distribution page is <ulink
-    url="http://rtg.ietf.org/~fenner/ietf/xml2rfc-xxe/">http://rtg.ietf.org/~fenner/ietf/xml2rfc-xxe/</ulink>
+    url="http://xml2rfc-xxe.googlegroups.com/">http://xml2rfc-xxe.googlecode.com/</ulink>
     . A bug/issue list is <ulink
-    url="http://rtg.ietf.org/Members/BillFenner/xml2rfc-xxe/">http://rtg.ietf.org/Members/BillFenner/xml2rfc-xxe/</ulink>
+    url="http://rtg.ietf.org/Members/BillFenner/xml2rfc-xxe/">http://code.google.com/p/xml2rfc-xxe/issues/list</ulink>
     .</para>
   </section>
 
@@ -979,7 +979,23 @@ r2c1: I am a
 
     <variablelist>
       <varlistentry>
-        <term>0.7.3 - ???</term>
+        <term>0.7.4 - July 26, 2008</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Update DTD for xml2rfc 1.33</para>
+            </listitem>
+
+            <listitem>
+              <para>Update plugin for xxe 4.0.0</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>0.7.3 - never released</term>
 
         <listitem>
           <itemizedlist>
