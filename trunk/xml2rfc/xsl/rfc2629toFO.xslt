@@ -1,7 +1,7 @@
 <!-- 
   	XSLT transformation from RFC2629 XML format to XSL-FO
       
-    Copyright (c) 2006, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2008, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -31,36 +31,32 @@
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     version="1.0"
-    xmlns:fo="http://www.w3.org/1999/XSL/Format"
-
     xmlns:ed="http://greenbytes.de/2002/rfcedit"
-    xmlns:x="http://purl.org/net/xml2rfc/ext"
-    xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt"
-
-    xmlns:msxsl="urn:schemas-microsoft-com:xslt"
     xmlns:exslt="http://exslt.org/common"
+    xmlns:fo="http://www.w3.org/1999/XSL/Format"
+    xmlns:msxsl="urn:schemas-microsoft-com:xslt"
+    xmlns:myns="mailto:julian.reschke@greenbytes.de?subject=rcf2629.xslt"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:x="http://purl.org/net/xml2rfc/ext"
 
-    exclude-result-prefixes="msxsl exslt myns ed x"
+    exclude-result-prefixes="ed exslt msxsl  myns rdf x"
 >
 
 <xsl:import href="rfc2629.xslt" />
 
-<xsl:output method="xml" version="1.0" encoding="UTF-8"/>
+<xsl:output method="xml" version="1.0" encoding="UTF-8" indent="no"/>
 
-<xsl:attribute-set name="h1-inline">
+<xsl:attribute-set name="base">
+	<xsl:attribute name="font-family">serif</xsl:attribute>
+	<xsl:attribute name="font-size">10pt</xsl:attribute>
+</xsl:attribute-set> 
+
+<xsl:attribute-set name="h1">
 	<xsl:attribute name="font-weight">bold</xsl:attribute>
 	<xsl:attribute name="font-size">14pt</xsl:attribute>
 	<xsl:attribute name="keep-with-next">always</xsl:attribute>
 	<xsl:attribute name="space-before">14pt</xsl:attribute>
 	<xsl:attribute name="space-after">7pt</xsl:attribute>
-</xsl:attribute-set> 
-
-<xsl:attribute-set name="h1-new-page">
-	<xsl:attribute name="font-weight">bold</xsl:attribute>
-	<xsl:attribute name="font-size">14pt</xsl:attribute>
-	<xsl:attribute name="keep-with-next">always</xsl:attribute>
-	<xsl:attribute name="space-after">7pt</xsl:attribute>
-  <xsl:attribute name="page-break-before">always</xsl:attribute>
 </xsl:attribute-set> 
 
 <xsl:attribute-set name="h2">
@@ -84,21 +80,33 @@
 	<xsl:attribute name="background-color">yellow</xsl:attribute>
 </xsl:attribute-set> 
 
-<!--<xsl:attribute-set name="p">
-	<xsl:attribute name="margin-left">2em</xsl:attribute>
-</xsl:attribute-set>  -->
-
-<xsl:attribute-set name="internal-link">
-  <xsl:attribute name="color">#000080</xsl:attribute>
-</xsl:attribute-set>
-
 <xsl:attribute-set name="external-link">
   <xsl:attribute name="color">blue</xsl:attribute>
   <xsl:attribute name="text-decoration">underline</xsl:attribute>
 </xsl:attribute-set>
 
+<xsl:attribute-set name="index">
+	<xsl:attribute name="font-size">9pt</xsl:attribute>
+</xsl:attribute-set> 
+
+<xsl:attribute-set name="internal-link">
+  <xsl:attribute name="color">#000080</xsl:attribute>
+</xsl:attribute-set>
+
+<xsl:attribute-set name="newpage">
+  <xsl:attribute name="page-break-before">always</xsl:attribute>
+</xsl:attribute-set> 
+
+<xsl:attribute-set name="title">
+  <xsl:attribute name="text-align">center</xsl:attribute>
+  <xsl:attribute name="font-weight">bold</xsl:attribute>
+  <xsl:attribute name="font-size">18pt</xsl:attribute>
+  <xsl:attribute name="space-before">3em</xsl:attribute>
+  <xsl:attribute name="space-after">3em</xsl:attribute>
+</xsl:attribute-set>
+
 <xsl:template match="abstract">
-  <fo:block xsl:use-attribute-sets="h1-inline" id="{concat($anchor-prefix,'.abstract')}">Abstract</fo:block>
+  <fo:block xsl:use-attribute-sets="h1" id="{concat($anchor-prefix,'.abstract')}">Abstract</fo:block>
 	<xsl:apply-templates />
 </xsl:template>
 
@@ -116,7 +124,7 @@
 
 <xsl:template name="add-artwork-attr">
   <xsl:choose>
-    <xsl:when test="@type='abnf' or @type='abnf2616' or @type='application/xml-dtd' or @type='rnc'">
+    <xsl:when test="@type='abnf' or @type='abnf2616' or @type='application/xml-dtd' or @type='application/relax-ng-compact-syntax'">
       <!-- just display inline -->
     </xsl:when>
 
@@ -148,7 +156,7 @@
 <xsl:template match="artwork">
 	<fo:block font-family="monospace" padding=".5em"
     white-space-treatment="preserve" linefeed-treatment="preserve"
-    white-space-collapse="false">
+    white-space-collapse="false" page-break-inside="avoid">
     <xsl:call-template name="add-artwork-attr"/>
     <xsl:apply-templates/>
   </fo:block>
@@ -181,21 +189,27 @@
 	<xsl:if test="address/facsimile">
     <fo:block>Fax:&#0160;<fo:basic-link external-destination="url('tel:{translate(address/facsimile,' ','')}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="address/facsimile" /></fo:basic-link></fo:block>
   </xsl:if>
-	<xsl:if test="address/email">
+	<xsl:for-each select="address/email">
+    <xsl:variable name="email">
+      <xsl:call-template name="extract-email"/>
+    </xsl:variable>
     <fo:block>EMail:&#0160;
       <xsl:choose>
         <xsl:when test="$xml2rfc-linkmailto='no'">
-            <xsl:value-of select="address/email" />
+            <xsl:value-of select="$email" />
         </xsl:when>
         <xsl:otherwise>
-          <fo:basic-link external-destination="url('mailto:{address/email}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="address/email" /></fo:basic-link>
+          <fo:basic-link external-destination="url('mailto:{$email}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="$email" /></fo:basic-link>
         </xsl:otherwise>
       </xsl:choose>
     </fo:block>
-  </xsl:if>
-	<xsl:if test="address/uri">
-    <fo:block>URI:&#0160;<fo:basic-link external-destination="url('{address/uri}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="address/uri" /></fo:basic-link></fo:block>
-  </xsl:if>
+  </xsl:for-each>
+	<xsl:for-each select="address/uri">
+    <xsl:variable name="uri">
+      <xsl:call-template name="extract-uri"/>
+    </xsl:variable>
+    <fo:block>URI:&#0160;<fo:basic-link external-destination="url('{$uri}')" xsl:use-attribute-sets="external-link"><xsl:value-of select="$uri" /></fo:basic-link></fo:block>
+  </xsl:for-each>
 </xsl:template>
 
 <xsl:template match="back">
@@ -221,9 +235,6 @@
   
     <!-- emit it -->
     <xsl:choose>
-      <xsl:when test="function-available('msxsl:node-set')">
-        <xsl:apply-templates select="msxsl:node-set($copyright)/node()" />
-      </xsl:when>
       <xsl:when test="function-available('exslt:node-set')">
         <xsl:apply-templates select="exslt:node-set($copyright)/node()" />
       </xsl:when>
@@ -243,15 +254,15 @@
     <xsl:call-template name="get-figure-anchor"/>
   </xsl:variable>
 
-  <fo:block space-before=".5em" space-after=".5em" id="{$anch}">
+  <fo:block space-before=".5em" space-after=".5em" id="{$anch}" page-break-inside="avoid">
     <xsl:if test="not(ancestor::t)">
       <xsl:attribute name="start-indent">2em</xsl:attribute>
     </xsl:if>
     <xsl:call-template name="add-anchor"/>
   	<xsl:apply-templates />
-    <xsl:if test="@title!='' or @anchor!=''">
-      <xsl:variable name="n"><xsl:number level="any" count="figure[@title!='' or @anchor!='']" /></xsl:variable>
-      <fo:block text-align="center" space-after="1em">Figure <xsl:value-of select="$n"/><xsl:if test="@title!=''">: <xsl:value-of select="@title" /></xsl:if></fo:block>
+    <xsl:if test="(@title!='' or @anchor!='') and not(@suppress-title='true')">
+      <xsl:variable name="n"><xsl:number level="any" count="figure[(@title!='' or @anchor!='') and not(@suppress-title='true')]" /></xsl:variable>
+      <fo:block text-align="center" space-before=".5em" space-after="1em">Figure <xsl:value-of select="$n"/><xsl:if test="@title!=''">: <xsl:value-of select="@title" /></xsl:if></fo:block>
     </xsl:if>
   </fo:block>
 </xsl:template>
@@ -278,12 +289,6 @@
       <fo:table-column column-width="proportional-column-width(1)" />
       <fo:table-body>
         <xsl:choose>
-          <xsl:when test="function-available('msxsl:node-set')">
-            <xsl:call-template name="emitheader">
-  	         	<xsl:with-param name="lc" select="msxsl:node-set($leftColumn)" />    
-      	     	<xsl:with-param name="rc" select="msxsl:node-set($rightColumn)" />    
-            </xsl:call-template>
-          </xsl:when>    
           <xsl:when test="function-available('exslt:node-set')">
            	<xsl:call-template name="emitheader">
   	         	<xsl:with-param name="lc" select="exslt:node-set($leftColumn)" />    
@@ -301,10 +306,10 @@
   	</fo:table>
   </xsl:if>
       
-  <fo:block text-align="center" font-weight="bold" font-size="18pt" space-before="3em" space-after="3em">
+  <fo:block xsl:use-attribute-sets="title">
     <xsl:apply-templates select="/rfc/front/title" mode="get-text-content" />
     <xsl:if test="/rfc/@docName">
-      <fo:block font-size="15pt"><xsl:value-of select="/rfc/@docName" /></fo:block>
+      <fo:block font-size="80%"><xsl:value-of select="/rfc/@docName" /></fo:block>
     </xsl:if>
  </fo:block>
  
@@ -314,9 +319,6 @@
     
     <!-- emit it -->
     <xsl:choose>
-      <xsl:when test="function-available('msxsl:node-set')">
-        <xsl:apply-templates select="msxsl:node-set($preamble)/node()" />
-      </xsl:when>
       <xsl:when test="function-available('exslt:node-set')">
         <xsl:apply-templates select="exslt:node-set($preamble)/node()" />
       </xsl:when>
@@ -429,17 +431,28 @@
 </xsl:template>
 
 <xsl:template match="list[@style='hanging']" priority="1">
-  <!-- find longest label and use it to calculate indentation-->
-  <xsl:variable name="l">
-    <xsl:for-each select="t">
-      <xsl:sort select="string-length(@hangText)" order="descending" data-type="number"/>
-      <xsl:if test="position()=1">
-        <xsl:value-of select="@hangText" />
-      </xsl:if>
-    </xsl:for-each>
+
+  <xsl:variable name="width">
+    <xsl:choose>
+      <xsl:when test="@x:indent">
+        <xsl:value-of select="@x:indent"/>
+      </xsl:when>
+      <xsl:otherwise>
+        <!-- find longest label and use it to calculate indentation-->
+        <xsl:variable name="l">
+          <xsl:for-each select="t">
+            <xsl:sort select="string-length(@hangText)" order="descending" data-type="number"/>
+            <xsl:if test="position()=1">
+              <xsl:value-of select="@hangText" />
+            </xsl:if>
+          </xsl:for-each>
+        </xsl:variable>
+        <xsl:value-of select="concat(format-number(string-length($l) * 0.8, '#.0'),'em')"/>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:variable>
 
-  <fo:list-block provisional-distance-between-starts="{string-length($l)}em">
+  <fo:list-block provisional-distance-between-starts="{$width}">
     <xsl:apply-templates />
   </fo:list-block>
 </xsl:template>
@@ -461,7 +474,7 @@
   </fo:list-item>
 </xsl:template>
 
-<xsl:template match="list[@style='hanging']/t" priority="1">
+<xsl:template match="list[@style='hanging']/t | list[@style='hanging']/ed:replace/ed:ins/t" priority="1">
   <fo:list-item space-before=".25em" space-after=".25em">
     <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <fo:list-item-label end-indent="label-end()"><fo:block><xsl:value-of select="@hangText" /></fo:block></fo:list-item-label>
@@ -480,6 +493,23 @@
     <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
     <fo:list-item-label end-indent="label-end()"><fo:block>&#x2022;</fo:block></fo:list-item-label>
     <fo:list-item-body start-indent="body-start()"><fo:block><xsl:apply-templates /></fo:block></fo:list-item-body>
+  </fo:list-item>
+</xsl:template>
+
+<xsl:template match="list[@style='symbols']/x:lt" priority="1">
+  <fo:list-item space-before=".25em" space-after=".25em">
+    <xsl:if test="@anchor"><xsl:attribute name="id"><xsl:value-of select="@anchor"/></xsl:attribute></xsl:if>
+    <fo:list-item-label end-indent="label-end()"><fo:block>&#x2022;</fo:block></fo:list-item-label>
+    <fo:list-item-body start-indent="body-start()">
+      <xsl:for-each select="t">
+        <fo:block>
+          <xsl:if test="position()!=1">
+            <xsl:attribute name="space-before">.25em</xsl:attribute>
+          </xsl:if>
+          <xsl:apply-templates />
+        </fo:block>
+      </xsl:for-each>
+    </fo:list-item-body>
   </fo:list-item>
 </xsl:template>
 
@@ -604,7 +634,7 @@
                
 <xsl:template match="note">
   <xsl:variable name="num"><xsl:number count="note"/></xsl:variable>
-  <fo:block xsl:use-attribute-sets="h1-inline" id="{concat($anchor-prefix,'.note.',$num)}"><xsl:value-of select="@title" /></fo:block>
+  <fo:block xsl:use-attribute-sets="h1" id="{concat($anchor-prefix,'.note.',$num)}"><xsl:value-of select="@title" /></fo:block>
 	<xsl:apply-templates />
 </xsl:template>
 
@@ -652,14 +682,17 @@
     <fo:list-item-body start-indent="body-start()"><fo:block>
 
       <xsl:for-each select="front/author">
+        <xsl:variable name="initials">
+          <xsl:call-template name="format-initials"/>
+        </xsl:variable>
         <xsl:choose>
           <xsl:when test="@surname and @surname!=''">
     				<xsl:choose>
               <xsl:when test="@surname and position()=last() and position()!=1">
-                <xsl:value-of select="concat(@initials,' ',@surname)" />
+                <xsl:value-of select="concat($initials,' ',@surname)" />
               </xsl:when>
               <xsl:when test="@surname">
-                <xsl:value-of select="concat(@surname,', ',@initials)" />
+                <xsl:value-of select="concat(@surname,', ',$initials)" />
               </xsl:when>
     					<xsl:when test="organization/text()">
                 <xsl:value-of select="organization" />
@@ -749,10 +782,9 @@
 
   <!-- insert pseudo section when needed -->
   <xsl:if test="$name='1' and count(/*/back/references)!=1">
-    <fo:block id="{$anchor-prefix}.references" xsl:use-attribute-sets="h1-inline">
+    <fo:block id="{$anchor-prefix}.references" xsl:use-attribute-sets="h1">
       <xsl:if test="$name='1'">
         <xsl:attribute name="page-break-before">always</xsl:attribute>
-        <xsl:attribute name="space-before">0pt</xsl:attribute>
       </xsl:if>
       <xsl:variable name="sectionNumber">
         <xsl:call-template name="get-references-section-number"/>
@@ -766,9 +798,7 @@
 
   <xsl:choose>
     <xsl:when test="count(/*/back/references)=1">
-      <fo:block id="{$anchor-prefix}.references" xsl:use-attribute-sets="h1-inline">
-        <xsl:attribute name="page-break-before">always</xsl:attribute>
-        <xsl:attribute name="space-before">0pt</xsl:attribute>
+      <fo:block id="{$anchor-prefix}.references" xsl:use-attribute-sets="h1 newpage">
         <xsl:call-template name="get-section-number"/>&#160;&#160;
         <xsl:choose>
           <xsl:when test="@title!=''"><xsl:value-of select="@title"/></xsl:when>
@@ -790,7 +820,7 @@
   <!-- find longest label and use it to calculate indentation-->
   <xsl:variable name="l">
     <xsl:choose>
-      <xsl:when test="$xml2rfc-symrefs!='yes'">[99]</xsl:when>
+      <xsl:when test="$xml2rfc-symrefs='no'">[99]</xsl:when>
       <xsl:otherwise>
         <xsl:for-each select="//reference">
           <xsl:sort select="string-length(@anchor)" order="descending" data-type="number"/>
@@ -802,7 +832,7 @@
     </xsl:choose>
   </xsl:variable>
 
-  <fo:list-block provisional-distance-between-starts="{string-length($l) * 0.75}em">
+  <fo:list-block provisional-distance-between-starts="{string-length($l) * 0.8}em">
     <xsl:choose>
       <xsl:when test="$xml2rfc-sortrefs='yes'">
         <xsl:apply-templates>
@@ -817,7 +847,7 @@
 </xsl:template>
 
 <xsl:template match="rfc">
-	<fo:root font-family="serif" font-size="10pt">
+	<fo:root xsl:use-attribute-sets="base">
     
     <!-- insert PDF information (XEP extension) -->
     <meta-info xmlns="http://www.renderx.com/XSL/Extensions">
@@ -837,7 +867,7 @@
     </meta-info>
 
 		<fo:layout-master-set>
-      <!-- page sizes as per RFC2223bis-00 -->
+      <!-- page sizes as per <http://tools.ietf.org/html/draft-rfc-editor-rfc2223bis-08> -->
 			<fo:simple-page-master master-name="first-page" margin-left="1in" margin-right="1in" page-height="11in" page-width="8.5in">
         <fo:region-body margin-bottom="1in" margin-top="1in"/>
    	    <fo:region-after extent="1cm" region-name="footer"/>
@@ -878,7 +908,7 @@
       <fo:page-sequence master-reference="other-pages-dc" language="{$lang}">
         <xsl:call-template name="insertHeader" />
         <xsl:call-template name="insertFooter" />
-	  		<fo:flow flow-name="xsl-region-body" font-size="9pt">
+	  		<fo:flow flow-name="xsl-region-body" xsl:use-attribute-sets="index">
 		  		<xsl:call-template name="insertIndex" />    
 			  </fo:flow>
       </fo:page-sequence>
@@ -911,7 +941,7 @@
 
 <xsl:template match="section[count(ancestor::section) = 0 and @myns:notoclink]">
 
-  <fo:block xsl:use-attribute-sets="h1-inline">
+  <fo:block xsl:use-attribute-sets="h1">
     <xsl:call-template name="section-maker" />
   </fo:block>
 
@@ -922,7 +952,7 @@
 
 <xsl:template match="section[count(ancestor::section) = 0 and not(@myns:notoclink)]">
 
-  <fo:block xsl:use-attribute-sets="h1-new-page">
+  <fo:block xsl:use-attribute-sets="h1 newpage">
     <xsl:call-template name="section-maker" />
   </fo:block>
 
@@ -980,6 +1010,7 @@
 
 <xsl:template match="t">
 	<fo:block space-before=".5em" space-after=".5em">
+    <xsl:call-template name="insert-justification"/>
     <xsl:choose>
       <xsl:when test="parent::x:blockquote">
         <xsl:attribute name="start-indent">4em</xsl:attribute>
@@ -1121,7 +1152,7 @@
       <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
         <xsl:variable name="figcnt">
           <xsl:for-each select="$node">
-            <xsl:number level="any" count="figure[@title!='' or @anchor!='']" />
+            <xsl:number level="any" count="figure[(@title!='' or @anchor!='') and not(@suppress-title='true')]" />
           </xsl:for-each>
         </xsl:variable>
         <xsl:choose>
@@ -1143,7 +1174,7 @@
       <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
         <xsl:variable name="tabcnt">
           <xsl:for-each select="$node">
-            <xsl:number level="any" count="texttable[@title!='' or @anchor!='']" />
+            <xsl:number level="any" count="texttable[(@title!='' or @anchor!='') and not(@suppress-title='true')]" />
           </xsl:for-each>
         </xsl:variable>
         <xsl:choose>
@@ -1172,27 +1203,68 @@
         number  SS
       -->
 
-      <xsl:if test="@x:sec">
+      <xsl:variable name="sec">
         <xsl:choose>
-          <xsl:when test="@x:fmt='of' or @x:fmt='sec'">
-            <xsl:text>Section </xsl:text>
+          <xsl:when test="starts-with(@x:rel,'#') and not(@x:sec) and $node/x:source/@href">
+            <xsl:variable name="extdoc" select="document($node/x:source/@href)"/>
+            <xsl:for-each select="$extdoc//*[@anchor=substring-after(current()/@x:rel,'#')]">
+              <xsl:call-template name="get-section-number"/>
+            </xsl:for-each>
+          </xsl:when>
+          <xsl:otherwise>
             <xsl:value-of select="@x:sec"/>
-            <xsl:if test="@x:fmt='of'">
+          </xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+
+      <xsl:variable name="fmt">
+        <xsl:choose>
+          <xsl:when test="@x:fmt!=''"><xsl:value-of select="@x:fmt"/></xsl:when>
+          <xsl:when test="ancestor::artwork">,</xsl:when>
+          <xsl:otherwise>of</xsl:otherwise>
+        </xsl:choose>
+      </xsl:variable>
+
+      <xsl:if test="$sec!=''">
+        <xsl:choose>
+          <xsl:when test="$fmt='of' or $fmt='sec'">
+            <xsl:text>Section </xsl:text>
+            <xsl:value-of select="$sec"/>
+            <xsl:if test="$fmt='of'">
               <xsl:text> of </xsl:text>
             </xsl:if>
           </xsl:when>
-          <xsl:when test="@x:fmt='number'">
-            <xsl:value-of select="@x:sec"/>
+          <xsl:when test="$fmt='number'">
+            <xsl:value-of select="$sec"/>
           </xsl:when>
-          <xsl:when test="@x:fmt=','"/>
-          <xsl:when test="@x:fmt='()'"/>
+          <xsl:when test="$fmt=','"/>
+          <xsl:when test="$fmt='()'"/>
           <xsl:otherwise>
-            <xsl:message>UNKNOWN xref x:fmt: <xsl:value-of select="@x:fmt"/></xsl:message>
+            <xsl:message>UNKNOWN xref x:fmt: <xsl:value-of select="$fmt"/></xsl:message>
           </xsl:otherwise>
         </xsl:choose>
       </xsl:if>
+      
+      <!-- anchor for index -->
+      <xsl:if test="$xml2rfc-ext-include-references-in-index='yes' and $sec!='' and ($fmt='sec' or $fmt='number')">
+        <fo:wrapper>
+          <xsl:attribute name="id">
+            <xsl:value-of select="$anchor"/>
+          </xsl:attribute>
+          <xsl:attribute name="index-key">
+            <xsl:value-of select="concat('xrefitem=',@target)"/>
+          </xsl:attribute>
+          <xsl:if test="$sec!=''">
+            <fo:wrapper>
+              <xsl:attribute name="index-key">
+                <xsl:value-of select="concat('xrefitem=',@target,'#',$sec)"/>
+              </xsl:attribute>
+            </fo:wrapper>
+          </xsl:if>
+        </fo:wrapper>
+      </xsl:if>
 
-      <xsl:if test="not(@x:sec) or (@x:fmt!='sec' and @x:fmt!='number')">
+      <xsl:if test="$sec='' or ($fmt!='sec' and $fmt!='number')">
         <fo:basic-link internal-destination="{$target}" xsl:use-attribute-sets="internal-link">
           <xsl:if test="$xml2rfc-ext-include-references-in-index='yes'">
             <xsl:attribute name="id">
@@ -1201,6 +1273,13 @@
             <xsl:attribute name="index-key">
               <xsl:value-of select="concat('xrefitem=',@target)"/>
             </xsl:attribute>
+            <xsl:if test="$sec!=''">
+              <fo:wrapper>
+                <xsl:attribute name="index-key">
+                  <xsl:value-of select="concat('xrefitem=',@target,'#',$sec)"/>
+                </xsl:attribute>
+              </fo:wrapper>
+            </xsl:if>
           </xsl:if>
           <xsl:variable name="val">
             <xsl:call-template name="referencename">
@@ -1208,7 +1287,7 @@
             </xsl:call-template>
           </xsl:variable>
           <xsl:choose>
-            <xsl:when test="@x:fmt='anchor'">
+            <xsl:when test="$fmt='anchor'">
               <!-- remove brackets -->
               <xsl:value-of select="substring($val,2,string-length($val)-2)"/>
             </xsl:when>
@@ -1219,16 +1298,16 @@
         </fo:basic-link>
       </xsl:if>
 
-      <xsl:if test="@x:sec">
+      <xsl:if test="$sec!=''">
         <xsl:choose>
-          <xsl:when test="@x:fmt='()'">
+          <xsl:when test="$fmt='()'">
             <xsl:text> (Section </xsl:text>
-            <xsl:value-of select="@x:sec"/>
+            <xsl:value-of select="$sec"/>
             <xsl:text>)</xsl:text>
           </xsl:when>
-          <xsl:when test="@x:fmt=','">
+          <xsl:when test="$fmt=','">
             <xsl:text>, Section </xsl:text>
-            <xsl:value-of select="@x:sec"/>
+            <xsl:value-of select="$sec"/>
           </xsl:when>
           <xsl:otherwise/>
         </xsl:choose>
@@ -1247,9 +1326,7 @@
 </xsl:template>
 
 <xsl:template match="*">
-  <fo:block font-weight="bold">UNKNOWN ELEMENT <xsl:value-of select="local-name()" /></fo:block>
-  <xsl:message>UNKNOWN ELEMENT: <xsl:value-of select="local-name()" /></xsl:message>
-  <xsl:apply-templates />
+  <xsl:message terminate="yes">ERROR: unknown or unexpected element: {<xsl:value-of select="namespace-uri()" />}<xsl:value-of select="local-name()" /><xsl:call-template name="lineno"/>: '<xsl:value-of select="."/>'</xsl:message>
 </xsl:template>
 
 <xsl:template match="text()">
@@ -1294,7 +1371,17 @@
 <!-- produce back section with author information -->
 <xsl:template name="insertAuthors">
 
-	<fo:block id="{$anchor-prefix}.authors" xsl:use-attribute-sets="h1-new-page">
+  <xsl:variable name="sectionNumber">
+    <xsl:call-template name="get-authors-section-number"/>
+  </xsl:variable>
+
+	<fo:block id="{$anchor-prefix}.authors" xsl:use-attribute-sets="h1 newpage">
+    <xsl:if test="$sectionNumber != ''">
+      <xsl:call-template name="emit-section-number">
+        <xsl:with-param name="no" select="$sectionNumber"/>
+      </xsl:call-template>
+      <xsl:text>&#0160;&#0160;</xsl:text>
+    </xsl:if>
     <xsl:call-template name="get-authors-section-title"/>
   </fo:block>
 
@@ -1306,8 +1393,8 @@
 
 <xsl:template name="insertIndex">
 
-	<fo:block xsl:use-attribute-sets="h1-new-page" id="{$anchor-prefix}.index">
-    Index
+	<fo:block xsl:use-attribute-sets="h1 newpage" id="{$anchor-prefix}.index">
+    <xsl:text>Index</xsl:text>
   </fo:block>
 
   <xsl:variable name="irefs" select="//iref[generate-id(.) = generate-id(key('index-first-letter',translate(substring(@item,1,1),$lcase,$ucase)))]"/>
@@ -1353,6 +1440,69 @@
                     <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('xrefitem=',@anchor,',primary')}" font-weight="bold"/>
                     <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('xrefitem=',@anchor)}"/>
                   </fo:index-page-citation-list>
+
+                  <xsl:variable name="rs2" select="$entries[@x:sec]"/>
+
+                  <xsl:if test="$rs2">
+                    <xsl:for-each select="$rs2">
+                      <xsl:sort select="substring-before(concat(@x:sec,'.'),'.')" data-type="number"/>
+                      <xsl:sort select="substring(@x:sec,1+string-length(substring-before(@x:sec,'.')))" data-type="number"/>
+                      <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-sec',concat(@target,'..',@x:sec)))">
+                        <fo:block start-indent="2em" hyphenate="true">
+                          <fo:wrapper font-style="italic">
+                            <xsl:choose>
+                              <xsl:when test="translate(substring(@x:sec,1,1),$ucase,'')=''">
+                                <xsl:text>Appendix </xsl:text>
+                              </xsl:when>
+                              <xsl:otherwise>
+                                <xsl:text>Section </xsl:text>
+                              </xsl:otherwise>
+                            </xsl:choose>
+                            <xsl:value-of select="@x:sec"/>
+                            <xsl:text> </xsl:text>
+                          </fo:wrapper>
+                          <fo:index-page-citation-list merge-sequential-page-numbers="merge">
+                            <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('xrefitem=',@target,'#',@x:sec)}"/>
+                          </fo:index-page-citation-list>
+                        </fo:block>
+                      </xsl:if>
+                    </xsl:for-each>
+                  </xsl:if>
+
+                  <xsl:if test="current()/x:source/@href">
+                    <xsl:variable name="rs3" select="$entries[not(@x:sec) and @x:rel]"/>
+                    <xsl:if test="$rs3">
+                      <xsl:variable name="doc" select="document(current()/x:source/@href)"/>
+                      <xsl:for-each select="$rs3">
+                        <xsl:sort select="count($doc//*[@anchor and following::*/@anchor=substring-after(current()/@x:rel,'#')])" order="ascending" data-type="number"/>
+                        <xsl:if test="generate-id(.) = generate-id(key('index-xref-by-anchor',concat(@target,'..',@x:rel)))">
+                          <fo:block start-indent="2em" hyphenate="true">
+                            <xsl:variable name="sec">
+                              <xsl:for-each select="$doc//*[@anchor=substring-after(current()/@x:rel,'#')]">
+                                <xsl:call-template name="get-section-number"/>
+                              </xsl:for-each>
+                            </xsl:variable>
+                            <fo:wrapper font-style="italic">
+                              <xsl:choose>
+                                <xsl:when test="translate(substring($sec,1,1),$ucase,'')=''">
+                                  <xsl:text>Appendix </xsl:text>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                  <xsl:text>Section </xsl:text>
+                                </xsl:otherwise>
+                              </xsl:choose>
+                              <xsl:value-of select="$sec"/>
+                              <xsl:text> </xsl:text>
+                            </fo:wrapper>
+                            <fo:index-page-citation-list merge-sequential-page-numbers="merge">
+                              <fo:index-key-reference page-number-treatment="link" ref-index-key="{concat('xrefitem=',@target,'#',$sec)}"/>
+                            </fo:index-page-citation-list>
+                          </fo:block>
+                        </xsl:if>
+                      </xsl:for-each>
+                    </xsl:if>
+                  </xsl:if>
+
                 </fo:block>
               </xsl:if>
 
@@ -1430,9 +1580,8 @@
 
 
 <xsl:template match="/" mode="toc">
-	<fo:block xsl:use-attribute-sets="h1-new-page" id="{concat($anchor-prefix,'.toc')}">
-    <xsl:attribute name="page-break-before">always</xsl:attribute>
-    Table of Contents
+	<fo:block xsl:use-attribute-sets="h1 newpage" id="{concat($anchor-prefix,'.toc')}">
+    <xsl:text>Table of Contents</xsl:text>
   </fo:block>
 
   <xsl:apply-templates mode="toc" />
@@ -1471,14 +1620,17 @@
 </xsl:template>
 
 <xsl:template match="front" mode="toc">
-
-  <xsl:variable name="title">
+  
+  <xsl:variable name="authors-title">
     <xsl:call-template name="get-authors-section-title"/>
   </xsl:variable>
-  
+  <xsl:variable name="authors-number">
+    <xsl:call-template name="get-authors-section-number"/>
+  </xsl:variable>
   <xsl:call-template name="insert-toc-line">
     <xsl:with-param name="target" select="concat($anchor-prefix,'.authors')"/>
-    <xsl:with-param name="title" select="$title"/>
+    <xsl:with-param name="title" select="$authors-title"/>
+    <xsl:with-param name="number" select="$authors-number"/>
   </xsl:call-template>
 
 </xsl:template>
@@ -1660,7 +1812,8 @@
     <xsl:variable name="right">
       <xsl:call-template name="get-header-right" />
     </xsl:variable>
-    <fo:table width="100%" text-align="center" space-before=".2cm" table-layout="fixed">
+    <fo:block space-after=".5cm" />
+    <fo:table width="100%" text-align="center" table-layout="fixed">
       <fo:table-column column-width="proportional-column-width({(string-length($left)+string-length($right)) div 2})" />
       <fo:table-column column-width="proportional-column-width({string-length($center)})" />
       <fo:table-column column-width="proportional-column-width({(string-length($left)+string-length($right)) div 2})" />
@@ -1729,8 +1882,12 @@
 <xsl:template match="ed:ins">
   <xsl:apply-templates />
 </xsl:template>
+
 <xsl:template match="ed:replace">
+  <!--<xsl:variable name="no">change<xsl:number level="any"/></xsl:variable>
+  <fo:change-bar-begin change-bar-class="{$no}" change-bar-style="solid" change-bar-color="red" change-bar-offset="2mm"/>-->
   <xsl:apply-templates />
+  <!--<fo:change-bar-end change-bar-class="{$no}"/>-->
 </xsl:template>
 
 <!-- extensions -->
@@ -1806,9 +1963,17 @@
 </xsl:template>
 
 <xsl:template match="front" mode="bookmarks">
+
+  <xsl:variable name="authors-number">
+    <xsl:call-template name="get-authors-section-number"/>
+  </xsl:variable>
+
   <xsl:variable name="title">
-    <xsl:if test="count(author)=1">Author's Address</xsl:if>
-    <xsl:if test="count(author)!=1">Author's Addresses</xsl:if>
+    <xsl:if test="$authors-number!=''">
+      <xsl:value-of select="$authors-number"/>
+      <xsl:text> </xsl:text>
+    </xsl:if>
+    <xsl:call-template name="get-authors-section-title"/>
   </xsl:variable>
 
   <fo:bookmark internal-destination="{concat($anchor-prefix,'.authors')}">
@@ -1891,9 +2056,6 @@
     
     <!-- emit it -->
     <xsl:choose>
-      <xsl:when test="function-available('msxsl:node-set')">
-        <xsl:apply-templates select="msxsl:node-set($preamble)/node()" mode="bookmarks"/>
-      </xsl:when>
       <xsl:when test="function-available('exslt:node-set')">
         <xsl:apply-templates select="exslt:node-set($preamble)/node()" mode="bookmarks"/>
       </xsl:when>
@@ -2038,8 +2200,8 @@
       </fo:table-body>
     </fo:table>
     <xsl:apply-templates select="postamble" />
-    <xsl:if test="@title!='' or @anchor!=''">
-      <xsl:variable name="n"><xsl:number level="any" count="texttable[@title!='' or @anchor!='']" /></xsl:variable>
+    <xsl:if test="(@title!='' or @anchor!='') and not(@suppress-title='true')">
+      <xsl:variable name="n"><xsl:number level="any" count="texttable[(@title!='' or @anchor!='') and not(@suppress-title='true')]" /></xsl:variable>
       <fo:block text-align="center" space-before="1em" space-after="1em">Table <xsl:value-of select="$n"/><xsl:if test="@title!=''">: <xsl:value-of select="@title" /></xsl:if></fo:block>
     </xsl:if>
   </fo:block>
@@ -2116,7 +2278,7 @@
             <fo:block font-size="10pt" start-indent="2em" text-align="left" id="{$cid}">
               <fo:inline font-size="8pt" vertical-align="super">[<xsl:value-of select="$cid"/>]</fo:inline>
               <xsl:text> </xsl:text>
-              <xsl:value-of select="."/>
+              <xsl:apply-templates select="node()"/>
               <xsl:if test="@source"> --<xsl:value-of select="@source"/></xsl:if>
             </fo:block>
           </fo:footnote-body>
@@ -2127,7 +2289,7 @@
           <xsl:text>[</xsl:text>
           <xsl:value-of select="$cid"/>
           <xsl:text>: </xsl:text>
-          <xsl:value-of select="."/>
+          <xsl:apply-templates select="node()"/>
           <xsl:if test="@source"> --<xsl:value-of select="@source"/></xsl:if>
           <xsl:text>]</xsl:text>
         </fo:inline>
@@ -2138,9 +2300,16 @@
 
 
 
+<xsl:template name="insert-justification">
+  <xsl:if test="$xml2rfc-ext-justification='always' or $xml2rfc-ext-justification='print'">
+    <xsl:attribute name="text-align">justify</xsl:attribute>
+  </xsl:if>
+</xsl:template>
+
 <!-- Extensions -->
 
-<!-- Nothing to do for HTML output -->
+<!-- Nothing to do for PDF output -->
+<xsl:template match="x:assign-section-number" />
 <xsl:template match="x:link" />
 
 <!-- Nothing to do here -->
@@ -2197,6 +2366,66 @@
   <fo:wrapper font-weight="bold">
     <xsl:apply-templates/>
   </fo:wrapper>
+</xsl:template>
+
+<!-- Superscripts -->
+<xsl:template match="x:sup">
+  <xsl:text>^</xsl:text> <!-- make this prettier -->
+  <xsl:apply-templates/>
+</xsl:template>
+
+<!-- measuring lengths -->
+<xsl:template match="x:length-of">
+  <xsl:variable name="target" select="//*[@anchor=current()/@target]"/>
+  <xsl:if test="count($target)!=1">
+    <xsl:call-template name="error">
+      <xsl:with-param name="msg" select="concat('@target ',@target,' defined ',count($target),' times.')"/>
+    </xsl:call-template>
+  </xsl:if>
+  <xsl:variable name="content">
+    <xsl:apply-templates select="$target"/>
+  </xsl:variable>
+  <xsl:variable name="lineends" select="string-length($content) - string-length(translate($content,'&#10;',''))"/>
+  <xsl:variable name="indents">
+    <xsl:choose>
+      <xsl:when test="@indented">
+        <xsl:value-of select="number(@indented) * $lineends"/>
+      </xsl:when>
+      <xsl:otherwise>0</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+  <xsl:value-of select="string-length($content) + $lineends - $indents"/>
+</xsl:template>
+
+<!-- Nop -->
+<xsl:template match="x:span">
+  <xsl:apply-templates/>
+</xsl:template>
+
+<!-- XML checking -->
+<xsl:template match="x:parse-xml">
+  <xsl:apply-templates/>
+</xsl:template>
+
+<xsl:template match="x:abnf-char-sequence">
+  <xsl:choose>
+    <xsl:when test="substring(.,1,1) != '&quot;' or substring(.,string-length(.),1) != '&quot;'">
+      <xsl:call-template name="error">
+        <xsl:with-param name="msg" select="'contents of x:abnf-char-sequence needs to be quoted.'" />
+      </xsl:call-template>
+    </xsl:when>
+    <xsl:otherwise>
+      <xsl:text>%x</xsl:text>
+      <xsl:call-template name="to-abnf-char-sequence">
+        <xsl:with-param name="chars" select="substring(.,2,string-length(.)-2)"/>
+      </xsl:call-template>
+    </xsl:otherwise>
+  </xsl:choose>
+</xsl:template>
+
+<!-- inlined RDF support -->
+<xsl:template match="rdf:Description">
+  <!-- ignore -->
 </xsl:template>
 
 <!-- box drawing -->
