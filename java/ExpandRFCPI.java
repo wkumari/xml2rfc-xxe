@@ -10,7 +10,7 @@ package com.att.research.fenner.xmleditapp.xml2rfc;
 
 import java.io.IOException;
 import java.net.URL;
-import com.xmlmind.xmledit.doc.*;
+import com.xmlmind.xmledit.doc.Document;
 import com.xmlmind.xmleditapp.dochook.DocumentHookBase;
 import com.xmlmind.xmledit.xmlutil.*;
 import com.xmlmind.xmledit.util.MiscUtil;

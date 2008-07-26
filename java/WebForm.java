@@ -13,13 +13,14 @@ import java.net.*;
 import java.util.Properties;
 import java.awt.Component;
 import com.xmlmind.xmledit.gadget.*;
-import com.xmlmind.xmledit.util.*;
-import com.xmlmind.xmledit.doc.*;
+import com.xmlmind.util.*;
+import com.xmlmind.xml.doc.Document;
+import com.xmlmind.xml.save.DocumentWriter;
 import com.xmlmind.xmledit.view.DocumentView;
-import com.xmlmind.xmledit.guiutil.AWTUtil;
-import com.xmlmind.xmledit.guiutil.ShowStatus;
-import com.xmlmind.xmledit.guiutil.Alert;
-import com.xmlmind.xmleditapp.vdrive.AuthenticationDialog;
+import com.xmlmind.guiutil.AWTUtil;
+import com.xmlmind.guiutil.ShowStatus;
+import com.xmlmind.guiutil.Alert;
+import com.xmlmind.netutil.AuthenticationDialog;
 
 
 public class WebForm implements Command {
@@ -182,14 +183,16 @@ public class WebForm implements Command {
 			post.print(lineEnd);
 			
 			// Write the document in the edit buffer to the web server.
-			DocumentWriter writer = new DocumentWriter();
+			Writer out = new BufferedWriter(new OutputStreamWriter(post));
+
+			DocumentWriter writer = new DocumentWriter(out);
 			writer.setEncoding("US-ASCII");	// xml2rfc only supports entities, not UTF-8.
 			writer.setPreserveInclusions(false);	// if we've loaded included files already,
 													// send them along instead of turning them back
 													// into entities or XIncludes.
 			// could setCdataSectionElements but CDATA is really for presentation
 			//  and this isn't presentation.
-			writer.writeDocument(document, post);
+			writer.write(document);
 						
 			// Finish the MIME part
 			post.print(lineEnd);

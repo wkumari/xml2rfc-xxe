@@ -11,12 +11,12 @@ package com.att.research.fenner.xmleditapp.xml2rfc;
 import java.util.Properties;
 
 import com.xmlmind.xmledit.gadget.*;
-import com.xmlmind.xmledit.util.*;
-import com.xmlmind.xmledit.doc.*;
+import com.xmlmind.util.*;
+import com.xmlmind.xml.doc.Document;
 import com.xmlmind.xmledit.view.DocumentView;
-import com.xmlmind.xmledit.guiutil.AWTUtil;
-import com.xmlmind.xmledit.guiutil.ShowStatus;
-import com.xmlmind.xmledit.guiutil.Alert;
+import com.xmlmind.guiutil.AWTUtil;
+import com.xmlmind.guiutil.ShowStatus;
+import com.xmlmind.guiutil.Alert;
 
 public class TestFormatter implements Command {
 
@@ -41,7 +41,7 @@ public class TestFormatter implements Command {
 		Properties systemProperties = System.getProperties();
 		String formatter = systemProperties.getProperty("xml2rfc.formatter", "xml2rfc");
 		try {
-			ret = PlatformUtil.shellExec(formatter, output);
+			ret = SystemUtil.shellExec(formatter, output);
 		} catch (java.io.IOException e) {
 			return null;
 		} catch (java.lang.InterruptedException e) {
