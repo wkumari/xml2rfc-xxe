@@ -1,7 +1,7 @@
 <!-- 
     Transform XSL 1.1 extensions to FOP extensions
 
-    Copyright (c) 2006, Julian Reschke (julian.reschke@greenbytes.de)
+    Copyright (c) 2006-2007, Julian Reschke (julian.reschke@greenbytes.de)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -66,6 +66,15 @@
   </xsl:copy>
 </xsl:template>
 
+<!-- work around weird list item behaviour -->
+
+<xsl:template match="fo:list-item-body/fo:block[not(node())]">
+  <xsl:copy>
+    <xsl:apply-templates select="@*"/>
+    <!-- add NBSP so the block is not empty -->
+    <xsl:text>&#160;</xsl:text>
+  </xsl:copy>
+</xsl:template>
 
 <!-- add destination elements where IDs are defined -->
 <xsl:template match="@id">
@@ -99,6 +108,9 @@
         <xsl:attribute name="font-weight">bold</xsl:attribute>
       </xsl:if>
       <fo:page-number-citation ref-id="{ancestor-or-self::*/@id}"/>
+      <xsl:if test="not(ancestor-or-self::*/@id)">
+        <xsl:message>WARNING: No ID found for <xsl:value-of select="@index-key"/>.</xsl:message>
+      </xsl:if>
     </fo:basic-link>
     <xsl:if test="position()!=last()"><xsl:text>, </xsl:text></xsl:if>
   </xsl:for-each>
@@ -110,6 +122,9 @@
 <xsl:template match="fo:index-range-begin">
   <fo:wrapper id="{@id}"/>
 </xsl:template>
+
+<!-- remove stuff not understood -->
+<xsl:template match="@page-break-inside"/>
 
 <!-- remove third-party extensions -->
 
