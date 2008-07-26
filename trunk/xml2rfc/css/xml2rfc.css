@@ -181,43 +181,44 @@ section::attribute(title) {
 	show-attribute: never;
 }
 /* Handle 5-level-embedded sections; anything beyond 5 will be marked
- * as failing.  Too bad "counters" doesn't work. */
+ * as failing.  "counters" works and will solve this, but I'm keeping
+ * the use of simple-counter because, well, it's simple. */
 section:before {
-	content: collapser() attributes() "Section " counter(n) ". " text-field(attribute, title);
+	content: collapser() attributes() "Section " simple-counter(n) ". " text-field(attribute, title);
 	font-size: 150%;
 	text-indent: -1em;	/* this doesn't outdent like it does Address: */
 	color: black;
 }
 section section:before {
-	content: collapser() attributes() "Section " counter(nn) ". " text-field(attribute, title);
+	content: collapser() attributes() "Section " simple-counter(nn) ". " text-field(attribute, title);
 	font-size: 125%;
 }
 section section section:before {
-	content: collapser() attributes() "Section " counter(nnn) ". " text-field(attribute, title);
+	content: collapser() attributes() "Section " simple-counter(nnn) ". " text-field(attribute, title);
 }
 section section section section:before {
-	content: collapser() attributes() "Section " counter(nnnn) ". " text-field(attribute, title);
+	content: collapser() attributes() "Section " simple-counter(nnnn) ". " text-field(attribute, title);
 }
 section section section section section:before {
-	content: collapser() attributes() "Section " counter(nnnnn) ". " text-field(attribute, title);
+	content: collapser() attributes() "Section " simple-counter(nnnnn) ". " text-field(attribute, title);
 }
 section section section section section section:before {
-	content: collapser() attributes() "Section (auto-numbering failed)." counter(nnnnn) ". " text-field(attribute, title);
+	content: collapser() attributes() "Section (auto-numbering failed)." simple-counter(nnnnn) ". " text-field(attribute, title);
 }
 back section:before {
-	content: collapser() attributes() "Appendix " counter(n, upper-alpha) ". " text-field(attribute, title);
+	content: collapser() attributes() "Appendix " simple-counter(n, upper-alpha) ". " text-field(attribute, title);
 }
 back section section:before {
-	content: collapser() attributes() "Appendix " counter(n-, upper-alpha) "." counter(n) ". " text-field(attribute, title);
+	content: collapser() attributes() "Appendix " simple-counter(n-, upper-alpha) "." counter(n) ". " text-field(attribute, title);
 }
 back section section section:before {
-	content: collapser() attributes() "Appendix " counter(n--, upper-alpha) "." counter(nn) ". " text-field(attribute, title);
+	content: collapser() attributes() "Appendix " simple-counter(n--, upper-alpha) "." counter(nn) ". " text-field(attribute, title);
 }
 back section section section section:before {
-	content: collapser() attributes() "Appendix " counter(n---, upper-alpha) "." counter(nnn) ". " text-field(attribute, title);
+	content: collapser() attributes() "Appendix " simple-counter(n---, upper-alpha) "." counter(nnn) ". " text-field(attribute, title);
 }
 back section section section section section:before {
-	content: collapser() attributes() "Appendix (auto-numbering failed)." counter(nnnn) ". " text-field(attribute, title);
+	content: collapser() attributes() "Appendix (auto-numbering failed)." simple-counter(nnnn) ". " text-field(attribute, title);
 }
 t {
 	margin-bottom: 1em;

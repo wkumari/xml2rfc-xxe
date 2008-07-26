@@ -4,5 +4,5 @@
   <a:category><a:configuration /></a:category>
   <a:name>A configuration for creating RFC2629 (xml2rfc) documents</a:name>
   <a:version>%%VERSION%%</a:version>
-  <a:xxeVersion>3.0+</a:xxeVersion>
+  <a:xxeVersion>4.0.0</a:xxeVersion>
 </a:addon>
