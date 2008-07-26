@@ -10,7 +10,7 @@ package com.att.research.fenner.xmleditapp.xml2rfc;
 
 import com.xmlmind.xmledit.gadget.Command;
 import com.xmlmind.xmledit.gadget.Gadget;
-import com.xmlmind.xmledit.util.*;
+import com.xmlmind.util.*;
 
 /**
  * Implements a Command parallel to a &ltprocess>'s &ltshell platform=""> -
@@ -27,18 +27,18 @@ public class Os implements Command {
 		if ("".equals(parameter)) {
 			return true;
 		}
-		switch (PlatformUtil.PLATFORM) {
-		case PlatformUtil.WINDOWS:
+		switch (SystemUtil.PLATFORM) {
+		case WINDOWS:
 			if ("windows".equals(parameter)) {
 				return true;
 			}
 			return false;
-		case PlatformUtil.MAC_OS:
+		case MAC_OS:
 			if ("mac".equals(parameter) || "unix".equals(parameter)) {
 				return true;
 			}
 			return false;
-		case PlatformUtil.GENERIC_UNIX:
+		case GENERIC_UNIX:
 			if ("genericunix".equals(parameter) || "unix".equals(parameter)) {
 				return true;
 			}
@@ -49,12 +49,12 @@ public class Os implements Command {
 
     public Object executeCommand(Gadget gadget, String parameter, 
                                  int x, int y) {
-		switch (PlatformUtil.PLATFORM) {
-		case PlatformUtil.WINDOWS:
+		switch (SystemUtil.PLATFORM) {
+		case WINDOWS:
 			return "Windows";
-		case PlatformUtil.MAC_OS:
+		case MAC_OS:
 			return "Mac";
-		case PlatformUtil.GENERIC_UNIX:
+		case GENERIC_UNIX:
 			return "GenericUnix";
 		default:
 			return "Unknown";

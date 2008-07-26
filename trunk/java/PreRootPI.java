@@ -30,8 +30,8 @@ import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import java.util.ArrayList;
 
 
-import com.xmlmind.xmledit.doc.*;
-import com.xmlmind.xmledit.xmlutil.*;
+import com.xmlmind.xml.doc.*;
+import com.xmlmind.xml.name.Name;
 import com.xmlmind.xmledit.styledgadget.Style;
 import com.xmlmind.xmledit.stylesheet.StyleValue;
 import com.xmlmind.xmledit.styledview.StyledViewFactory;
@@ -149,7 +149,7 @@ public class PreRootPI implements ComponentFactory, ActionListener, ListSelectio
 			 n != null && n.compareTo(element) < 0;
 			 n = n.getNextSibling()) {
 			 
-			if (n.getNodeType() == Node.PROCESSING_INSTRUCTION &&
+			if (n.getType() == Node.Type.PROCESSING_INSTRUCTION &&
 				n.name() == RFC) {
 				
 				pis.add(new RFCPI((ProcessingInstruction)n));

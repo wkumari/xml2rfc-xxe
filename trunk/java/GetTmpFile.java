@@ -12,11 +12,11 @@ import java.io.File;
 import java.awt.Component;
 
 import com.xmlmind.xmledit.gadget.*;
-import com.xmlmind.xmledit.util.*;
-import com.xmlmind.xmledit.doc.*;
+import com.xmlmind.util.StringUtil;
+import com.xmlmind.xml.doc.Document;
 import com.xmlmind.xmledit.view.DocumentView;
-import com.xmlmind.xmledit.guiutil.AWTUtil;
-import com.xmlmind.xmledit.guiutil.Alert;
+import com.xmlmind.guiutil.AWTUtil;
+import com.xmlmind.guiutil.Alert;
 
 public class GetTmpFile implements Command {
 

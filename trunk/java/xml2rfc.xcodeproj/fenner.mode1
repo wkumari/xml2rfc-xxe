@@ -204,10 +204,10 @@
 						<key>_historyCapacity</key>
 						<integer>0</integer>
 						<key>bookmark</key>
-						<string>5528A1B60B5D9D8300E1FEBC</string>
+						<string>557D5CAC0CFA891D00D02DCE</string>
 						<key>history</key>
 						<array>
-							<string>55C9D6360AE75C4500C34C2A</string>
+							<string>5528A1B60B5D9D8300E1FEBC</string>
 						</array>
 					</dict>
 					<key>SplitCount</key>
@@ -224,42 +224,6 @@
 				<false/>
 				<key>RubberWindowFrame</key>
 				<string>12 80 1219 707 0 0 1280 832 </string>
-			</dict>
-		</dict>
-		<dict>
-			<key>Content</key>
-			<dict>
-				<key>PBXProjectModuleGUID</key>
-				<string>55C9D6330AE75C4500C34C2A</string>
-				<key>PBXProjectModuleLabel</key>
-				<string>Target: xml2rfc</string>
-				<key>PBXSplitModuleInNavigatorKey</key>
-				<dict>
-					<key>Split0</key>
-					<dict>
-						<key>PBXProjectModuleGUID</key>
-						<string>55C9D6340AE75C4500C34C2A</string>
-						<key>PBXProjectModuleLabel</key>
-						<string>Target: xml2rfc</string>
-						<key>history</key>
-						<array>
-							<string>55C9D62E0AE75C2F00C34C2A</string>
-						</array>
-					</dict>
-					<key>SplitCount</key>
-					<string>1</string>
-				</dict>
-				<key>StatusBarVisibility</key>
-				<true/>
-			</dict>
-			<key>Geometry</key>
-			<dict>
-				<key>Frame</key>
-				<string>{{0, 20}, {1219, 666}}</string>
-				<key>PBXModuleWindowStatusBarHidden2</key>
-				<false/>
-				<key>RubberWindowFrame</key>
-				<string>3 120 1219 707 0 0 1280 832 </string>
 			</dict>
 		</dict>
 	</array>
@@ -444,9 +408,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>5528A1B40B5D9D8300E1FEBC</string>
+				<string>557D5CAA0CFA891D00D02DCE</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>5528A1B50B5D9D8300E1FEBC</string>
+				<string>557D5CAB0CFA891D00D02DCE</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -580,9 +544,8 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>55C9D6330AE75C4500C34C2A</string>
 		<string>5509E50A0A855B8700A245D3</string>
-		<string>/Users/fenner/Projects/xml2rfc/xml2rfc.xcodeproj</string>
+		<string>/Users/fenner/src/xml2rfc-xxe/java/xml2rfc.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
 	<string>162 211 690 397 0 0 1280 832 </string>
@@ -1019,9 +982,9 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C0AD2B3069F1EA900FABCE6</string>
-				<string>5528A1B70B5D9D8300E1FEBC</string>
+				<string>557D5CAD0CFA891D00D02DCE</string>
 				<string>1CD0528B0623707200166675</string>
-				<string>5528A1B80B5D9D8300E1FEBC</string>
+				<string>557D5CAE0CFA891D00D02DCE</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.run</string>

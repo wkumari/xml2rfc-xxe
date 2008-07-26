@@ -14,12 +14,12 @@ import java.awt.Component;
 import java.util.Properties;
 
 import com.xmlmind.xmledit.gadget.*;
-import com.xmlmind.xmledit.util.*;
-import com.xmlmind.xmledit.doc.*;
+import com.xmlmind.util.*;
+import com.xmlmind.xml.doc.Document;
 import com.xmlmind.xmledit.view.DocumentView;
-import com.xmlmind.xmledit.guiutil.AWTUtil;
-import com.xmlmind.xmledit.guiutil.ShowStatus;
-import com.xmlmind.xmledit.guiutil.Alert;
+import com.xmlmind.guiutil.AWTUtil;
+import com.xmlmind.guiutil.ShowStatus;
+import com.xmlmind.guiutil.Alert;
 
 public class RunFormatter implements Command {
 
@@ -72,7 +72,7 @@ public class RunFormatter implements Command {
 		ShowStatus.showStatus("Formatting document with " + formatter);
 
 		try {
-			ret = PlatformUtil.shellExec(formatter + " '" + infile + "' '" + outfile + "'", output);
+			ret = SystemUtil.shellExec(formatter + " '" + infile + "' '" + outfile + "'", output);
 		} catch (java.io.IOException e) {
 			return null;
 		} catch (java.lang.InterruptedException e) {
