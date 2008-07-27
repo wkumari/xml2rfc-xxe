@@ -1,0 +1,39 @@
+// !$*UTF8*$!
+{
+	00E6828EFEC88D1A11DB9C8B = {
+		activeBuildStyle = 130F8B95001BDF0A11CA292A;
+		activeExecutable = 130F8B98001BDF0A11CA292A;
+		activeTarget = 130F8B90001BDF0A11CA292A;
+		addToTargets = (
+		);
+		executables = (
+			130F8B98001BDF0A11CA292A,
+		);
+	};
+	130F8B90001BDF0A11CA292A = {
+		activeExec = 0;
+	};
+	130F8B98001BDF0A11CA292A = {
+		activeArgIndex = 0;
+		activeArgIndices = (
+			YES,
+		);
+		argumentStrings = (
+			"-jar \"xml2rfc.jar\" ",
+		);
+		debuggerPlugin = JavaDebugging;
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		isa = PBXExecutable;
+		launchableReference = 130F8B99001BDF0A11CA292A;
+		sourceDirectories = (
+		);
+	};
+	130F8B99001BDF0A11CA292A = {
+		isa = PBXExecutableFileReference;
+		name = java;
+		path = /usr/bin/java;
+		refType = 0;
+	};
+}

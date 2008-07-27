@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<a:addon location="ietf-words.zip" xmlns:ns="http://www.w3.org/1999/xhtml"
+         xmlns:a="http://www.xmlmind.com/xmleditor/schema/addon">
+  <a:category>
+    <a:dictionary />
+  </a:category>
+
+  <a:name>idspell (words culled from IETF documents)</a:name>
+
+  <a:version>1.0.0</a:version>
+</a:addon>
