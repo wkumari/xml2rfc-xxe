@@ -156,35 +156,37 @@ public class WebForm implements Command {
 			conn.setRequestMethod("POST");
 			
 			conn.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
-			conn.setRequestProperty("User-Agent", "xml2rfc-xxe-WebForm/0.2");
+			conn.setRequestProperty("User-Agent", "xml2rfc-xxe-WebForm/0.3");
 			
 			conn.connect();
 			ShowStatus.showStatus("Uploading XML document");
 			
 			// Get the stream to post the document to the form
-			PrintStream post = new PrintStream(conn.getOutputStream());
+			Writer out = new BufferedWriter(new OutputStreamWriter(
+											   conn.getOutputStream()));
 			
 			// Create form answers - mode={txt,html,nr,xml} and type={ascii,binary}
 			//
-			post.print(twoHyphens + boundary + lineEnd);
-			post.print("Content-Disposition: form-data; name=\"mode\"" + lineEnd);
-			post.print(lineEnd);
-			post.print(format + lineEnd);
+			out.write(twoHyphens + boundary + lineEnd);
+			out.write("Content-Disposition: form-data; name=\"mode\"" + lineEnd);
+			out.write(lineEnd);
+			out.write(format + lineEnd);
 			
-			post.print(twoHyphens + boundary + lineEnd);
-			post.print("Content-Disposition: form-data; name=\"type\"" + lineEnd);
-			post.print(lineEnd);
-			post.print("binary" + lineEnd);
+			out.write(twoHyphens + boundary + lineEnd);
+			out.write("Content-Disposition: form-data; name=\"type\"" + lineEnd);
+			out.write(lineEnd);
+			out.write("binary" + lineEnd);
 			
-			post.print(twoHyphens + boundary + lineEnd);
-			post.print("Content-Disposition: form-data; name=\"input\";"
+			out.write(twoHyphens + boundary + lineEnd);
+			out.write("Content-Disposition: form-data; name=\"input\";"
 						   + " filename=\"" + infile +"\"" + lineEnd);
-			post.print("Content-Type: text/xml" + lineEnd);
-			post.print(lineEnd);
+			out.write("Content-Type: text/xml" + lineEnd);
+			out.write(lineEnd);
 			
+			// XXX DocumentWriter stopped outputting the <?xml?> line.
+			// XXX Need to understand this better!
+			out.write("<?xml version=\"1.0\" encoding=\"US-ASCII\"?>" + lineEnd);
 			// Write the document in the edit buffer to the web server.
-			Writer out = new BufferedWriter(new OutputStreamWriter(post));
-
 			DocumentWriter writer = new DocumentWriter(out);
 			writer.setEncoding("US-ASCII");	// xml2rfc only supports entities, not UTF-8.
 			writer.setPreserveInclusions(false);	// if we've loaded included files already,
@@ -195,11 +197,11 @@ public class WebForm implements Command {
 			writer.write(document);
 						
 			// Finish the MIME part
-			post.print(lineEnd);
-			post.print(twoHyphens + boundary + twoHyphens + lineEnd);
+			out.write(lineEnd);
+			out.write(twoHyphens + boundary + twoHyphens + lineEnd);
 			
-			post.flush();
-			post.close();
+			out.flush();
+			out.close();
 		}
 		catch (MalformedURLException ex)
 		{
