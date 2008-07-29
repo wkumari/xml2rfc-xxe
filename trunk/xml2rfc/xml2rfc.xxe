@@ -901,7 +901,8 @@ to do: work if there is more than one section selected-->
           <sequence>
             <get expression="$tmpfile"/>
 
-            <command name="viewHTML" parameter="%_"/>
+            <command name="start"
+                     parameter="helper(defaultViewer) %_"/>
           </sequence>
         </choice>
       </sequence>
@@ -921,7 +922,8 @@ to do: work if there is more than one section selected-->
 
         <get expression="$tmpfile"/>
 
-        <command name="viewHTML" parameter="%_"/>
+        <command name="start"
+                 parameter="helper(defaultViewer) %_"/>
       </sequence>
     </macro>
   </command>
