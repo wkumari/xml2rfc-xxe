@@ -13,6 +13,7 @@
 		5528A1D50B5DB43D00E1FEBC /* TestFormatter.java in Sources */ = {isa = PBXBuildFile; fileRef = 5528A1D40B5DB43D00E1FEBC /* TestFormatter.java */; };
 		5528A1EF0B5ECE6100E1FEBC /* GetTmpFile.java in Sources */ = {isa = PBXBuildFile; fileRef = 5528A1EE0B5ECE6100E1FEBC /* GetTmpFile.java */; };
 		556FC58307CFF67A00149B26 /* Manifest in JavaArchive */ = {isa = PBXBuildFile; fileRef = 556FC58207CFF67A00149B26 /* Manifest */; settings = {JAVA_ARCHIVE_SUBDIR = ""; }; };
+		5576437B0E3C6C36008C9B98 /* StyleSheetExtension.java in Sources */ = {isa = PBXBuildFile; fileRef = 550A88CE07FCE40D00AE8259 /* StyleSheetExtension.java */; };
 		55802B9A07F07AB600B496A2 /* Os.java in Sources */ = {isa = PBXBuildFile; fileRef = 55802B9907F07AB600B496A2 /* Os.java */; };
 		55EC2A2C07C57DF700812B53 /* WebForm.java in Sources */ = {isa = PBXBuildFile; fileRef = 55EC2A2B07C57DF700812B53 /* WebForm.java */; };
 		6A0644AD02C7C26E0CC91562 /* xml2rfc.1 in JavaArchive */ = {isa = PBXBuildFile; fileRef = 6A0644AC02C7C26E0CC91562 /* xml2rfc.1 */; settings = {JAVA_ARCHIVE_SUBDIR = ""; }; };
@@ -136,6 +137,7 @@
 				5528A1C70B5DB1F200E1FEBC /* RunFormatter.java in Sources */,
 				5528A1D50B5DB43D00E1FEBC /* TestFormatter.java in Sources */,
 				5528A1EF0B5ECE6100E1FEBC /* GetTmpFile.java in Sources */,
+				5576437B0E3C6C36008C9B98 /* StyleSheetExtension.java in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
