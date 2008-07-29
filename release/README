@@ -1,0 +1,8 @@
+Google Code downloads don't believe in replacing an existing file.
+Therefore, the .xxe_addon file has to live here.
+
+This hierarchy is accessible at
+http://xml2rfc-xxe.googlecode.com/svn/release/...
+and the zip files are at
+http://xml2rfc-xxe.googlecode.com/files/...
+so the addon file has to have a full URL in it.
