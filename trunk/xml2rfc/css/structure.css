@@ -59,39 +59,40 @@ date {
 	content: "Date: " attr(day) " " attr(month) " " attr(year);
 }
 /* Handle 5-level-embedded sections; anything beyond 5 will be marked
- * as failing.  Too bad "counters" doesn't work. */
+ * as failing.  "counters" would solve this but I'm sticking with
+ * simple-counter for now. */
 section:before {
-	content:  attributes() counter(n) ". " attr(title);
+	content:  attributes() simple-counter(n) ". " attr(title);
 }
 section section:before {
-	content:  attributes() counter(nn) ". " attr(title);
+	content:  attributes() simple-counter(nn) ". " attr(title);
 }
 section section section:before {
-	content:  attributes() counter(nnn) ". " attr(title);
+	content:  attributes() simple-counter(nnn) ". " attr(title);
 }
 section section section section:before {
-	content:  attributes() counter(nnnn) ". " attr(title);
+	content:  attributes() simple-counter(nnnn) ". " attr(title);
 }
 section section section section section:before {
-	content:  attributes() counter(nnnnn) ". " attr(title);
+	content:  attributes() simple-counter(nnnnn) ". " attr(title);
 }
 section section section section section section:before {
-	content:  attributes() "???." counter(nnnnn) ". " attr(title);
+	content:  attributes() "???." simple-counter(nnnnn) ". " attr(title);
 }
 back section:before {
-	content:  attributes() counter(n, upper-alpha) ". " attr(title);
+	content:  attributes() simple-counter(n, upper-alpha) ". " attr(title);
 }
 back section section:before {
-	content:  attributes() counter(n-, upper-alpha) "." counter(n) ". " attr(title);
+	content:  attributes() simple-counter(n-, upper-alpha) "." simple-counter(n) ". " attr(title);
 }
 back section section section:before {
-	content:  attributes() counter(n--, upper-alpha) "." counter(nn) ". " attr(title);
+	content:  attributes() simple-counter(n--, upper-alpha) "." simple-counter(nn) ". " attr(title);
 }
 back section section section section:before {
-	content:  attributes() counter(n---, upper-alpha) "." counter(nnn) ". " attr(title);
+	content:  attributes() simple-counter(n---, upper-alpha) "." simple-counter(nnn) ". " attr(title);
 }
 back section section section section section:before {
-	content:  attributes() "???." counter(nnnn) ". " attr(title);
+	content:  attributes() "???." simple-counter(nnnn) ". " attr(title);
 }
 back > references {
 	content: xpath("if(@title, @title, 'References')");
