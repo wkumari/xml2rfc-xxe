@@ -27,8 +27,13 @@ clean:
 copy:
 	@addon=""; \
 	grep beta xml2rfc/version.txt >/dev/null || addon="dist/xml2rfc.xxe_addon"; \
-	rsync -a dist/*`cat xml2rfc/version.txt`* $$addon silk.research.att.com:external/wwwfiles/ietf/xml2rfc-xxe/
-	rsync -a help/html silk.research.att.com:external/wwwfiles/ietf/xml2rfc-xxe/xml2rfc_help/
+	version=`cat xml2rfc/version.txt`; \
+	googlecode_upload.py -p xml2rfc-xxe -s "xml2rfc-xxe $$version" dist/xml2rfc-xxe-$$version.zip; \
+	googlecode_upload.py -p xml2rfc-xxe -s "xml2rfc-xxe $${version}-only addon" dist/xml2rfc-$$version.xxe-addon; \
+	[ -n "$$addon" ] && googlecode_upload.py -p xml2rfc-xxe -s "xml2rfc-xxe addon" dist/xml2rfc.xxe-addon
+
+	#rsync -a dist/*`cat xml2rfc/version.txt`* $$addon silk.research.att.com:external/wwwfiles/ietf/xml2rfc-xxe/
+	#rsync -a help/html silk.research.att.com:external/wwwfiles/ietf/xml2rfc-xxe/xml2rfc_help/
 # new copy todo:
 # labels: Type-Addon for the addon
 #         Type-Package for the zip file
