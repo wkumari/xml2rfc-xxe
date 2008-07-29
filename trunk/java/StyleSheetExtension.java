@@ -12,8 +12,8 @@ import com.xmlmind.xmledit.stylesheet.StyleValue;
 import com.xmlmind.xmledit.view.DocumentView;
 import com.xmlmind.xmledit.styledview.CustomViewManager;
 
-import com.xmlmind.xmledit.xmlutil.*;
-import com.xmlmind.xmledit.doc.*;
+import com.xmlmind.xml.name.Name;
+import com.xmlmind.xml.doc.*;
 
 import java.util.TreeSet;
 import java.util.SortedSet;
@@ -43,7 +43,7 @@ public class StyleSheetExtension extends StyleSpecsBase {
 									  StyledViewFactory viewFactory) {
 		String format = listFormat((Element) contextNode);
 		int index = indexOfListItem((Element) contextNode);
-		return new StyleValue(formatCounter(format, 1 + index));
+		return StyleValue.createString(formatCounter(format, 1 + index));
     }
 	
 	private static String listFormat(Element listItem) {
