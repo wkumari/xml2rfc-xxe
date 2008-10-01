@@ -20,6 +20,8 @@ import java.util.SortedSet;
 import java.util.Iterator;
 import java.util.HashMap;
 
+import java.awt.Color;
+import java.security.MessageDigest;
 
 /**
  * Based on xxe developer documentation
@@ -269,4 +271,48 @@ public class StyleSheetExtension extends StyleSpecsBase {
 			}
 		}
 		*/
+
+	public StyleValue pickcolor(StyleValue[] args, Node contextNode,
+                                StyledViewFactory viewFactory) {
+		
+        float h,s,b;
+        String cref = contextNode.attributeValue(Name.get("source"));
+		
+        if (cref==null || "".equals(cref)) {
+			if (args.length > 0 && ("dark").equals(args[0].stringValue()))
+				return StyleValue.createColor(StyleValue.parseColor("black"));
+			else
+				return StyleValue.createColor(StyleValue.parseColor("yellow"));
+        }
+		
+        byte[] hash = MD5(cref);
+		
+        h= mapByteIntoRange(0.0f,1.0f, hash[0]);
+		
+        if (args.length > 0 && ("dark").equals(args[0].stringValue())) {
+			s= mapByteIntoRange(0.45f,0.6f, hash[1]);
+			b= mapByteIntoRange(0.3f,0.4f, hash[2]);
+        } else {
+			s= mapByteIntoRange(0.2f,0.4f, hash[1]);
+			b= mapByteIntoRange(0.92f,0.99f, hash[2]);
+        }
+		
+        return StyleValue.createColor(Color.getHSBColor(h, s, b));
+    }   
+    
+	
+    public byte[] MD5(String text) {
+        MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("MD5");
+            md.update(text.getBytes("iso-8859-1"), 0, text.length());
+        } catch(Exception e) {
+            return new byte[]{0,0,0};
+        }
+        return md.digest(); // byte[32]
+    }
+	
+    public static float mapByteIntoRange(float low, float high, byte value) {
+        return (low+high)/2 + value*(high-low)/254f;
+    }
 }
