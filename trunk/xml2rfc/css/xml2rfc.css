@@ -77,6 +77,7 @@ rfc > front abstract:before {
 	font-size: 120%;
 	font-weight: bold;
 	text-align: center;
+	margin-top: 1em;
 }
 abstract,note {
 	margin: 0.6em 2em;
@@ -141,11 +142,13 @@ area:before, workgroup:before, keyword:before {
 	content: delete-button(background-color, red) element-label() ": ";
 }
 date {
-	content: "Date: [day]" text-field(attribute,day,columns,5) " [month]" text-field(attribute,month,columns,10) " [year]" text-field(attribute,year,columns,5);
+	content: "Date: [day]" text-field(attribute,day,columns,2)
+		    " [month]" combo-box(attribute,month,labels,"January\A February\A March\A April\A May\A June\A July\A August\A September\A October\A November\A December\A -",values,"January\A February\A March\A April\A May\A June\A July\A August\A September\A October\A November\A December\A")  
+		    "  [year]" text-field(attribute,year,columns,4);
 }
 /*
  * Make all anchors editable if present.
- * Display "[not referenced]" if it's not the target of an xref or iprExtract.
+ * Display "[not used]" if it's not the target of an xref or iprExtract.
  * Display "[DUPLICATE ANCHOR]" if it's a duplicate of another anchor.
  * Make it all red if it's a reference element that's not referenced, or
  *  if it's a duplicate.
@@ -154,7 +157,7 @@ date {
 *::attribute(anchor) {
 	attribute-content-left: "[a:";
 	attribute-content-middle: text-field(attribute, anchor, columns, 10);
-	attribute-content-right: xpath('if(//xref[@target=current()/@anchor] or /rfc[@iprExtract=current()/@anchor], "", "[not referenced] ")') xpath('if(count(//*[@anchor=current()/@anchor]) = 1, "", "[DUPLICATE ANCHOR] ")') "] ";
+	attribute-content-right: xpath('if(//xref[@target=current()/@anchor] or /rfc[@iprExtract=current()/@anchor], "", "[not used] ")') xpath('if(count(//*[@anchor=current()/@anchor]) = 1, "", "[DUPLICATE ANCHOR] ")') "] ";
 	show-attribute: when-added;
 	color: concatenate(xpath('if((local-name(.)!="reference" or //xref[@target=current()/@anchor] or /rfc[@iprExtract=current()/@anchor]) and (count(//*[@anchor=current()/@anchor]) = 1),"purple","red")'));
 	font-size: 80%;
@@ -175,7 +178,10 @@ section::attribute {
 	attribute-content-middle: value-editor(attribute, attribute());
 	attribute-content-right: "] ";
 	color: #ff9900;
-	font-size: 80%;
+	font-size: 60%;
+}
+section::attribute(anchor) {
+	font-size: 60%;
 }
 section::attribute(title) {
 	show-attribute: never;
@@ -184,41 +190,41 @@ section::attribute(title) {
  * as failing.  "counters" works and will solve this, but I'm keeping
  * the use of simple-counter because, well, it's simple. */
 section:before {
-	content: collapser() attributes() "Section " simple-counter(n) ". " text-field(attribute, title);
+	content: collapser() "Section " simple-counter(n) ". " text-field(attribute, title, columns, 20) attributes();
 	font-size: 150%;
 	text-indent: -1em;	/* this doesn't outdent like it does Address: */
 	color: black;
 }
 section section:before {
-	content: collapser() attributes() "Section " simple-counter(nn) ". " text-field(attribute, title);
+	content: collapser() "Section " simple-counter(nn) ". " text-field(attribute, title, columns, 20) attributes();
 	font-size: 125%;
 }
 section section section:before {
-	content: collapser() attributes() "Section " simple-counter(nnn) ". " text-field(attribute, title);
+	content: collapser() "Section " simple-counter(nnn) ". " text-field(attribute, title, columns, 20) attributes();
 }
 section section section section:before {
-	content: collapser() attributes() "Section " simple-counter(nnnn) ". " text-field(attribute, title);
+	content: collapser() "Section " simple-counter(nnnn) ". " text-field(attribute, title, columns, 20) attributes();
 }
 section section section section section:before {
-	content: collapser() attributes() "Section " simple-counter(nnnnn) ". " text-field(attribute, title);
+	content: collapser() "Section " simple-counter(nnnnn) ". " text-field(attribute, title, columns, 20) attributes();
 }
 section section section section section section:before {
-	content: collapser() attributes() "Section (auto-numbering failed)." simple-counter(nnnnn) ". " text-field(attribute, title);
+	content: collapser() "Section (auto-numbering failed)." simple-counter(nnnnn) ". " text-field(attribute, title, columns, 20) attributes();
 }
 back section:before {
-	content: collapser() attributes() "Appendix " simple-counter(n, upper-alpha) ". " text-field(attribute, title);
+	content: collapser() "Appendix " simple-counter(n, upper-alpha) ". " text-field(attribute, title, columns, 20) attributes();
 }
 back section section:before {
-	content: collapser() attributes() "Appendix " simple-counter(n-, upper-alpha) "." counter(n) ". " text-field(attribute, title);
+	content: collapser() "Appendix " simple-counter(n-, upper-alpha) "." counter(n) ". " text-field(attribute, title, columns, 20) attributes();
 }
 back section section section:before {
-	content: collapser() attributes() "Appendix " simple-counter(n--, upper-alpha) "." counter(nn) ". " text-field(attribute, title);
+	content: collapser() "Appendix " simple-counter(n--, upper-alpha) "." counter(nn) ". " text-field(attribute, title, columns, 20) attributes();
 }
 back section section section section:before {
-	content: collapser() attributes() "Appendix " simple-counter(n---, upper-alpha) "." counter(nnn) ". " text-field(attribute, title);
+	content: collapser() "Appendix " simple-counter(n---, upper-alpha) "." counter(nnn) ". " text-field(attribute, title, columns, 20) attributes();
 }
 back section section section section section:before {
-	content: collapser() attributes() "Appendix (auto-numbering failed)." simple-counter(nnnn) ". " text-field(attribute, title);
+	content: collapser() "Appendix (auto-numbering failed)." simple-counter(nnnn) ". " text-field(attribute, title, columns, 20) attributes();
 }
 t {
 	margin-bottom: 1em;
@@ -233,9 +239,16 @@ rfc > front title:after {
 	content: label(xpath,"if(string-length(.) > 39, ' <-- should have abbrev', '')");
 	color: red;
 }
+title {
+    margin-top: 1em;
+}
 title[abbrev]:after {
-	content: " (aka " text-field(attribute, abbrev) ")";
+	display: block;
+	margin-bottom: 2em;
+	content: "(aka " text-field(attribute, abbrev) ")";
 	color: inherit;
+	font-size: 50%;
+	color: #bbb;
 }
 xref, eref {
 	display: inline;
@@ -325,20 +338,35 @@ iref {
  * can't be.
  */
 cref::attribute() {
+	background-color: invoke('pickcolor');
 	attribute-content-left: "[" attribute-label() ":";
 	attribute-content-middle: value-editor(attribute, attribute());
 	attribute-content-right: "]";
 	color: purple;
 	font-size: 80%;
 }
-cref:before {
-	content: "[[ comment" attributes() ": ";
+cref::attribute(source) {
+	show-attribute: never;  /* source is displayed after the comment, as a signature (see below) 
+			       and is not editable : once set, we don't expect a comment source to change */
 }
-cref {
-	background-color: yellow;
+cref:before {
+	color: invoke('pickcolor','dark');
+	background-color: invoke('pickcolor');
+	content: " [ ";
+	font-style: normal;
+}
+cref {  
+	text-indent: 1em;
+	display: inline;
+	background-color: invoke('pickcolor');
+	font-style: italic;
+	color: invoke('pickcolor','dark');
 }
 cref:after {
-	content: " ]]";
+	content: xpath('if(string-length(@source)>0,concat("   --",@source),"")') " ] " attributes();
+	color: invoke('pickcolor','dark');
+	background-color: invoke('pickcolor');
+	font-style: normal;
 }
 vspace {
 	display: block;
