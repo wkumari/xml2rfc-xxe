@@ -29,11 +29,16 @@ copy:
 	grep beta xml2rfc/version.txt >/dev/null || addon="dist/xml2rfc.xxe_addon"; \
 	version=`cat xml2rfc/version.txt`; \
 	googlecode_upload.py -p xml2rfc-xxe -s "xml2rfc-xxe $$version" dist/xml2rfc-xxe-$$version.zip; \
-	googlecode_upload.py -p xml2rfc-xxe -s "xml2rfc-xxe $${version}-only addon" dist/xml2rfc-$$version.xxe-addon; \
-	[ -n "$$addon" ] && googlecode_upload.py -p xml2rfc-xxe -s "xml2rfc-xxe addon" dist/xml2rfc.xxe-addon
+	googlecode_upload.py -p xml2rfc-xxe -s "xml2rfc-xxe $${version}-only addon" dist/xml2rfc-$$version.xxe_addon
+	#[ -n "$$addon" ] && googlecode_upload.py -p xml2rfc-xxe -s "xml2rfc-xxe addon" dist/xml2rfc.xxe_addon
+	#
+	# so since we can't replace files in the downloads, we need
+	# to use the repository and point people to the addon file
+	# at, say,
+	# http://xml2rfc-xxe.googlecode.com/svn/release/xml2rfc.xxe_addon
+	sed -e 's,location=",location="http://xml2rfc-xxe.googlecode.com/files/,' dist/xml2rfc-$$version.xxe_addon > svn/release/xml2rfc.xxe_addon
+	echo "Don't forget to commit the new xml2rfc.xxe_addon from svn/release/"
 
-	#rsync -a dist/*`cat xml2rfc/version.txt`* $$addon silk.research.att.com:external/wwwfiles/ietf/xml2rfc-xxe/
-	#rsync -a help/html silk.research.att.com:external/wwwfiles/ietf/xml2rfc-xxe/xml2rfc_help/
 # new copy todo:
 # labels: Type-Addon for the addon
 #         Type-Package for the zip file
