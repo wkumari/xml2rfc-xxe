@@ -1,0 +1,715 @@
+/*
+ * css to allow WYSIKLWYG editing of xml2rfc format
+ * using XMLmind XML editor.
+ *
+ * $Id$
+ */
+
+@extension "StyleSheetExtension";
+
+* {
+	display: block;
+}
+/*
+ * Workaround for xxe 3.0's leakage of
+ * structure.css's display: none
+ */
+*:comment,
+*:processing-instruction {
+	display: block;
+}
+
+/*
+ * Need to write a gadget to handle processing-instructions inside the
+ * <rfc> (I've seen needLines, subcompact, and of course include)
+*:processing-instruction(rfc) {
+	content: "<?rfc " gadget("com.att.research.fenner.xmleditapp.xml2rfc.RFCPI") "?>";
+}
+ */
+
+/* Headings for major sections of the document. */
+rfc:before,
+rfc > front:before,
+rfc > middle:before,
+rfc > back:before {
+	display: block;
+	font-size: 120%;
+	font-weight: bold;
+	text-align: center;
+	background-color: #ff9900;
+	content: "RFC " element-label() " Matter";
+}
+rfc,
+rfc > front,
+rfc > middle,
+rfc > back {
+	border: 2 solid #ff9900;
+	margin: 0 0 2 0;
+}
+rfc::attribute() {
+	attribute-content-left: "[" attribute-label() ":";
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "] ";
+	font-size: 80%;
+}
+rfc::attribute(category) {
+	show-attribute: always;
+}
+rfc::attribute(ipr) {
+	attribute-content-right: xpath('if(contains(@ipr, "3978"), "", "(The IETF will not accept drafts with\A non-3978 IPR after 6 May 2005)")') "] ";
+	show-attribute: always;
+	color: concatenate(xpath('if(contains(@ipr, "3978"), "", "red")'));
+}
+rfc:before {
+	display: block;
+	content: division(content(component("com.att.research.fenner.xmleditapp.xml2rfc.PreRootPI"), paragraph(content("RFC metadata: ", attributes()))));
+	padding: 2px 2px 0 2px;
+}
+rfc > front title {
+	font-size: 150%;
+	text-align: center;
+}
+
+/* Front abstract */
+rfc > front abstract:before {
+	display: block;
+	content: "Abstract";
+	font-size: 120%;
+	font-weight: bold;
+	text-align: center;
+	margin-top: 1em;
+}
+abstract,note {
+	margin: 0.6em 2em;
+}
+
+note:before {
+	display: block;
+	content: "Note: " text-field(attribute, title);
+	font-size: 120%;
+	font-weight: bold;
+	text-align: center;
+}
+
+/* Author and address formatting */
+address:before {
+	content: "Address: ";
+	text-indent: -1em;
+}
+address {
+	margin-left: 1em;
+}
+/*
+ * Display tags in the margin of the postal address
+ */
+address postal * {
+	margin-left: 4em;
+}
+address postal *:before {
+	display: marker;
+	content: element-label();
+	font-size: 80%;
+}
+address *:before {
+	content: element-label() ": ";
+}
+address postal:before {
+	content: "";
+}
+/* Collapse author details by default */
+author {
+	collapsible: yes;
+	collapsed: yes;
+	not-collapsible-head: 1;
+}
+author::attribute(role) {
+	attribute-content-left: " [" attribute-label() ":";
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "] ";
+}
+author:before {
+	content: collapser() "Author: " text-field(attribute,fullname) " (" text-field(attribute,initials,columns,5) " " text-field(attribute,surname) ")" attributes();
+}
+organization:before {
+	content: "Organization: ";
+}
+organization[abbrev]:after {
+	content: " (aka " attr(abbrev) ")";
+}
+/* The default document comes with some of these, so make them easy
+   to delete. */
+area:before, workgroup:before, keyword:before {
+	content: delete-button(background-color, red) element-label() ": ";
+}
+date {
+	content: "Date: [day]" text-field(attribute,day,columns,2)
+		    " [month]" combo-box(attribute,month,labels,"January\A February\A March\A April\A May\A June\A July\A August\A September\A October\A November\A December\A -",values,"January\A February\A March\A April\A May\A June\A July\A August\A September\A October\A November\A December\A")  
+		    "  [year]" text-field(attribute,year,columns,4);
+}
+/*
+ * Make all anchors editable if present.
+ * Display "[not used]" if it's not the target of an xref or iprExtract.
+ * Display "[DUPLICATE ANCHOR]" if it's a duplicate of another anchor.
+ * Make it all red if it's a reference element that's not referenced, or
+ *  if it's a duplicate.
+ */
+/* to do: "add anchor" button, icon(left-target) */
+*::attribute(anchor) {
+	attribute-content-left: "[a:";
+	attribute-content-middle: text-field(attribute, anchor, columns, 10);
+	attribute-content-right: xpath('if(//xref[@target=current()/@anchor] or /rfc[@iprExtract=current()/@anchor], "", "[not used] ")') xpath('if(count(//*[@anchor=current()/@anchor]) = 1, "", "[DUPLICATE ANCHOR] ")') "] ";
+	show-attribute: when-added;
+	color: concatenate(xpath('if((local-name(.)!="reference" or //xref[@target=current()/@anchor] or /rfc[@iprExtract=current()/@anchor]) and (count(//*[@anchor=current()/@anchor]) = 1),"purple","red")'));
+	font-size: 80%;
+}
+section {
+	collapsible: yes;
+	not-collapsible-head: 1;
+	margin: 0.33em 1em;
+	color: red;	/* mark text that appears outside appropriate wrappers */
+}
+section:after {
+	display: block;
+	content: xpath("if(count(./text()[normalize-space(.)!='']), concat('*** Preceding section has ', count(./text()[normalize-space(.)!='']), ' instance(s) of text outside wrapper element (e.g., <t>)'), '')");
+	font-size: 150%;
+}
+section::attribute {
+	attribute-content-left: "[" attribute-label() ":";
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "] ";
+	color: #ff9900;
+	font-size: 60%;
+}
+section::attribute(anchor) {
+	font-size: 60%;
+}
+section::attribute(title) {
+	show-attribute: never;
+}
+/* Handle 5-level-embedded sections; anything beyond 5 will be marked
+ * as failing.  "counters" works and will solve this, but I'm keeping
+ * the use of simple-counter because, well, it's simple. */
+section:before {
+	content: collapser() "Section " simple-counter(n) ". " text-field(attribute, title, columns, 20) attributes();
+	font-size: 150%;
+	text-indent: -1em;	/* this doesn't outdent like it does Address: */
+	color: black;
+}
+section section:before {
+	content: collapser() "Section " simple-counter(nn) ". " text-field(attribute, title, columns, 20) attributes();
+	font-size: 125%;
+}
+section section section:before {
+	content: collapser() "Section " simple-counter(nnn) ". " text-field(attribute, title, columns, 20) attributes();
+}
+section section section section:before {
+	content: collapser() "Section " simple-counter(nnnn) ". " text-field(attribute, title, columns, 20) attributes();
+}
+section section section section section:before {
+	content: collapser() "Section " simple-counter(nnnnn) ". " text-field(attribute, title, columns, 20) attributes();
+}
+section section section section section section:before {
+	content: collapser() "Section (auto-numbering failed)." simple-counter(nnnnn) ". " text-field(attribute, title, columns, 20) attributes();
+}
+back section:before {
+	content: collapser() "Appendix " simple-counter(n, upper-alpha) ". " text-field(attribute, title, columns, 20) attributes();
+}
+back section section:before {
+	content: collapser() "Appendix " simple-counter(n-, upper-alpha) "." counter(n) ". " text-field(attribute, title, columns, 20) attributes();
+}
+back section section section:before {
+	content: collapser() "Appendix " simple-counter(n--, upper-alpha) "." counter(nn) ". " text-field(attribute, title, columns, 20) attributes();
+}
+back section section section section:before {
+	content: collapser() "Appendix " simple-counter(n---, upper-alpha) "." counter(nnn) ". " text-field(attribute, title, columns, 20) attributes();
+}
+back section section section section section:before {
+	content: collapser() "Appendix (auto-numbering failed)." simple-counter(nnnn) ". " text-field(attribute, title, columns, 20) attributes();
+}
+t {
+	margin-bottom: 1em;
+	color: black;		/* t may appear in section */
+}
+/*
+ * Long document titles should have an abbrev attribute.
+ * XXX draft-mrose-writing-rfcs says 42, xml2rfc uses a formula that
+ *     tends to be 40 for an Internet-Draft
+ */
+rfc > front title:after {
+	content: label(xpath,"if(string-length(.) > 39, ' <-- should have abbrev', '')");
+	color: red;
+}
+title {
+    margin-top: 1em;
+}
+title[abbrev]:after {
+	display: block;
+	margin-bottom: 2em;
+	content: "(aka " text-field(attribute, abbrev) ")";
+	color: inherit;
+	font-size: 50%;
+	color: #bbb;
+}
+xref, eref {
+	display: inline;
+	color: green;
+}
+xref::attribute(target),
+eref::attribute(target) {
+	attribute-content-left: " [" element-label() " to:";
+	show-attribute: always;
+	color: purple;
+}
+xref::attribute,
+eref::attribute {
+	attribute-content-left: " [" attribute-label();
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "]";
+	show-attribute: when-added;
+	color: #ff9900;
+	font-size: 80%;
+}
+/*
+ * ID-Checklist doesn't allow xref's in the abstract.
+ * This tries to be tiny and inobtrusive since you might
+ * be authoring a document for which you don't care
+ * about ID-Checklist issues.
+ */
+abstract xref:before {
+	vertical-align: top;
+	content: division(content(paragraph("xref in"),paragraph("abstract")));
+	font-size: 50%;
+	font-weight: bold;
+	color: red;
+}
+/*
+ * xpath stuff for xrefs:
+ * - Find the node whose anchor is our target.
+ * - If there's a title (a section or an appendix or ...?), render it.
+ * - If there's a front/title (a reference), render that.
+ * - If the node exists, render "ok".
+ * - If there's an <?rfc include=?> with this target, render "included"
+ *   - 2 parts: if the target begins with RFC, check for reference.RFC.n
+ *   - else, check for reference.@target
+ * - Else, render "(not found)".
+ * XXX need to check for reference.___.xml
+ */
+xref:after {
+	display: inline;
+	content: attributes()
+		 command-button(icon, icon(right-target),
+				command, "putAttribute", parameter, "target")
+		 " ["
+		 xpath("if(id(@target)/@title, id(@target)/@title, id(@target)/front/title, id(@target)/front/title, id(@target), 'ok', //processing-instruction('rfc')[starts-with(normalize-space(.),'include=') and substring(normalize-space(.), 10, 10)='reference.' and ((starts-with(current()/@target, 'RFC') and substring-after(substring(normalize-space(.), 20, string-length(normalize-space(.))-20), 'RFC.')=substring-after(current()/@target, 'RFC')) or (starts-with(current()/@target, 'RFC')=false and substring(normalize-space(.), 20, string-length(normalize-space(.))-20)=current()/@target))], 'included', '(not found)')")
+		 "]";
+	color: purple;
+}
+eref:after {
+	display: inline;
+	content: attributes();
+	color: purple;
+}
+iref::attribute() {
+	show-attribute: when-added;
+	color: purple;
+	font-size: 80%;
+}
+iref::attribute(subitem) {
+	attribute-content-left: "[" attribute-label() ":";
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "] ";
+}
+iref::attribute(primary) {
+	attribute-content-left: "[";
+	attribute-content-middle: check-box(attribute, primary,
+					    label, attribute-label(),
+					    checked-value, "true",
+					    unchecked-value, "false");
+	attribute-content-right: "] ";
+}
+iref {
+	/* need to reduce the margins for a series of irefs */
+	display: block;
+	content: " [Index: " text-field(attribute, "item") attributes() "] ";
+	color: purple;
+}
+/*
+ * I'd like cref to be collapsible, but elements without sub-elements
+ * can't be.
+ */
+cref::attribute() {
+	background-color: invoke('pickcolor');
+	attribute-content-left: "[" attribute-label() ":";
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "]";
+	color: purple;
+	font-size: 80%;
+}
+cref::attribute(source) {
+	show-attribute: never;  /* source is displayed after the comment, as a signature (see below) 
+			       and is not editable : once set, we don't expect a comment source to change */
+}
+cref:before {
+	color: invoke('pickcolor','dark');
+	background-color: invoke('pickcolor');
+	content: " [ ";
+	font-style: normal;
+}
+cref {  
+	text-indent: 1em;
+	display: inline;
+	background-color: invoke('pickcolor');
+	font-style: italic;
+	color: invoke('pickcolor','dark');
+}
+cref:after {
+	content: xpath('if(string-length(@source)>0,concat("   --",@source),"")') " ] " attributes();
+	color: invoke('pickcolor','dark');
+	background-color: invoke('pickcolor');
+	font-style: normal;
+}
+vspace {
+	display: block;
+	/* These command-buttons are for increment and decrement operations. */
+	content: "--- vspace("
+		 text-field(attribute, "blankLines", columns, 2)
+		 ") "
+		 command-button(icon, icon(plus-box),
+				command, "putAttribute",
+				parameter, xpath("concat('blankLines ', ./@blankLines + 1)"))
+		 command-button(icon, icon(minus-box),
+				command, "putAttribute",
+				parameter, xpath("concat('blankLines ', ./@blankLines - 1)"))
+		 " ---";
+	color: purple;
+	font-size: 80%;
+	/* Whitespace at the bottom of the element */
+	padding-bottom: concatenate(xpath("if(@blankLines > 1, @blankLines - 1, 0)"), "em");
+}
+spanx {
+	display: inline;
+	font-style: italic;
+}
+spanx[style=emph] {
+	display: inline;
+	font-style: italic;
+}
+spanx[style=strong] {
+	display: inline;
+	font-weight: bold;
+	font-style: normal;
+}
+spanx[style=verb] {
+	display: inline;
+	font-family: monospace;
+	font-style: normal;
+}
+list::attribute(style) {
+	show-attribute: never;
+}
+list::attribute() {
+	attribute-content-left: " [" attribute-label() ":";
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "] ";
+	show-attribute: when-added;
+}
+/* If it's not inside a t (see more-specific :before next)
+ * then offer to wrap it.  */
+list:before {
+	content: "Lists must be inside <t> elements, so click here: "
+		 command-button(icon, icon(convert),
+                                command, "wrap",
+                                parameter, "t");
+	color: red;
+}
+/* A handle for the list */
+t list:before {
+	content: icon(right)
+		 "[list style "
+		 xpath('if(@style,@style,if(ancestor::list[@style],concat(ancestor::list/@style, " [**inherited**]"),"empty [implicit]"))')
+		 attributes()
+		 combo-box(attribute, style,
+			   labels, "Emtpy\A Symbols\A Numbers\A Letters\A Hanging\A Format",
+			   values, "empty\A symbols\A numbers\A letters\A hanging\A format %d:")
+		 "]";
+	/* would like to have a text field for style if it starts with format */
+	/* would like the combobox to really be a menu underneath the element */
+	font-size: 80%;
+	color: #ff9900;
+}
+list t {
+	margin: 0.33em 2em;
+}
+/* No style attribute.  To do: see if we can render the inherited style. */
+list > t:before {
+	display: marker;
+	content: "-?-";
+}
+/* Catch-all for formats that we don't handle. */
+list[style] > t:before {
+	display: marker;
+	content: "???";
+}
+/* 3 levels of symbols */
+list[style=symbols] > t:before {
+	display: marker;
+	content: disc;
+}
+list[style=symbols] list[style=symbols] > t:before {
+	content: square;
+}
+list[style=symbols] list[style=symbols] list[style=symbols] > t:before {
+	content: icon(diamond);
+}
+/* hanging lists */
+list[style=hanging][hangIndent] > t {
+	margin-left: concatenate(xpath("../@hangIndent"), "em");
+}
+list[style=hanging] > t {
+	margin-left: 6em;
+}
+list[style=hanging] > t:before {
+	display: marker;
+	content: text-field(attribute, "hangText", columns, xpath("if(../@hangIndent,../@hangIndent, 6)")) " ";
+}
+/*
+ * listItemCounter knows about numbers, letters and format.
+ * It will eventually know about counter.
+ */
+list[style=numbers] > t:before,
+list[style=letters] > t:before,
+list[style^=format] > t:before {
+	display: marker;
+	content: invoke("listItemCounter");
+}
+list[style^=format] > t {
+	/* to do: find better unit for this */
+	margin-left: concatenate(xpath("(string-length(../@style)-7)*0.6"), "em");
+}
+list[style=empty] > t:before {
+	content: "";	/* override the catch-all */
+}
+
+/* A handle for a figure.  Also warn about document model change
+ * deprecating <t><figure>.
+ */
+figure:before {
+	content: collapser()
+		 "[figure"
+		 command-button(icon, icon(pop-down),
+				menu, menu("Insert preamble", "xml2rfc.insertinside", "preamble before artwork",
+					   "Insert postamble", "xml2rfc.insertinside", "postamble after artwork"))
+		 add-attribute-button()
+		 attributes()
+		 xpath('if(local-name(..) = "t"," NOTE: figure inside <t> is deprecated in 2629bis","")') "]";
+	color: concatenate(xpath('if(local-name(..) = "t","red","#ff9900")'));
+}
+figure::attribute(title) {
+	attribute-content-left: "[" attribute-label() ":";
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "] ";
+	color: black;
+}
+figure {
+	collapsible: yes;
+	collapsed: no;
+	not-collapsible-head: 1;
+	color: black;			/* figure may appear in section */
+}
+/* Attributes on artwork are ugly, but rare, so fine tuning can wait. */
+figure::attribute(), 
+artwork::attribute() {
+	attribute-content-left: "[" remove-attribute-button(attribute, attribute-name(), check-required, yes) attribute-label() ":";
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "] ";
+	color: purple;
+	show-attribute: when-added;
+}
+/* two divs with the drop-site and file-name-field to allow both
+   types of input */
+figure::attribute(src),
+artwork::attribute(src) {
+	attribute-content-middle: division(content(division(
+					    drop-site(text, "Drop image here:",
+					    icon, icon(drop),
+					    icon-position, right,
+					    command, "putAttribute",
+					    parameters, "src %{url}")),
+				   division(file-name-field(
+					    attribute, src))));
+}
+figure[src]:after, 
+artwork[src]:after {
+	display: block;
+	content: division(content(paragraph("This image will be used in HTML/PDF output instead of the ASCII one.", text-align, center),
+				division(image-viewport(attribute, src,
+					data-type, anyURI,
+					viewport-width, 100%,
+					content-width,
+					       xpath("if(@width, @width, 'scale-to-fit')"),
+					content-height,
+					       xpath("if(@height, @height, 'scale-to-fit')"),
+					preserve-aspect-ratio, yes),
+				border-width, 2px,
+				border-style, groove,
+				border-color, gray),
+				paragraph(xpath('if(not(@alt),"NOTE: src but no alt will result in unpredictable output","")'), text-align, center)));
+	white-space: normal;
+	font-family: sans-serif;
+	color: black;
+	background-color: white;
+}
+figure artwork:before {
+	display: block;
+	content: add-attribute-button() attributes();
+	white-space: normal;
+	font-family: sans-serif;
+	background-color: white;
+}
+figure artwork {
+	display: block;
+	white-space: pre;
+	font-family: monospace;
+	background-color: #ffffcc;
+	/* can we display a vertical line at 70 characters? */
+}
+artwork:before {
+	display: block;
+	content: "artwork element needs to be wrapped inside <figure> so click here:"
+		 command-button(icon, icon(convert),
+                                command, "wrap",
+                                parameter, "figure");
+	color: red;
+}
+preamble:before,
+postamble:before {
+	display: inline;
+	content: element-label() ": ";
+}
+
+back > references:before {
+	display: block;
+	content: value-editor(attribute, title);
+	font-size: 125%;
+}
+reference::attribute(target) {
+	attribute-content-left: " [" attribute-label() ":";
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "]";
+	show-attribute: when-added;
+	color: purple;
+	font-size: 80%;
+}
+references > reference:before {
+	content: collapser() "Reference " attributes();
+}
+/* Don't display abstracts in references */
+reference abstract {
+	display: none;
+}
+reference seriesInfo {
+	content: "Series: " text-field(attribute, name, columns, 10) " Doc: " text-field(attribute, value);
+}
+format::attribute(type) {
+	show-attribute: never;
+}
+format::attribute() {
+	attribute-content-left: "[" attribute-label() ":";
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "] ";
+	show-attribute: when-added;
+	font-size: 80%;
+}
+reference format {
+	content: "Format " text-field(attribute, type, columns, 10) attributes();
+}
+reference title:before,
+reference annotation:before {
+	content: element-label() ": ";
+}
+reference {
+	display: block;
+	collapsible: yes;
+	collapsed: yes;
+	not-collapsible-head: 1;
+}
+/*
+ * texttable problems:
+ * preamble and postamble need to be outside "display: table"
+ * <ttcol> and <c> need to be virtually inside table-rows
+ * <ttcol> contains the alignment for all of the <c>s
+ */
+texttable::attribute {
+	attribute-content-left: "[" attribute-label() ":";
+	attribute-content-middle: value-editor(attribute, attribute());
+	attribute-content-right: "] ";
+	color: purple;
+	font-size: 80%;
+}
+texttable:before {
+	content: command-button(icon, icon(pop-down),
+				menu, menu("Insert preamble", "xml2rfc.insertinside", "preamble before ttcol",
+					   "Insert postamble", "xml2rfc.insertinside", "postamble after c",
+					   "Add column", "xml2rfc.insertinside", "ttcol before c"))
+		 add-attribute-button()
+		 attributes()
+		 "texttable incompletely supported";
+}
+texttable {
+	display: table;
+	border: 1 solid black;
+	padding: 2;
+	border-spacing: 2;
+	background-color: silver;
+	color: black;			/* texttable may appear in section */
+}
+/*
+ * Can't use table-caption for the postamble, since it displays
+ * before the table.  Give them each their own row, and make them
+ * look the same; they will still appear as a row inside the table.
+ * Don't know yet how this will appear when the actual table stuff
+ * is working.
+ */
+texttable > preamble,
+texttable > postamble {
+	display: table-cell;
+	color: #004080;
+	background-color: white;
+	column-span: concatenate(xpath("count(../ttcol)"));
+}
+texttable > ttcol {
+	display: table-cell;
+	font-weight: bold;
+	color: olive;
+	start-column: concatenate(xpath("count(preceding-sibling::ttcol)"));
+}
+texttable > ttcol:before {
+	display: inline;
+	content: "  c" label(xpath,"count(preceding-sibling::ttcol) + 1") ": ";
+}
+texttable > c {
+	display: table-cell;
+	start-column: concatenate(xpath("if((count(preceding-sibling::c) + 1) mod count(../ttcol) = 0, count(../ttcol), (count(preceding-sibling::c) + 1) mod count(../ttcol)) - 1"));
+}
+texttable > c:before {
+	display: inline;
+	/* to do: come up with better way to fix the result of mod */
+	content:
+		"r" label(xpath,"round((count(preceding-sibling::c) + 1) div count(../ttcol) + 0.49)")
+		"c" label(xpath,"if((count(preceding-sibling::c) + 1) mod count(../ttcol) = 0, count(../ttcol), (count(preceding-sibling::c) + 1) mod count(../ttcol))")
+		": ";
+}
+texttable:after {
+	content: label(xpath, "if(count(c) mod count(ttcol), 'WARNING: incomplete table (number of <c> elements is not divisible by the number of <ttcol> elements)', '')");
+}
+/*
+ to do:
+ texttable
+  (can we do the "every count(ttcol) c's is a row" thing?)
+  (probably needs java help)
+ <?rfc include= -- editable attribute
+ list: can we inherit style from the closest parent as specified?
+ additional validation: can we enforce things like the structure
+  of the postal?
+ Do any of the xpath() rendering bits need to be label()s?
+*/
