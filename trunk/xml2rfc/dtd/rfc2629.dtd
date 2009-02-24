@@ -109,8 +109,9 @@
           ipr         (full2026|noDerivativeWorks2026|none
                       |full3667|noModification3667|noDerivatives3667
                       |full3978|noModification3978|noDerivatives3978
-                      |trust200811|noModificationTrust200811
-                      |noDerivativesTrust200811)
+                      |trust200811|noModificationTrust200811|noDerivativesTrust200811
+                      |trust200902|noModificationTrust200902|noDerivativesTrust200902
+                      |pre5378Trust200902)
                                          #IMPLIED
           iprExtract  IDREF              #IMPLIED
           submissionType
