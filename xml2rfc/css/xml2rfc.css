@@ -56,9 +56,9 @@ rfc::attribute(category) {
 	show-attribute: always;
 }
 rfc::attribute(ipr) {
-	attribute-content-right: xpath('if(contains(translate(@ipr, "T", "t"), "trust"), "", "(The IETF will not accept drafts with\A non-IETF Trust IPR after 15 December 2008)")') "] ";
+	attribute-content-right: xpath('if(contains(translate(@ipr, "T", "t"), "trust200902"), "", "(The IETF will not accept drafts with\A IPR prior to the IETF Trust 2009-02\A version after 15 February 2009)")') "] ";
 	show-attribute: always;
-	color: concatenate(xpath('if(contains(translate(@ipr, "T", "t"), "trust"), "", "red")'));
+	color: concatenate(xpath('if(contains(translate(@ipr, "T", "t"), "trust2009"), "", "red")'));
 }
 rfc:before {
 	display: block;
