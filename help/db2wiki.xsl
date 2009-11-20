@@ -8,10 +8,28 @@
     <xsl:output method="text" omit-xml-declaration="yes" />
 
     <!-- The prefix for the output files, including directory separator. -->
-    <xsl:param name="dir" select="'wiki/Help__'"/>
+    <xsl:param name="dir" select="'wiki/'"/>
 
     <!-- For debugging, mostly. -->
     <xsl:param name="verbose" select="1"/>
+
+    <xsl:template match="articleinfo">
+	<xsl:apply-templates/>
+        <xsl:for-each select="../section">
+== [Help__<xsl:value-of select="translate( title, ' -,.', '__' )"/><xsl:text> </xsl:text><xsl:value-of select="normalize-space(title)"/>] ==
+<xsl:for-each select="section">
+=== <xsl:value-of select="normalize-space(title)"/> ===
+</xsl:for-each>
+</xsl:for-each>
+	<exsl:document href="{$dir}Help__ToC.wiki" method="text" omit-xml-declaration="yes" encoding="US-ASCII">
+	    <xsl:for-each select="../section">
+== [Help__<xsl:value-of select="translate( title, ' -,.', '__' )"/><xsl:text> </xsl:text><xsl:value-of select="normalize-space(title)"/>] ==
+<xsl:for-each select="section">
+=== <xsl:value-of select="normalize-space(title)"/> ===
+</xsl:for-each>
+</xsl:for-each>
+	</exsl:document>
+    </xsl:template>
 
     <!-- TODO:
 	 Make a SideBar.wiki that has the help ToC, set it as the sidebar
@@ -21,6 +39,7 @@
     <xsl:template match="article/section">
 	<xsl:variable name="filename">
 	    <xsl:value-of select="$dir"/>
+	    <xsl:text>Help__</xsl:text>
 	    <xsl:value-of select="translate( title, ' -,.', '__' )"/>
 	    <xsl:text>.wiki</xsl:text>
 	</xsl:variable>
@@ -32,6 +51,7 @@
 	</xsl:if>
 	<exsl:document href="{$filename}" method="text" omit-xml-declaration="yes" encoding="US-ASCII">#summary <xsl:value-of select="title"/>
 #labels Help
+#sidebar Help__ToC
 
 <xsl:apply-templates/>
 	</exsl:document>
@@ -39,6 +59,7 @@
 
     <!-- First: strip out all whitespace on matching text. -->
     <xsl:template match="text()"><xsl:value-of select="normalize-space(.)"/></xsl:template>
+    <!-- TODO: add trailing whitespace where it's useful -->
 
     <!-- TODO: count the number of parent sections and vary the ='s -->
     <xsl:template match="section/title">= <xsl:value-of select="normalize-space(.)"/> =
@@ -55,6 +76,7 @@
     <xsl:template match="emphasis[@role='bold']"> *<xsl:value-of select="normalize-space(.)"/>* </xsl:template>
     <xsl:template match="emphasis"> _<xsl:value-of select="normalize-space(.)"/>_ </xsl:template>
     <xsl:template match="literal"> `<xsl:value-of select="normalize-space(.)"/>` </xsl:template>
+    <xsl:template match="filename"> `<xsl:value-of select="normalize-space(.)"/>` </xsl:template>
 
     <!-- itemized list -->
     <xsl:template match="itemizedlist/listitem/para"><xsl:text>
@@ -71,7 +93,8 @@
     <xsl:template match="ulink"> [<xsl:value-of select="@url"/><xsl:text> </xsl:text><xsl:value-of select="normalize-space(.)"/>] </xsl:template>
     <xsl:template match="literallayout">
 {{{
-<xsl:value-of select="."/>}}}
+<xsl:value-of select="."/>
+}}}
 </xsl:template>
 
     <!-- rough attempt at tables -->

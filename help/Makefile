@@ -16,7 +16,7 @@ html:	xml2rfc_help_vers.xml icons
 	rm -f xml2rfc_help_vers.xml
 
 wiki:	xml2rfc_help_vers.xml
-	mkdir wiki
+	-mkdir wiki
 	xsltproc db2wiki.xsl xml2rfc_help_vers.xml
 
 copy:
