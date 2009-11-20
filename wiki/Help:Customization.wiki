@@ -1,0 +1,92 @@
+#summary Customization
+#labels Help
+
+= Customization =
+
+There are a variety of customizations that can be accomplished with files in the addon/ directory.
+= Pointing to other data sources =
+
+The xml2rfc plugin looks for various data using made up URI prefixes; this allows for easy reconfiguration using XML Catalogs if you have, e.g., a local bibliography mirror. To customize these, create a file that looks like the following (with the URLs changed, of course) inaddon/my_xml2rfc_catalog.xml.
+{{{
+<?xml version="1.0"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog"
+         prefer="public">
+
+  <rewriteURI uriStartString="xml2rfc-bibxml:"
+              rewritePrefix="http://xml.resource.org/public/rfc/bibxml/" />
+  <rewriteURI uriStartString="xml2rfc-bibxml3:"
+              rewritePrefix="http://xml.resource.org/public/rfc/bibxml3/" />
+
+  <rewriteURI uriStartString="xml2rfc-rfcindex:"
+              rewritePrefix="ftp://ftp.isi.edu/in-notes/" />
+  <rewriteURI uriStartString="xml2rfc-ietfidstatus:"
+              rewritePrefix="http://www.fenron.com/~fenner/ietf/" />
+
+</catalog>
+}}}
+
+= Configuring HTTP proxy, web conversion service, custom xsl, etc. =
+
+These items go in the user configuration file for xxe, which is namedaddon/customize.xxe. If you already have one, add the lines inside the <configuration>...</configuration> below; if you don't have one, create it including the <configuration> lines.
+{{{
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<configuration
+ xmlns="http://www.xmlmind.com/xmleditor/schema/configuration">
+
+  <property name="http.proxyHost">10.0.2.1</property>
+  <property name="http.proxyPort">3128</property>
+  <property name="xml2rfc.cgi">http://xml.resource.org/cgi-bin/xml2rfc-dev.cgi</property>
+
+</configuration>
+}}}
+Properties that can be set:
+
+
+|| Property || Meaning ||
+|| http.proxyHost || Address or name of your HTTP proxy ||
+|| http.proxyPort || Port number of your HTTP proxy ||
+|| xml2rfc.cgi || URL for the online document converter ||
+|| xml2rfc.formatter || Command to execute to convert documents locally ||
+|| xml2rfc.library || XML_LIBRARY environment variable to set when using xml2rfc.formatter ||
+= Customizing elements to add and other aspects of the plugin =
+
+For more info, see the xxe documentation which uses a sample of customizing docbook. This is a sample file, which would be installed asaddon/myxml2rfc/myxml2rfc.xxe. It adds a sample template, makes the default view always include the document structure at the bottom, and includes templates for adding myself as an author and a comment attributed to me.
+
+{{{
+<?xml version="1.0"?>
+<configuration name="xml2rfc"
+  xmlns="http://www.xmlmind.com/xmleditor/schema/configuration"
+  xmlns:cfg="http://www.xmlmind.com/xmleditor/schema/configuration">
+
+  <include location="../xml2rfc/xml2rfc.xxe"/>
+
+  <template location="my-starter-document.xml" name="A Great Starter Internet-Draft"/>
+
+  <windowLayout>
+    <center css="xml2rfc" />
+    <bottom css="Document structure" size="0.15" />
+  </windowLayout>
+
+  <elementTemplate name="mine" selectable="true" xmlns="">
+    <author fullname="Bill Fenner" initials="B." surname="Fenner">
+      <organization>Arastra, Inc.</organization>
+      <address>
+        <postal>
+          <street>275 Middlefield Rd</street>
+          <city>Menlo Park</city>
+          <region>CA</region>
+          <code>94025</code>
+          <country>USA</country>
+        </postal>
+        <phone>+1 650 462-5072</phone>
+        <email>fenner@fenron.com</email>
+      </address>
+    </author>
+  </elementTemplate>
+
+  <elementTemplate name="mine" selectable="true" xmlns="">
+    <cref source="wcf">...</cref>
+  </elementTemplate>
+
+</configuration>
+}}}
