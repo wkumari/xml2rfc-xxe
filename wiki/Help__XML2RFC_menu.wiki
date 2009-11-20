@@ -13,10 +13,10 @@
     * Uses Julian Reschke's xsl transform to convert the XML to HTML, then opens up the rendered HTML in a web browser. This procedure does not require any external software, so should work on any system even without the xml2rfc tool installed. (As of xxe 3.5.1, this feature is only available in Professional Edition.)
 
   * Text Preview using xml.resource.org
-     * Use the xml.resource.org online converter to convert the XML to text, then opens up a text editor (or an xterm running less) on the result.
+    * Use the xml.resource.org online converter to convert the XML to text, then opens up a text editor (or an xterm running less) on the result.
 
   * HTML Preview using xml.resource.org
-     * Use the xml.resource.org online converter to convert the XML to HTML, then opens up the rendered HTML in a web browser.
+    * Use the xml.resource.org online converter to convert the XML to HTML, then opens up the rendered HTML in a web browser.
 
   * Insert <?rfc include=''?>
     * Inserts an empty <?rfc include=''?> processing instruction into the current element at the cursor position, or after the current element if it can't accept a processing instruction inside. NOTE: because of this automatic behavior, double-check using the path at the top of the screen that the processing instruction got inserted _inside_ the node you wanted it in; it's easy to get it _after_ which will confuse the conversions.
