@@ -8,7 +8,7 @@
     <xsl:output method="text" omit-xml-declaration="yes" />
 
     <!-- The prefix for the output files, including directory separator. -->
-    <xsl:param name="dir" select="'wiki/Help:'"/>
+    <xsl:param name="dir" select="'wiki/Help__'"/>
 
     <!-- For debugging, mostly. -->
     <xsl:param name="verbose" select="1"/>
@@ -58,8 +58,7 @@
 
     <!-- variable list -->
     <xsl:template match="varlistentry/term"><xsl:text>
-  * </xsl:text><xsl:apply-templates/><xsl:text>
-</xsl:text></xsl:template>
+  * </xsl:text><xsl:apply-templates/></xsl:template>
     <xsl:template match="varlistentry/listitem/para"><xsl:text>
     * </xsl:text><xsl:apply-templates/><xsl:text>
 </xsl:text></xsl:template>
