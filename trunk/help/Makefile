@@ -15,6 +15,10 @@ html:	xml2rfc_help_vers.xml icons
 	cd html; xsltproc /opt/local/share/xsl/docbook-xsl/html/chunk.xsl ../xml2rfc_help_vers.xml
 	rm -f xml2rfc_help_vers.xml
 
+wiki:	xml2rfc_help_vers.xml
+	mkdir wiki
+	xsltproc db2wiki.xsl xml2rfc_help_vers.xml
+
 copy:
 	rsync -var html/ rtg.ietf.org:public_html/ietf/xml2rfc-xxe/xml2rfc_help/
 
@@ -23,6 +27,7 @@ icons:
 
 clean:
 	rm -rf xml2rfc_help.jar xml2rfc_help
+	rm -rf wiki
 
 xml2rfc_help_vers.xml:	xml2rfc_help.xml
 	sed -e "s/%%VERSION%%/`cat ../xml2rfc/version.txt`/" xml2rfc_help.xml > xml2rfc_help_vers.xml
