@@ -11,7 +11,7 @@
 
       <surname>Fenner</surname>
 
-      <email>fenner@fenron.com</email>
+      <email>fenner@gmail.com</email>
     </author>
 
     <abstract>
@@ -31,7 +31,8 @@
     <para>This xxe plugin attempts to support most of the rfc2629bis DTD, as
     of xml2rfc release 1.34, October, 2009. This documentation is for plugin
     version %%VERSION%%. The plugin requires at least xxe 4.0 (released July
-    21, 2008) and has been tested with xxe 4.5 (released September 24, 2009).</para>
+    21, 2008) and has been tested with xxe 4.5 (released September 24,
+    2009).</para>
 
     <para>This plugin can create text or HTML output using xml2rfc, if
     installed; it can also use xmlmind's native XSL support to generate HTML
@@ -978,6 +979,58 @@ r2c1: I am a
     <title>Change Log</title>
 
     <variablelist>
+      <varlistentry>
+        <term>0.7.8 - November 20, 2009</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Update DTD for xml2rfc 1.34</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>0.7.7 - February 24, 2009</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Update DTD for IETF Trust 2009 IPR</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>0.7.6 - November 6, 2008</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Layout changes from Thomas Morin</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>0.7.5 - July 27, 2008</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Fixed web form upload</para>
+            </listitem>
+
+            <listitem>
+              <para>Fixed preview</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
       <varlistentry>
         <term>0.7.4 - July 26, 2008</term>
 
