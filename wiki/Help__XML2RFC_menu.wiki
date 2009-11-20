@@ -1,0 +1,71 @@
+#summary XML2RFC menu
+#labels Help
+
+= XML2RFC menu =
+
+  * HTML Preview
+
+    * Uses an externally-installed `xml2html` to convert the XML to HTML, then opens up the rendered HTML in a web browser.
+
+  * Text Preview
+
+    * Uses an externally-installed `xml2rfc` to convert the XML to text, then opens up a text editor (or an xterm running less) on the result.
+
+  * HTML Preview using XSL
+
+    * Uses Julian Reschke's xsl transform to convert the XML to HTML, then opens up the rendered HTML in a web browser. This procedure does not require any external software, so should work on any system even without the xml2rfc tool installed. (As of xxe 3.5.1, this feature is only available in Professional Edition.)
+
+  * Text Preview using xml.resource.org
+
+    * Use the xml.resource.org online converter to convert the XML to text, then opens up a text editor (or an xterm running less) on the result.
+
+  * HTML Preview using xml.resource.org
+
+    * Use the xml.resource.org online converter to convert the XML to HTML, then opens up the rendered HTML in a web browser.
+
+  * Insert <?rfc include=''?>
+
+    * Inserts an empty <?rffc include=''?> processing instruction into the current element at the cursor position, or after the current element if it can't accept a processing instruction inside. NOTE: because of this automatic behavior, double-check using the path at the top of the screen that the processing instruction got inserted _inside_ the node you wanted it in; it's easy to get it _after_ which will confuse the conversions.
+
+  * Edit in...
+
+    * Asks for a selection of an external editor from a popup list, saves the current document, runs the external editor, and waits for the user to pick "OK" in the dialog box; then reloads the document if it's been modified. Intended to facilitate editing of elements that xxe can't (in particular the <?rfc ?> elements at the top). This menu item is only available when editing a local file, and will be grayed out if editing via FTP or DAV.
+
+  * Check IETF References
+
+    * Checks references from <reference> elements to RFCs and Internet-Drafts; makes note of any that are obsoleted, expired, updated, etcetera.
+
+  * Paste as Paragraphs
+
+    * Pastes the system selection into the document as a series of paragraphs. Paragraph boundaries are determined by one or more blank lines. This is useful when copying text from a non-XML source.
+
+  * Convert Selected Paragraphs to List
+
+    * When one or more paragraphs (<t> elements) are selected, convert them to a list.
+
+  * Convert
+
+    * See the next section for documentation of this sub-menu.
+= Convert sub-menu =
+
+  * ...using xml.resource.org
+
+    * This submenu allows conversion using the xml.resource.org web form. Each sub-menu item corresponds to a different output formatted supported by the form. It asks for the file to save the result in; then uploads the XML in the editor buffer to the web form and saves the results from the web form in the result file.
+
+  * Convert to HTML
+
+    * Asks for the file to save the result in; then uses an externally-installed `xml2html` to convert the XML to HTML.
+
+  * Convert to Text
+
+    * Asks for the file to save the result in; then uses an externally-installed `xml2rfc` to convert the XML to text.
+
+  * Convert to HTML using XSL
+
+    * Asks for the file to save the result in; then uses Julian Reschke's XSL transform to convert the XML to HTML.
+
+  * Convert to PDF using XSL
+
+    * NOTE: This procedure requires xxe Professional Edition; the FO plugins are not supported in Standard Edition.
+
+    * Asks for the file to save the result in; then uses Julian Reschke's XSL transform to convert the XML to XML-FO, then uses an xxe XML-FO plugin (if installed) to convert the FO to PDF.
