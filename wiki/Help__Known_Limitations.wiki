@@ -1,5 +1,6 @@
 #summary Known Limitations
 #labels Help
+#sidebar Help__ToC
 
 = Known Limitations =
 

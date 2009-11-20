@@ -1,12 +1,13 @@
 #summary Customization
 #labels Help
+#sidebar Help__ToC
 
 = Customization =
 
 There are a variety of customizations that can be accomplished with files in the addon/ directory.
 = Pointing to other data sources =
 
-The xml2rfc plugin looks for various data using made up URI prefixes; this allows for easy reconfiguration using XML Catalogs if you have, e.g., a local bibliography mirror. To customize these, create a file that looks like the following (with the URLs changed, of course) inaddon/my_xml2rfc_catalog.xml.
+The xml2rfc plugin looks for various data using made up URI prefixes; this allows for easy reconfiguration using XML Catalogs if you have, e.g., a local bibliography mirror. To customize these, create a file that looks like the following (with the URLs changed, of course) in `addon/my_xml2rfc_catalog.xml` .
 {{{
 <?xml version="1.0"?>
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog"
@@ -23,11 +24,12 @@ The xml2rfc plugin looks for various data using made up URI prefixes; this allow
               rewritePrefix="http://www.fenron.com/~fenner/ietf/" />
 
 </catalog>
+
 }}}
 
 = Configuring HTTP proxy, web conversion service, custom xsl, etc. =
 
-These items go in the user configuration file for xxe, which is namedaddon/customize.xxe. If you already have one, add the lines inside the <configuration>...</configuration> below; if you don't have one, create it including the <configuration> lines.
+These items go in the user configuration file for xxe, which is named `addon/customize.xxe` . If you already have one, add the lines inside the <configuration>...</configuration> below; if you don't have one, create it including the <configuration> lines.
 {{{
 <?xml version='1.0' encoding='ISO-8859-1'?>
 <configuration
@@ -38,6 +40,7 @@ These items go in the user configuration file for xxe, which is namedaddon/custo
   <property name="xml2rfc.cgi">http://xml.resource.org/cgi-bin/xml2rfc-dev.cgi</property>
 
 </configuration>
+
 }}}
 Properties that can be set:
 
@@ -50,7 +53,7 @@ Properties that can be set:
 || xml2rfc.library || XML_LIBRARY environment variable to set when using xml2rfc.formatter ||
 = Customizing elements to add and other aspects of the plugin =
 
-For more info, see the xxe documentation which uses a sample of customizing docbook. This is a sample file, which would be installed asaddon/myxml2rfc/myxml2rfc.xxe. It adds a sample template, makes the default view always include the document structure at the bottom, and includes templates for adding myself as an author and a comment attributed to me.
+For more info, see the xxe documentation which uses a sample of customizing docbook. This is a sample file, which would be installed as `addon/myxml2rfc/myxml2rfc.xxe` . It adds a sample template, makes the default view always include the document structure at the bottom, and includes templates for adding myself as an author and a comment attributed to me.
 
 {{{
 <?xml version="1.0"?>
@@ -89,4 +92,5 @@ For more info, see the xxe documentation which uses a sample of customizing docb
   </elementTemplate>
 
 </configuration>
+
 }}}

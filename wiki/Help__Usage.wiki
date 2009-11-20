@@ -1,5 +1,6 @@
 #summary Usage
 #labels Help
+#sidebar Help__ToC
 
 = Usage =
 

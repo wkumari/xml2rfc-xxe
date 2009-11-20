@@ -1,5 +1,6 @@
 #summary XML2RFC menu
 #labels Help
+#sidebar Help__ToC
 
 = XML2RFC menu =
 

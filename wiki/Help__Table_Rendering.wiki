@@ -1,5 +1,6 @@
 #summary Table Rendering
 #labels Help
+#sidebar Help__ToC
 
 = Table Rendering =
 
@@ -18,7 +19,8 @@ as follows:
 r1c1: Hello
                   r1c2: World
 r2c1: I am a
-                  r2c2: table}}}
+                  r2c2: table
+}}}
 
 If there are not enough <c> elements to make up the content of the table, a warning will follow the table.
 

@@ -1,5 +1,6 @@
 #summary Support
 #labels Help
+#sidebar Help__ToC
 
 = Support =
 

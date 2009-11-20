@@ -1,5 +1,6 @@
 #summary Overview
 #labels Help
+#sidebar Help__ToC
 
 = Overview =
 
