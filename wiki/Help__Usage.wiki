@@ -17,81 +17,61 @@ The <?rfc ?> processing instruction editor at the top of the document is _not_ h
 Most toolbar items that add elements have behavior that depends on the currently selected object. In general, if the selected object is an element, the item that's added is a sibling to the selected object. If the selection is simply text or there is no selection and the cursor is in text, the item that's added is added at or as close to the cursor as is feasible, generally as a child of the parent item.
 
   * Add Itemized List
-
     * Adds an itemized list ( `<list style="symbols">` )
 
   * Add Ordered List
-
     * Adds an ordered list ( `<list style="numbers">` )
 
   * Add other list
-
   * empty
-
     * Adds an empty list ( `<list style="empty">` )
 
   * letters
-
     * Adds a lettered list ( `<list style="letters">` )
 
   * hanging text
-
     * Adds a list using hanging text ( `<list style="hanging">` )
 
   * Add paragraph or list item
-
     * Add a paragraph or list item at the current level.
 
   * Add section
-
     * Add a section - if a section is currently selected, add a sibling at the same level; otherwise, add a subsection within the current section.
 
   * Decrease section level
-
     * Decrease the indentation of the explicitly selected section, by making it a sibling of its parent. (e.g., turns 3.2.1 into 3.3 and if there was a 3.3 that becomes 3.4)
 
   * Increase section level
-
     * Increases the indentation of the explicitly selected section, by creating an empty section inside which to enclose it. Note that this never undoes the effect of the decrease function.
 
   * Add table
-
     * Adds a <texttable> and related elements.
 
   * Add figure
-
     * Adds a <figure> and related elements.
 
   * Swap xref ends
-
     * Flips back and forth between an xref and its target. When going from the target back to xref, this flips to the first reference to that target in the document; see the next two commands.
 
   * Previous xref to same target
-
     * If there is another xref to the same target earlier in this document, go to it.
 
   * Next xref to same target
-
     * If there is another xref to the same target later in this document, go to it.
 
   * Convert to emphasis (spanx)
-
     * Convert the selected text to the selected type of emphasis.
 
   * emph
-
     * Emphasis - usually _italic_ or *emphasized*
 
   * strong
-
     * Strong - usually *bold* or 'single-quoted'
 
   * verb
-
     * Verbatim - usually `monospaced` or "quoted"
 
   * Convert to plain text
-
     * Converts the selection to plain text. In general, removes any formatting elements around the selection but doesn't lose any text. This has the expected results when applied to a `<spanx>` and possibly unexpected results when applied to a figure, table or list.
 = Keyboard Shortcuts =
 

@@ -4,13 +4,11 @@
 = Change Log =
 
   * 0.7.4 - July 26, 2008
-
   * Update DTD for xml2rfc 1.33
 
   * Update plugin for xxe 4.0.0
 
   * 0.7.3 - never released
-
   * Update DTD and Entities to those supported in xml2rfc 1.32
 
   * Display the inherited or implicit list style; display the list style in red and use a hanging text of "-?-" if it's using the xml2rfc inherited style, which this style sheet doesn't currently support. (This behavior, however, is probably an advancement from displaying it as empty.)
@@ -34,7 +32,6 @@
   * Updated Julian's xslt
 
   * 0.7.2 - February 20, 2006
-
   * Change to .xxe_addon deployment method
 
   * Use ${http_proxy} environment variable (commonly used on UNIX), if Java's proxy settings aren't set. This may only work with a 1.5 runtime, since getenv was deprecated for a while. If it doesn't work, it'll log something like
@@ -56,11 +53,9 @@
   * Support image on artwork (but not figure yet, depending on results of query on mailing list). Also support svg here, converting to png for html, if the xxe Batik plugin is installed.
 
   * 0.7.1 - October 21, 2005
-
   * Delete <load> element from configuration file, in order to work with xxe-3.0. This means the plugin now requires a minimum xxe version of 2.10.
 
   * 0.7 - September 29, 2005
-
   * Add entity support for the entities known by xml2rfc-1.30.
 
   * Add GUI editor for <?rfc ?> PIs before the root element.
@@ -84,7 +79,6 @@
   * Updated to Julian's latest xslt.
 
   * 0.6 - April 5, 2005
-
   * Switch to line-based download in the web-based conversions, so that conversion results get the native line endings on Windows.
 
   * Support <list style="format"> and counter="", including the implicit counter=. (Changing from one counter to another results in a gap in the other counter's space; deleting a list that's in a counter may cause exceptions; these limitations to be removed in a future version)
@@ -102,7 +96,6 @@
   * Made most common element attributes editable inline
 
   * 0.5 - Mar 22, 2005
-
   * Add web-based conversion, in `...using xml.resource.org` submenu, using xml.resource.org
 
   * Add web-based converter preview, in `Text Preview using xml.resource.org` menu item, using xml.resource.org
@@ -132,11 +125,9 @@
   * Add `Edit In...` menu item to edit the active file in a different editor
 
   * 0.4.1 - Feb 16, 2005
-
   * Recompile plugin for xxe 2.9. This version only works with 2.9.
 
   * 0.4 - Jan 28, 2005
-
   * <artwork> is now always saved as [CDATA[..]] to assist external editing and ensure whitespace preservation.
 
   * The anchor of a <reference> that's not referenced in the document turns red.
@@ -154,7 +145,6 @@
   * Duplicate anchors are noted with [DUPLICATE ANCHOR] in red.
 
   * 0.3 - Dec 17, 2004
-
   * Switched to file picker, not directory picker, for the results of conversions.
 
   * Added increase/decrease section level with xxe's builtins.
@@ -174,7 +164,6 @@
   * Claim (inside xxe) an XML document with no DOCTYPE and an <rfc> root element, and force the rfc2629.dtd on it. Also claim <reference>, in case of editing a reference that's included via an entity reference.
 
   * 0.2 - Nov 29, 2004
-
   * Fixed section and appendix numbering, make a note when we know we can't auto-number properly because the indentation got too deep.
 
   * Modified comment and figure coloring to match XSL transform's HTML output
@@ -200,5 +189,4 @@
   * Add template to ensure that added references contain all required elements.
 
   * 0.1 - Nov 17, 2004
-
     * First public release
