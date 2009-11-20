@@ -1,4 +1,4 @@
 #summary Installation intrusctions for the configuration
 #labels Featured
 
-Drag this link, or add it by transcribing it, into the "Download add-ons from these servers" addon manager configuration (*Options* menu -> *Preferences...* item -> *Install add-ons* pane): http://xml2rfc-xxe.googlecode.com/files/xml2rfc.xxe_addon. Then go to the addon manager (*Options* menu -> *Install Addons...*) and you will see the xml2rfc configuration in the list of addons to add. After getting this set up, you can do further upgrades, etc. of the addon using xxe's addon manager.
+Drag this link, or add it by transcribing it, into the "Download add-ons from these servers" addon manager configuration (*Options* menu -> *Preferences...* item -> *Install add-ons* pane): http://xml2rfc-xxe.googlecode.com/svn/release/xml2rfc.xxe_addon . Then go to the addon manager (*Options* menu -> *Install Addons...*) and you will see the xml2rfc configuration in the list of addons to add. After getting this set up, you can do further upgrades, etc. of the addon using xxe's addon manager.
