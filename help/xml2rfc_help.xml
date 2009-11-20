@@ -29,9 +29,9 @@
     <title>Overview</title>
 
     <para>This xxe plugin attempts to support most of the rfc2629bis DTD, as
-    of xml2rfc release 1.33, March, 2008. This documentation is for plugin
+    of xml2rfc release 1.34, October, 2009. This documentation is for plugin
     version %%VERSION%%. The plugin requires at least xxe 4.0 (released July
-    21, 2008).</para>
+    21, 2008) and has been tested with xxe 4.5 (released September 24, 2009).</para>
 
     <para>This plugin can create text or HTML output using xml2rfc, if
     installed; it can also use xmlmind's native XSL support to generate HTML
@@ -508,7 +508,7 @@
         <term>Insert &lt;?rfc include=''?&gt;</term>
 
         <listitem>
-          <para>Inserts an empty &lt;?rffc include=''?&gt; processing
+          <para>Inserts an empty &lt;?rfc include=''?&gt; processing
           instruction into the current element at the cursor position, or
           after the current element if it can't accept a processing
           instruction inside. NOTE: because of this automatic behavior,
