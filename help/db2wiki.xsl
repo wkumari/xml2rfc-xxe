@@ -13,6 +13,11 @@
     <!-- For debugging, mostly. -->
     <xsl:param name="verbose" select="1"/>
 
+    <!-- TODO:
+	 Make a SideBar.wiki that has the help ToC, set it as the sidebar
+	 inside the help.
+	 Make a Help.wiki that is the top-level help page.
+	 -->
     <xsl:template match="article/section">
 	<xsl:variable name="filename">
 	    <xsl:value-of select="$dir"/>
