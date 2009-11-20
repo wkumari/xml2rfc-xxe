@@ -4,16 +4,13 @@
 = XML2RFC menu =
 
   * HTML Preview
-
-     * Uses an externally-installed `xml2html` to convert the XML to HTML, then opens up the rendered HTML in a web browser.
+    * Uses an externally-installed `xml2html` to convert the XML to HTML, then opens up the rendered HTML in a web browser.
 
   * Text Preview
-
-     * Uses an externally-installed `xml2rfc` to convert the XML to text, then opens up a text editor (or an xterm running less) on the result.
+    * Uses an externally-installed `xml2rfc` to convert the XML to text, then opens up a text editor (or an xterm running less) on the result.
 
   * HTML Preview using XSL
-
-     * Uses Julian Reschke's xsl transform to convert the XML to HTML, then opens up the rendered HTML in a web browser. This procedure does not require any external software, so should work on any system even without the xml2rfc tool installed. (As of xxe 3.5.1, this feature is only available in Professional Edition.)
+    * Uses Julian Reschke's xsl transform to convert the XML to HTML, then opens up the rendered HTML in a web browser. This procedure does not require any external software, so should work on any system even without the xml2rfc tool installed. (As of xxe 3.5.1, this feature is only available in Professional Edition.)
 
   * Text Preview using xml.resource.org
 
