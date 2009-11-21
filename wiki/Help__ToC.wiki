@@ -1,32 +1,32 @@
 
-== [Help__Overview Overview] ==
+  * [Help__Overview Overview]
 
-== [Help__Usage Usage] ==
+  * [Help__Usage Usage]
 
-=== Toolbar ===
+    * Toolbar
 
-=== Keyboard Shortcuts ===
+    * Keyboard Shortcuts
 
-== [Help__XML2RFC_menu XML2RFC menu] ==
+  * [Help__XML2RFC_menu XML2RFC menu]
 
-=== Convert sub-menu ===
+    * Convert sub-menu
 
-== [Help__Table_Rendering Table Rendering] ==
+  * [Help__Table_Rendering Table Rendering]
 
-== [Help__Processing_Instructions Processing Instructions] ==
+  * [Help__Processing_Instructions Processing Instructions]
 
-== [Help__Including_External_References Including External References] ==
+  * [Help__Including_External_References Including External References]
 
-== [Help__Customization Customization] ==
+  * [Help__Customization Customization]
 
-=== Pointing to other data sources ===
+    * Pointing to other data sources
 
-=== Configuring HTTP proxy, web conversion service, custom xsl, etc. ===
+    * Configuring HTTP proxy, web conversion service, custom xsl, etc.
 
-=== Customizing elements to add and other aspects of the plugin ===
+    * Customizing elements to add and other aspects of the plugin
 
-== [Help__Known_Limitations Known Limitations] ==
+  * [Help__Known_Limitations Known Limitations]
 
-== [Help__Support Support] ==
+  * [Help__Support Support]
 
-== [Help__Change_Log Change Log] ==
+  * [Help__Change_Log Change Log]
