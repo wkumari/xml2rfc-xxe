@@ -4,3 +4,6 @@ Prerequisites:
   xsltproc (and libxml2)
   docbook-xsl style sheets
   javahelp-2.0 (possibly earlier)
+
+- As there is no Makefile for the xml2rfc.jar file I simply copied if from
+  a previous version. -- Warren Kumari
