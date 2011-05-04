@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<a:addon location="http://xml2rfc-xxe.googlecode.com/files/xml2rfc-xxe-0.7.8.zip"
+<a:addon location="http://xml2rfc-xxe.googlecode.com/files/xml2rfc-xxe-0.7.9.zip"
          xmlns:a="http://www.xmlmind.com/xmleditor/schema/addon">
   <a:category><a:configuration /></a:category>
   <a:name>A configuration for creating RFC2629 (xml2rfc) documents</a:name>
-  <a:version>0.7.8</a:version>
+  <a:version>0.7.9</a:version>
   <a:xxeVersion>4.0.0+</a:xxeVersion>
 </a:addon>
