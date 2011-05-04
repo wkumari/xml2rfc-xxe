@@ -978,6 +978,24 @@ r2c1: I am a
     <title>Change Log</title>
 
     <variablelist>
+
+      <varlistentry>
+        <term>0.7.9 - May 04, 2011</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Updated xml2rfc_catalog.xml to refer to updated locations.</para>
+            </listitem>
+           <listitem>
+              <para>Minor Makefile cleanups -- deal with icons symlink and more standard paths.</para>
+           </listitem>
+
+          </itemizedlist>
+          </listitem>
+      </varlistentry>
+
+
       <varlistentry>
         <term>0.7.8 - November 20, 2009</term>
 
