@@ -1,5 +1,4 @@
 #summary xml2rfc-xxe 0.7.8 release notes
-#labels Featured
 
 = xml2rfc-xxe 0.7.8 release notes =
 
