@@ -980,6 +980,20 @@ r2c1: I am a
     <variablelist>
 
       <varlistentry>
+        <term>0.8.0 - Nov 01, 2011</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Update to support XMLmind XML Editor Version 5.x.</para>
+            </listitem>
+
+          </itemizedlist>
+          </listitem>
+      </varlistentry>
+
+
+      <varlistentry>
         <term>0.7.9 - May 04, 2011</term>
 
         <listitem>
