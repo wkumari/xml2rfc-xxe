@@ -14,6 +14,12 @@
       <email>fenner@gmail.com</email>
     </author>
 
+    <author>
+      <firstname>Warren Kumari</firstname>
+
+      <email>warren@kumari.net</email>
+    </author>
+
     <abstract>
       <para>xml2rfc/rfc2629 support for the XMLMind XML Editor.</para>
 
@@ -21,7 +27,8 @@
       inexperienced questions about xxe's css/xml/java support.</para>
     </abstract>
 
-    <pubdate role="rcs">$Date$</pubdate>
+    <pubdate role="rcs">$Date: 2015-01-19 15:56:49 -0400 (Mon, 19 Jan 2015)
+    $</pubdate>
   </articleinfo>
 
   <section>
@@ -59,7 +66,7 @@
         <para>&lt;?rfc ?&gt; processing instructions in the document, &lt;?rfc
         include= in particular. (Wish: to be able to handle this like external
         entity references) (Partial &lt;?rfc include= support is described in
-        <xref linkend="extref" />). The &lt;?rfc ?&gt; processing instructions
+        <xref linkend="extref"/>). The &lt;?rfc ?&gt; processing instructions
         before the root element are supported by a custom editor.</para>
       </listitem>
     </itemizedlist>
@@ -136,7 +143,7 @@
         <varlistentry>
           <term><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="icons/itemizedlist.gif" />
+                <imagedata fileref="icons/itemizedlist.gif"/>
               </imageobject>
             </inlinemediaobject>Add Itemized List</term>
 
@@ -149,7 +156,7 @@
         <varlistentry>
           <term><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="icons/orderedlist.gif" />
+                <imagedata fileref="icons/orderedlist.gif"/>
               </imageobject>
             </inlinemediaobject>Add Ordered List</term>
 
@@ -162,7 +169,7 @@
         <varlistentry>
           <term><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="icons/list_menu.gif" />
+                <imagedata fileref="icons/list_menu.gif"/>
               </imageobject>
             </inlinemediaobject>Add other list</term>
 
@@ -201,7 +208,7 @@
         <varlistentry>
           <term><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="icons/para.gif" />
+                <imagedata fileref="icons/para.gif"/>
               </imageobject>
             </inlinemediaobject>Add paragraph or list item</term>
 
@@ -213,7 +220,7 @@
         <varlistentry>
           <term><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="icons/section.gif" />
+                <imagedata fileref="icons/section.gif"/>
               </imageobject>
             </inlinemediaobject>Add section</term>
 
@@ -227,7 +234,7 @@
         <varlistentry>
           <term><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="icons/decrsectlevel.gif" />
+                <imagedata fileref="icons/decrsectlevel.gif"/>
               </imageobject>
             </inlinemediaobject>Decrease section level</term>
 
@@ -241,7 +248,7 @@
         <varlistentry>
           <term><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="icons/incrsectlevel.gif" />
+                <imagedata fileref="icons/incrsectlevel.gif"/>
               </imageobject>
             </inlinemediaobject>Increase section level</term>
 
@@ -256,7 +263,7 @@
         <varlistentry>
           <term><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="icons/table.gif" />
+                <imagedata fileref="icons/table.gif"/>
               </imageobject>
             </inlinemediaobject>Add table</term>
 
@@ -268,7 +275,7 @@
         <varlistentry>
           <term><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="icons/figure.gif" />
+                <imagedata fileref="icons/figure.gif"/>
               </imageobject>
             </inlinemediaobject>Add figure</term>
 
@@ -280,7 +287,7 @@
         <varlistentry>
           <term><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="icons/navigate2.gif" />
+                <imagedata fileref="icons/navigate2.gif"/>
               </imageobject>
             </inlinemediaobject>Swap xref ends</term>
 
@@ -295,7 +302,7 @@
         <varlistentry>
           <term><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="icons/navigatePrevious2.gif" />
+                <imagedata fileref="icons/navigatePrevious2.gif"/>
               </imageobject>
             </inlinemediaobject>Previous xref to same target</term>
 
@@ -308,7 +315,7 @@
         <varlistentry>
           <term><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="icons/navigateNext2.gif" />
+                <imagedata fileref="icons/navigateNext2.gif"/>
               </imageobject>
             </inlinemediaobject>Next xref to same target</term>
 
@@ -321,7 +328,7 @@
         <varlistentry>
           <term><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="icons/emphasis_menu.gif" />
+                <imagedata fileref="icons/emphasis_menu.gif"/>
               </imageobject>
             </inlinemediaobject>Convert to emphasis (spanx)</term>
 
@@ -363,7 +370,7 @@
         <varlistentry>
           <term><inlinemediaobject>
               <imageobject>
-                <imagedata fileref="icons/plain.gif" />
+                <imagedata fileref="icons/plain.gif"/>
               </imageobject>
             </inlinemediaobject>Convert to plain text</term>
 
@@ -978,6 +985,45 @@ r2c1: I am a
     <title>Change Log</title>
 
     <variablelist>
+      <varlistentry>
+        <term>0.8.1 - Jan 19, 2015</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Update to support XMLmind XML Editor Version 6.x.</para>
+
+              <para> In order to support multiple major version (5.x, 6.x,
+              etc) we have to have multiple packages. Because this add-on
+              includes Java, the xxeVersion tag must match the version of XXE
+              against which we compiled. See
+              "http://www.xmlmind.com/xmleditor/_distrib/doc/dev/pack_addons.html"
+              the XXE Addon Packaging Guide for details.</para>
+            </listitem>
+
+            <listitem>
+              <para>Converted the xml2rfc.xxe configuration to new help
+              attribute</para>
+
+              <para>XMLMind changed the format for the 'help' configuration
+              element. It no longer takes a location of a _help.jar file, but
+              rather a path to a JavaHelp™ helpset.</para>
+            </listitem>
+
+            <listitem>
+              <para>Removed the keyPressed binding for DELETE and
+              BACKSPACE.</para>
+
+              <para>No-one can remember what there were supposed to do, but,
+              whatever it was, they aren't... :-)</para>
+            </listitem>
+
+            <listitem>
+              <para>Cleaned up some of the helpfiles.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
 
       <varlistentry>
         <term>0.8.0 - Nov 01, 2011</term>
@@ -987,11 +1033,9 @@ r2c1: I am a
             <listitem>
               <para>Update to support XMLmind XML Editor Version 5.x.</para>
             </listitem>
-
           </itemizedlist>
-          </listitem>
+        </listitem>
       </varlistentry>
-
 
       <varlistentry>
         <term>0.7.9 - May 04, 2011</term>
@@ -999,16 +1043,17 @@ r2c1: I am a
         <listitem>
           <itemizedlist>
             <listitem>
-              <para>Updated xml2rfc_catalog.xml to refer to updated locations.</para>
+              <para>Updated xml2rfc_catalog.xml to refer to updated
+              locations.</para>
             </listitem>
-           <listitem>
-              <para>Minor Makefile cleanups -- deal with icons symlink and more standard paths.</para>
-           </listitem>
 
+            <listitem>
+              <para>Minor Makefile cleanups -- deal with icons symlink and
+              more standard paths.</para>
+            </listitem>
           </itemizedlist>
-          </listitem>
+        </listitem>
       </varlistentry>
-
 
       <varlistentry>
         <term>0.7.8 - November 20, 2009</term>

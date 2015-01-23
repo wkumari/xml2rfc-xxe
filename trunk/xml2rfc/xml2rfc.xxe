@@ -4,7 +4,7 @@
                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                xmlns:xs="http://www.w3.org/2001/XMLSchema"
                xmlns:cfg="http://www.xmlmind.com/xmleditor/schema/configuration">
-  <help location="xml2rfc_help.jar"/>
+  <help name="xml2rfc_help"/>
 
   <!-- Claim an XML document if:
        - it has a DOCTYPE referring to the rfc2629.dtd or the website version
@@ -94,6 +94,8 @@
     <command name="xml2rfc.insertSectionSameLevel"/>
   </binding>
 
+  <!-- WKUMARI: Deleted in 0.8.1 - these *were* doing something useful,
+       but no-one remembers what...
   <binding>
     <keyPressed code="DELETE"/>
 
@@ -105,6 +107,7 @@
 
     <command name="xml2rfc.joinOrDeleteChar" parameter="backwards"/>
   </binding>
+  -->
 
   <binding>
     <keyPressed code="DOWN" modifiers="ctrl shift meta"/>
@@ -851,7 +854,7 @@ to do: work if there is more than one section selected-->
             <command name="xml2rfc.os" parameter="mac"/>
 
             <command name="pick"
-                     parameter="Application false TextEdit TextWrangler BBEdit"/>
+                     parameter="Application false Aquamacs TextEdit TextWrangler BBEdit"/>
 
             <command name="start"
                      parameter="open -a &quot;%_&quot; &quot;%D&quot;"/>
