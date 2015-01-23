@@ -1,0 +1,21 @@
+#summary xml2rfc-xxe 0.8.1 release notes
+
+= xml2rfc-xxe 0.8.1 release notes =
+
+Released 2015-01-23.
+
+= Installation =
+
+Please see [Installation].
+
+= Changes =
+
+  * Updates to support XMLmind XML Editor Version 6.x
+    In order to support multiple major versions of XXE, this requires keeping two xxe_addon files.
+
+
+= NOTE =
+
+If you have previously installed the plugin, please check the URL
+in the plugin manager.  If it has /files/ in it, you must update it
+to the URL containing /svn/release/ as described in [Installation]
