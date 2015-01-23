@@ -4,6 +4,8 @@ release:
 	mkdir -p dist/xml2rfc
 	cd help; make
 	cp help/xml2rfc_help.jar dist/xml2rfc
+	# New versions (at least from 6.1, maybe earlier) want a JavaHelp helpset
+	cp -R help/xml2rfc_help dist/xml2rfc
 	# need to get build system in place for xml2rfc.jar
 	cp xml2rfc.jar dist/xml2rfc
 	#
