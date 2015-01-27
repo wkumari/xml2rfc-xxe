@@ -986,6 +986,28 @@ r2c1: I am a
 
     <variablelist>
       <varlistentry>
+        <term>0.8.2 - Jan 27, 2015</term>
+
+        <listitem>
+          <itemizedlist>
+            <listitem>
+              <para>Yet another fix for multiple versions.</para>
+
+              <para>Turns out the .zip file cannot have multiple files ending in _addon.
+              This means that my test process of copying the .zip locally and then installing from
+              a folder doesn't work. This took a long time to hunt down!</para>
+            </listitem>
+
+            <listitem>
+              <para>Fixed (I think!) console error message when accessing references on xml.resource.org.</para>
+
+              <para>This fix from Hussein Shafie( via Bob Briscoe, John John) - see: https://groups.google.com/d/topic/xml2rfc-xxe-users/VRC-egLmdc0/discussion</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
         <term>0.8.1 - Jan 19, 2015</term>
 
         <listitem>

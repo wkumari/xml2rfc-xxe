@@ -82,10 +82,25 @@
 
   <!-- Inside a t, attempt to behave like a word-processor. -->
 
-  <binding>
-    <keyPressed code="ENTER"/>
+  <property name="xml2rfc blockList">
+    t
+  </property>
 
-    <command name="xml2rfc.splitOrInsertNewLine"/>
+
+  <binding>
+    <keyPressed code="ENTER" />
+    <command name="insertNewlineOrSplitBlock" />
+  </binding>
+
+  <binding>
+    <keyPressed code="DELETE" />
+    <command name="deleteSelectionOrJoinBlockOrDeleteChar" />
+  </binding>
+
+  <binding>
+    <keyPressed code="BACK_SPACE" />
+    <command name="deleteSelectionOrJoinBlockOrDeleteChar" 
+             parameter="backwards" />
   </binding>
 
   <binding>
@@ -94,20 +109,6 @@
     <command name="xml2rfc.insertSectionSameLevel"/>
   </binding>
 
-  <!-- WKUMARI: Deleted in 0.8.1 - these *were* doing something useful,
-       but no-one remembers what...
-  <binding>
-    <keyPressed code="DELETE"/>
-
-    <command name="xml2rfc.joinOrDeleteChar"/>
-  </binding>
-
-  <binding>
-    <keyPressed code="BACK_SPACE"/>
-
-    <command name="xml2rfc.joinOrDeleteChar" parameter="backwards"/>
-  </binding>
-  -->
 
   <binding>
     <keyPressed code="DOWN" modifiers="ctrl shift meta"/>
@@ -1104,17 +1105,18 @@ to do: work if there is more than one section selected-->
 
     <separator/>
 
+    <!-- From Hussein Shafie, via Bob -->
     <button icon="icons/navigate2.gif" toolTip="Swap xref Ends">
-      <command name="selectById" parameter="swapIdAndReference"/>
+      <command name="selectLink" parameter="oppositeEnd"/>
     </button>
 
     <button icon="icons/navigatePrevious2.gif"
             toolTip="Prev xref to same target">
-      <command name="selectById" parameter="previousReference"/>
+      <command name="selectLink" parameter="previousSource"/>
     </button>
 
     <button icon="icons/navigateNext2.gif" toolTip="Next xref to same target">
-      <command name="selectById" parameter="nextReference"/>
+      <command name="selectLink" parameter="nextSource"/>
     </button>
 
     <separator/>
