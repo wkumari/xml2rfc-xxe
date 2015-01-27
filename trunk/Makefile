@@ -24,7 +24,7 @@ common:
 5 6:
 	@echo "Building for XMLMind Version $@, plugin: $(VERSION)"
 	mkdir -p dist/$@/xml2rfc
-
+	cp -a dist/xml2rfc dist/$@/
 	# Create xxe addon file and symlink, and copy it into the zip file
 	sed -e "s/%%VERSION%%/`cat xml2rfc/version.txt`/" xml2rfc.xxe_addon | sed -e "s/%%MAJOR%%/$@/"> dist/$@/xml2rfc.xxe_addon
 	cp dist/$@/xml2rfc.xxe_addon dist/$@/xml2rfc/xml2rfc.xxe_addon
