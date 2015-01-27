@@ -1,4 +1,41 @@
-release:
+VERSION = $(shell cat xml2rfc/version.txt)
+
+foo: common 5 6
+
+
+
+common:
+	@echo "Making common"
+	rm -rf dist
+	mkdir -p dist/xml2rfc
+	cd help; make
+	cp help/xml2rfc_help.jar dist/xml2rfc
+	# New versions (at least from 6.1, maybe earlier) want a JavaHelp helpset
+	cp -R help/xml2rfc_help dist/xml2rfc
+	# need to get build system in place for xml2rfc.jar
+	cp xml2rfc.jar dist/xml2rfc
+	#
+	# copy all the files from the repository, excluding CVS
+	# metadata and xmlmind editor backups.
+	tar --exclude .svn --exclude '*~' -cf - xml2rfc | tar -C dist -xvf -
+	@echo "Finished building common..."
+
+
+5 6:
+	@echo "Building for XMLMind Version $@, plugin: $(VERSION)"
+	mkdir -p dist/$@/xml2rfc
+
+	# Create xxe addon file and symlink, and copy it into the zip file
+	sed -e "s/%%VERSION%%/`cat xml2rfc/version.txt`/" xml2rfc.xxe_addon | sed -e "s/%%MAJOR%%/$@/"> dist/$@/xml2rfc.xxe_addon
+	cp dist/$@/xml2rfc.xxe_addon dist/$@/xml2rfc/xml2rfc.xxe_addon
+	#
+	# Create zip file.
+	rm -f dist/$@/*.zip
+	cd dist/$@/; zip -r xml2rfc-xxe-$(VERSION).zip xml2rfc
+
+
+
+release_old:
 	mkdir -p dist
 	rm -rf dist/xml2rfc
 	mkdir -p dist/xml2rfc
