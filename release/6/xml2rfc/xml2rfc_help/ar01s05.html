@@ -1,0 +1,15 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Processing Instructions</title><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="xml2rfc Plugin"><link rel="up" href="index.html" title="xml2rfc Plugin"><link rel="prev" href="ar01s04.html" title="Table Rendering"><link rel="next" href="ar01s06.html" title="Including External References"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp56364928"></a>Processing Instructions</h2></div></div></div><p>Although support for editing and inserting &lt;?rfc include=?&gt;
+    processing instructions more easily is planned, support for handling the
+    file that is included is not - meaning that, for example, although
+    cross-references to a reference in the included file now show as
+    "included", the xxe validator will claim that the document doesn't
+    validate.</p><p>xxe is by nature a "root element editor", not an XML file editor, so
+    the ability to edit processing instructions that occur before the root
+    &lt;rfc&gt; element is provided by custom java code. It supports editing
+    any &lt;?rfc ...?&gt; PI before the root element; it provides a dropdown
+    box for PIs that it knows about but the PI name can be typed in if the
+    dropdown box doesn't contain the desired element name. Although PIs with
+    multiple pseudo-attributes can not be edited, they will not be damaged.
+    For example, &lt;?rfc toc="yes" toccompact="no"?&gt;&#8212;this will appear in
+    the editor the same as &lt;?rfc toc="yes"&gt;.</p><p>In addition, the <span class="guimenuitem">Edit in...</span> menu option
+    facilitates editing these items in another editor.</p></div></body></html>

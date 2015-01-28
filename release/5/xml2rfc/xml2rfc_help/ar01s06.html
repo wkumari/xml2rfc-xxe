@@ -1,0 +1,46 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Including External References</title><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="xml2rfc Plugin"><link rel="up" href="index.html" title="xml2rfc Plugin"><link rel="prev" href="ar01s05.html" title="Processing Instructions"><link rel="next" href="ar01s07.html" title="Customization"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp56369488"></a>Including External References</h2></div></div></div><p>There are two commonly-used methods of importing references from the
+    reference database maintained at xml.resource.org:</p><div class="itemizedlist"><ul class="itemizedlist" style="list-style-type: disc; "><li class="listitem"><p><span class="bold"><strong>Entity definitions and
+        references.</strong></span> This is the form shown under "Including files"
+        on the xml.resource.org web page. Definitions are of the
+        form</p><div class="literallayout"><p>&lt;DOCTYPE rfc SYSTEM 'rfc2629.dtd' [<br>
+ &lt;!ENTITY rfc2629 PUBLIC '' 'http://xml.resource.org/public/rfc/bibxml/reference.RFC.2629.xml'&gt;<br>
+]&gt;</p></div><p><code class="literal">xxe</code> understands these references when
+        loading the file, and also loads the referenced file read-only; this
+        makes the document validate and allows the cross-reference macros to
+        notice it. When xxe saves the document, it turns the entity definition
+        into the equivalent:</p><div class="literallayout"><p>&lt;DOCTYPE rfc SYSTEM 'rfc2629.dtd' [<br>
+ &lt;!ENTITY rfc2629 SYSTEM 'http://xml.resource.org/public/rfc/bibxml/reference.RFC.2629.xml'&gt;<br>
+]&gt;</p></div><p>When <code class="literal">xml2rfc</code> prior to version 1.29
+        reads this, it looks for a relative reference - it only handles
+        fully-qualified URLs in PUBLIC entity definitions, so it cannot format
+        a file that has been edited this way.</p><p>In addition, this creates a dependency on the http reference, so
+        offline editing is not possible. <code class="literal">xxe</code> will not load
+        a file with these kinds of entity references if the referenced file is
+        not available.</p></li><li class="listitem"><p><span class="bold"><strong>&lt;?rfc include="..."?&gt; processing
+        instructions.</strong></span> These are described in the README for
+        <code class="literal">xml2rfc</code>. They only require a single processing
+        instruction inserted where the reference belongs, e.g.:</p><div class="literallayout"><p>&lt;?rfc include="reference.RFC.2629.xml"?&gt;</p></div><p>However,
+        this does not cause <code class="literal">xxe</code> to load the reference, so
+        it may think that the document is not well-formed (e.g., a
+        &lt;references&gt; section with no &lt;reference&gt; elements since
+        they're all included). xxe will also refuse to allow you to delete an
+        element that makes the document not-well-formed, so you may end up
+        with a placehodler &lt;reference&gt; inside a references section that
+        you have to delete by editing the .xml file elsewhere. The
+        &lt;xref&gt;-checking code does check for the standard naming
+        convention, so an xref to "RFC2629" will show as "included" given the
+        above processing instruction.</p><p>To insert a processing instruction, use F6 or select the
+        <span class="guimenuitem">Insert &lt;?rfc include=''?&gt;</span> menu item
+        in the <span class="guimenu">XML2RFC</span> menu. This will insert an &lt;?rfc
+        include=''?&gt; processing instruction inside or after the
+        currently-selected element.</p><p>The XSL transforms will process &lt;?rfc include=''?&gt;
+        instructions. They default to using the xml.resource.org site; if you
+        have a local mirror you can configure it as follows:</p><div class="orderedlist"><ol class="orderedlist" type="1"><li class="listitem"><p>Create a file "my_xml2rfc_catalog.xml" in your XXE
+            configuration directory (the same place you unzipped the xml2rfc
+            plugin, in the addon/ directory)</p></li><li class="listitem"><p>Add the following two lines:</p><div class="literallayout"><p>  &lt;rewriteURI uriStartString="xml2rfc-bibxml:"<br>
+              rewritePrefix="(URL to your RFC bibxml mirror)" /&gt;<br>
+  &lt;rewriteURI uriStartString="xml2rfc-bibxml3:"<br>
+              rewritePrefix="(URL to your I-D bibxml mirror)" /&gt;<br>
+</p></div></li></ol></div><p>Future work will hopefully teach xxe about this style of
+        inclusion so that it can include the actual referenced file read-only.
+        (xxe knows how to do this with entities and xi:include)</p></li></ul></div></div></body></html>

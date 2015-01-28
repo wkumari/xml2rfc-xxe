@@ -1,0 +1,60 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Usage</title><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="xml2rfc Plugin"><link rel="up" href="index.html" title="xml2rfc Plugin"><link rel="prev" href="index.html" title="xml2rfc Plugin"><link rel="next" href="ar01s03.html" title="XML2RFC menu"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp53869872"></a>Usage</h2></div></div></div><p>For now, you still have to know a fair amount about the xml2rfc
+    schema to use this tool.</p><p>Enter and backspace can be used as you might expect a word processor
+    to behave when you're editing paragraphs or lists.</p><p>To insert sections, paragraphs, figures, cross-references, etc., use
+    the toolbar or the XXE insert pane; you'll commonly use "Insert" and
+    "Insert After". Try to learn the keyboard accelerators (command-I, J,
+    typing the start of an element name and expanding it with "space" and
+    inserting with "enter"; command-E to edit the attributes of the current
+    element, etc. See the xxe tutorial, section "Being productive with XXE"
+    for more.)</p><p>Lists, paragraphs and sections are inserted after/inside the current
+    one depending on the XXE selection; generally a new element is inserted
+    after the current one if the current one is selected, or at the easiest
+    place inside the current one if the mark is inside the current
+    element.</p><p>The &lt;?rfc ?&gt; processing instruction editor at the top of the
+    document is <span class="emphasis"><em>not</em></span> hooked up to xxe's undo facility. It
+    is essentially a completely seperate editor embedded inside the document
+    in xxe. There's little to do about this, since xxe is a root element
+    editor and has no facilities for editing processing instructions in place
+    before the root element.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="idp51415552"></a>Toolbar</h3></div></div></div><p>Most toolbar items that add elements have behavior that depends on
+      the currently selected object. In general, if the selected object is an
+      element, the item that's added is a sibling to the selected object. If
+      the selection is simply text or there is no selection and the cursor is
+      in text, the item that's added is added at or as close to the cursor as
+      is feasible, generally as a child of the parent item.</p><div class="variablelist"><dl class="variablelist"><dt><span class="term"><span class="inlinemediaobject"><img src="icons/itemizedlist.gif"></span>Add Itemized List</span></dt><dd><p>Adds an itemized list (<code class="literal">&lt;list
+            style="symbols"&gt;</code>)</p></dd><dt><span class="term"><span class="inlinemediaobject"><img src="icons/orderedlist.gif"></span>Add Ordered List</span></dt><dd><p>Adds an ordered list (<code class="literal">&lt;list
+            style="numbers"&gt;</code>)</p></dd><dt><span class="term"><span class="inlinemediaobject"><img src="icons/list_menu.gif"></span>Add other list</span></dt><dd><div class="variablelist"><dl class="variablelist"><dt><span class="term">empty</span></dt><dd><p>Adds an empty list (<code class="literal">&lt;list
+                  style="empty"&gt;</code>)</p></dd><dt><span class="term">letters</span></dt><dd><p>Adds a lettered list (<code class="literal">&lt;list
+                  style="letters"&gt;</code>)</p></dd><dt><span class="term">hanging text</span></dt><dd><p>Adds a list using hanging text (<code class="literal">&lt;list
+                  style="hanging"&gt;</code>)</p></dd></dl></div></dd><dt><span class="term"><span class="inlinemediaobject"><img src="icons/para.gif"></span>Add paragraph or list item</span></dt><dd><p>Add a paragraph or list item at the current level.</p></dd><dt><span class="term"><span class="inlinemediaobject"><img src="icons/section.gif"></span>Add section</span></dt><dd><p>Add a section - if a section is currently selected, add a
+            sibling at the same level; otherwise, add a subsection within the
+            current section.</p></dd><dt><span class="term"><span class="inlinemediaobject"><img src="icons/decrsectlevel.gif"></span>Decrease section level</span></dt><dd><p>Decrease the indentation of the explicitly selected section,
+            by making it a sibling of its parent. (e.g., turns 3.2.1 into 3.3
+            and if there was a 3.3 that becomes 3.4)</p></dd><dt><span class="term"><span class="inlinemediaobject"><img src="icons/incrsectlevel.gif"></span>Increase section level</span></dt><dd><p>Increases the indentation of the explicitly selected
+            section, by creating an empty section inside which to enclose it.
+            Note that this never undoes the effect of the decrease
+            function.</p></dd><dt><span class="term"><span class="inlinemediaobject"><img src="icons/table.gif"></span>Add table</span></dt><dd><p>Adds a &lt;texttable&gt; and related elements.</p></dd><dt><span class="term"><span class="inlinemediaobject"><img src="icons/figure.gif"></span>Add figure</span></dt><dd><p>Adds a &lt;figure&gt; and related elements.</p></dd><dt><span class="term"><span class="inlinemediaobject"><img src="icons/navigate2.gif"></span>Swap xref ends</span></dt><dd><p>Flips back and forth between an xref and its target. When
+            going from the target back to xref, this flips to the first
+            reference to that target in the document; see the next two
+            commands.</p></dd><dt><span class="term"><span class="inlinemediaobject"><img src="icons/navigatePrevious2.gif"></span>Previous xref to same target</span></dt><dd><p>If there is another xref to the same target earlier in this
+            document, go to it.</p></dd><dt><span class="term"><span class="inlinemediaobject"><img src="icons/navigateNext2.gif"></span>Next xref to same target</span></dt><dd><p>If there is another xref to the same target later in this
+            document, go to it.</p></dd><dt><span class="term"><span class="inlinemediaobject"><img src="icons/emphasis_menu.gif"></span>Convert to emphasis (spanx)</span></dt><dd><p>Convert the selected text to the selected type of
+            emphasis.</p><div class="variablelist"><dl class="variablelist"><dt><span class="term">emph</span></dt><dd><p>Emphasis - usually <span class="emphasis"><em>italic</em></span> or
+                  *emphasized*</p></dd><dt><span class="term">strong</span></dt><dd><p>Strong - usually <span class="bold"><strong>bold</strong></span>
+                  or 'single-quoted'</p></dd><dt><span class="term">verb</span></dt><dd><p>Verbatim - usually <code class="literal">monospaced</code> or
+                  "quoted"</p></dd></dl></div></dd><dt><span class="term"><span class="inlinemediaobject"><img src="icons/plain.gif"></span>Convert to plain text</span></dt><dd><p>Converts the selection to plain text. In general, removes
+            any formatting elements around the selection but doesn't lose any
+            text. This has the expected results when applied to a
+            <code class="literal">&lt;spanx&gt;</code> and possibly unexpected results
+            when applied to a figure, table or list.</p></dd></dl></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="idp56307008"></a>Keyboard Shortcuts</h3></div></div></div><p>xxe has many built-in useful keyboard shortcuts; you rarely need
+      to use the mouse for many uses. The <a class="ulink" href="http://www.xmlmind.com/xmleditor/_distrib/doc/user/userguide4.html" target="_top">xxe
+      user's guide</a> has a great section on productivity with xxe. In
+      addition to the general keyboard shortcuts described there, the xml2rfc
+      plugin adds the following shortcuts:</p><div class="informaltable"><table border="1"><colgroup><col><col></colgroup><tbody><tr><td>Keyboard Shortcut</td><td>Command</td></tr><tr><td>Shift-Enter</td><td>Add a new section at the same level (e.g., in section
+              2.1, shift-enter will add section 2.2)</td></tr><tr><td>Ctrl-MINUS</td><td>Decrease this section's level (e.g., will turn section
+              1.1.1 into section 1.2)</td></tr><tr><td>Ctrl-EQUALS</td><td>Increase this section's level (e.g., will turn section 2
+              into section 1.2.1)</td></tr><tr><td>Ctrl-Enter</td><td>Append another of the same element (e.g., list item,
+              paragraph, table entry)</td></tr><tr><td>Ctrl-Shift-Enter</td><td>Prepend another of the same element (e.g., list item,
+              paragraph, table entry)</td></tr><tr><td>F6</td><td>Insert &lt;?rfc include=?&gt; Processing
+              Instruction</td></tr></tbody></table></div><p>As the user's guide describes, enter, backspace, delete are bound
+      to perform word processor-like joining and splitting of paragraphs.
+      Also, on the Mac, the modifier to use is Command, not Ctrl.</p></div></div></body></html>

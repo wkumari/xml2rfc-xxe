@@ -1,0 +1,14 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Table Rendering</title><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="xml2rfc Plugin"><link rel="up" href="index.html" title="xml2rfc Plugin"><link rel="prev" href="ar01s03.html" title="XML2RFC menu"><link rel="next" href="ar01s05.html" title="Processing Instructions"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp56354576"></a>Table Rendering</h2></div></div></div><p>The xml2rfc &lt;texttable&gt; attribute is mostly unsupported at
+    this time. It will render a table that should look like this:</p><div class="informaltable"><table border="1"><colgroup><col><col></colgroup><tbody><tr><td><span class="bold"><strong>Heading One</strong></span></td><td><span class="bold"><strong>Heading Two</strong></span></td></tr><tr><td>Hello</td><td>World</td></tr><tr><td>I am a</td><td>table</td></tr></tbody></table></div><p>as follows:</p><div class="literallayout"><p>  c1: Heading One<br>
+                    c2: Heading Two<br>
+r1c1: Hello<br>
+                  r1c2: World<br>
+r2c1: I am a<br>
+                  r2c2: table</p></div><p>If there are not enough &lt;c&gt; elements to make up the content of
+    the table, a warning will follow the table.</p><p>While this form allows editing and generation of tables, it is not
+    intuitive and it may take some creative thinking to see how the layout
+    will end up. Far from WYSIWYG. This is definitely an area for
+    improvement.</p><p>xxe has native table support, but requires row elements to wrap sets
+    of cells; there is no straightforward way at this time to support the
+    xml2rfc schema's type of table that just has a series of cells with no row
+    elements.</p></div></body></html>

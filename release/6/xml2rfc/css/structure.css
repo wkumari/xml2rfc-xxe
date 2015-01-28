@@ -1,0 +1,99 @@
+/*
+ * css to allow WYSIKLWYG editing of xml2rfc format
+ * using XMLmind XML editor.
+ * Derivation of xml2rfc.css and docbook/css/structure.css
+ *   to just include the structure.
+ *
+ * $Id$
+ */
+
+*,
+*:comment,
+*:processing-instruction {
+	display: none;
+}
+
+/* Headings for major sections of the document. */
+rfc:before,
+rfc > front:before,
+rfc > middle:before,
+rfc > back:before,
+author:before,
+date:before,
+abstract:before,
+title:before,
+note:before,
+references:before {
+	display: marker;
+	marker-offset: fill;
+	content: element-name();
+	font-size: small;
+	color: gray;
+}
+rfc,
+rfc > front,
+rfc > middle,
+rfc > back,
+section,
+appendix,
+title,
+author,
+abstract,
+note,
+date,
+references {
+	display: block;
+	margin-left: 9ex;
+}
+rfc > front abstract {
+	display: block;
+	content: xpath('substring(./t, 1, 40)') "...";
+}
+note {
+	content: attr(title);
+}
+author {
+	content: "Author: " attr(fullname);
+}
+date {
+	content: "Date: " attr(day) " " attr(month) " " attr(year);
+}
+/* Handle 5-level-embedded sections; anything beyond 5 will be marked
+ * as failing.  "counters" would solve this but I'm sticking with
+ * simple-counter for now. */
+section:before {
+	content:  attributes() simple-counter(n) ". " attr(title);
+}
+section section:before {
+	content:  attributes() simple-counter(nn) ". " attr(title);
+}
+section section section:before {
+	content:  attributes() simple-counter(nnn) ". " attr(title);
+}
+section section section section:before {
+	content:  attributes() simple-counter(nnnn) ". " attr(title);
+}
+section section section section section:before {
+	content:  attributes() simple-counter(nnnnn) ". " attr(title);
+}
+section section section section section section:before {
+	content:  attributes() "???." simple-counter(nnnnn) ". " attr(title);
+}
+back section:before {
+	content:  attributes() simple-counter(n, upper-alpha) ". " attr(title);
+}
+back section section:before {
+	content:  attributes() simple-counter(n-, upper-alpha) "." simple-counter(n) ". " attr(title);
+}
+back section section section:before {
+	content:  attributes() simple-counter(n--, upper-alpha) "." simple-counter(nn) ". " attr(title);
+}
+back section section section section:before {
+	content:  attributes() simple-counter(n---, upper-alpha) "." simple-counter(nnn) ". " attr(title);
+}
+back section section section section section:before {
+	content:  attributes() "???." simple-counter(nnnn) ". " attr(title);
+}
+back > references {
+	content: xpath("if(@title, @title, 'References')");
+}

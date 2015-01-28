@@ -1,0 +1,47 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>XML2RFC menu</title><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="xml2rfc Plugin"><link rel="up" href="index.html" title="xml2rfc Plugin"><link rel="prev" href="ar01s02.html" title="Usage"><link rel="next" href="ar01s04.html" title="Table Rendering"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp56319872"></a>XML2RFC menu</h2></div></div></div><div class="variablelist"><dl class="variablelist"><dt><span class="term">HTML Preview</span></dt><dd><p>Uses an externally-installed <code class="literal">xml2html</code> to
+          convert the XML to HTML, then opens up the rendered HTML in a web
+          browser.</p></dd><dt><span class="term">Text Preview</span></dt><dd><p>Uses an externally-installed <code class="literal">xml2rfc</code> to
+          convert the XML to text, then opens up a text editor (or an xterm
+          running less) on the result.</p></dd><dt><span class="term">HTML Preview using XSL</span></dt><dd><p>Uses Julian Reschke's xsl transform to convert the XML to
+          HTML, then opens up the rendered HTML in a web browser. This
+          procedure does not require any external software, so should work on
+          any system even without the xml2rfc tool installed. (As of xxe
+          3.5.1, this feature is only available in Professional
+          Edition.)</p></dd><dt><span class="term">Text Preview using xml.resource.org</span></dt><dd><p>Use the xml.resource.org online converter to convert the XML
+          to text, then opens up a text editor (or an xterm running less) on
+          the result.</p></dd><dt><span class="term">HTML Preview using xml.resource.org</span></dt><dd><p>Use the xml.resource.org online converter to convert the XML
+          to HTML, then opens up the rendered HTML in a web browser.</p></dd><dt><span class="term">Insert &lt;?rfc include=''?&gt;</span></dt><dd><p>Inserts an empty &lt;?rfc include=''?&gt; processing
+          instruction into the current element at the cursor position, or
+          after the current element if it can't accept a processing
+          instruction inside. NOTE: because of this automatic behavior,
+          double-check using the path at the top of the screen that the
+          processing instruction got inserted <span class="emphasis"><em>inside</em></span> the
+          node you wanted it in; it's easy to get it
+          <span class="emphasis"><em>after</em></span> which will confuse the
+          conversions.</p></dd><dt><span class="term">Edit in...</span></dt><dd><p>Asks for a selection of an external editor from a popup list,
+          saves the current document, runs the external editor, and waits for
+          the user to pick "OK" in the dialog box; then reloads the document
+          if it's been modified. Intended to facilitate editing of elements
+          that xxe can't (in particular the &lt;?rfc ?&gt; elements at the
+          top). This menu item is only available when editing a local file,
+          and will be grayed out if editing via FTP or DAV.</p></dd><dt><span class="term">Check IETF References</span></dt><dd><p>Checks references from &lt;reference&gt; elements to RFCs and
+          Internet-Drafts; makes note of any that are obsoleted, expired,
+          updated, etcetera.</p></dd><dt><span class="term">Paste as Paragraphs</span></dt><dd><p>Pastes the system selection into the document as a series of
+          paragraphs. Paragraph boundaries are determined by one or more blank
+          lines. This is useful when copying text from a non-XML
+          source.</p></dd><dt><span class="term">Convert Selected Paragraphs to List</span></dt><dd><p>When one or more paragraphs (&lt;t&gt; elements) are selected,
+          convert them to a list.</p></dd><dt><span class="term">Convert</span></dt><dd><p>See the next section for documentation of this
+          sub-menu.</p></dd></dl></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="idp56343088"></a>Convert sub-menu</h3></div></div></div><div class="variablelist"><dl class="variablelist"><dt><span class="term">...using xml.resource.org</span></dt><dd><p>This submenu allows conversion using the xml.resource.org
+            web form. Each sub-menu item corresponds to a different output
+            formatted supported by the form. It asks for the file to save the
+            result in; then uploads the XML in the editor buffer to the web
+            form and saves the results from the web form in the result
+            file.</p></dd><dt><span class="term">Convert to HTML</span></dt><dd><p>Asks for the file to save the result in; then uses an
+            externally-installed <code class="literal">xml2html</code> to convert the
+            XML to HTML.</p></dd><dt><span class="term">Convert to Text</span></dt><dd><p>Asks for the file to save the result in; then uses an
+            externally-installed <code class="literal">xml2rfc</code> to convert the XML
+            to text.</p></dd><dt><span class="term">Convert to HTML using XSL</span></dt><dd><p>Asks for the file to save the result in; then uses Julian
+            Reschke's XSL transform to convert the XML to HTML.</p></dd><dt><span class="term">Convert to PDF using XSL</span></dt><dd><p>NOTE: This procedure requires xxe Professional Edition; the
+            FO plugins are not supported in Standard Edition.</p><p>Asks for the file to save the result in; then uses Julian
+            Reschke's XSL transform to convert the XML to XML-FO, then uses an
+            xxe XML-FO plugin (if installed) to convert the FO to PDF.</p></dd></dl></div></div></div></body></html>

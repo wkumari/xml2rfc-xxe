@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="iso-8859-1" standalone="no"?>
+<!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 1.0//EN" "http://java.sun.com/products/javahelp/toc_1_0.dtd">
+<toc version="1.0">
+  <tocitem target="idp55508928" text="xml2rfc Plugin">
+    <tocitem target="idp51496240" text="Overview"/>
+    <tocitem target="idp53869872" text="Usage">
+      <tocitem target="idp51415552" text="Toolbar"/>
+      <tocitem target="idp56307008" text="Keyboard Shortcuts"/>
+    </tocitem>
+    <tocitem target="idp56319872" text="XML2RFC menu">
+      <tocitem target="idp56343088" text="Convert sub-menu"/>
+    </tocitem>
+    <tocitem target="idp56354576" text="Table Rendering"/>
+    <tocitem target="idp56364928" text="Processing Instructions"/>
+    <tocitem target="idp56369488" text="Including External References"/>
+    <tocitem target="idp56402112" text="Customization">
+      <tocitem target="idp56403248" text="Pointing to other data sources"/>
+      <tocitem target="idp56406832" text="Configuring HTTP proxy, web conversion service, custom xsl, etc."/>
+      <tocitem target="idp56419904" text="Customizing elements to add and other aspects of the plugin"/>
+    </tocitem>
+    <tocitem target="idp56424896" text="Known Limitations"/>
+    <tocitem target="idp56427984" text="Support"/>
+    <tocitem target="idp56431120" text="Change Log"/>
+  </tocitem>
+</toc>
