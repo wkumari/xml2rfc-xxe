@@ -1,10 +1,17 @@
-Google Code downloads don't believe in replacing an existing file.
-Therefore, the .xxe_addon file has to live here.
+In order to support both XXE 5.x.x and 6.x.x we now have 2 directories - release/5/ and release/6/.
+
+Running 'make' in the trunk branch *should* create trunk/dist/5/ and trunk/dist/6/.
+Each of these should have (at least!) a xml2rfc-xxe-<plugin_version>.zip and a xml2rfc.xxe_addon file.
+The xml2rfc.xxe_addon file *should* have the:
+1: correct URL for the major version of XXE and plugin version.
+2: the correct XXE Major version
+3: the correct plugin version.
+
+Copy these into this release branch:
+cp -a ../trunk/dist/5 ../trunk/dist/6 .
+
+and then submit. 
 
 This hierarchy is accessible at
 http://xml2rfc-xxe.googlecode.com/svn/release/...
-and the zip files are at
-http://xml2rfc-xxe.googlecode.com/files/...
-so the addon file has to have a full URL in it.
 
-Google Project Hosting no longer allows uploading files (into the Downloads section), so I'm just copying (using the "Upload" option in the "Browse" section) the zip file here. Suboptimal, but...
