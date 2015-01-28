@@ -1,5 +1,5 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Customization</title><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="xml2rfc Plugin"><link rel="up" href="index.html" title="xml2rfc Plugin"><link rel="prev" href="ar01s06.html" title="Including External References"><link rel="next" href="ar01s08.html" title="Known Limitations"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp56402112"></a>Customization</h2></div></div></div><p>There are a variety of customizations that can be accomplished with
-    files in the addon/ directory.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="idp56403248"></a>Pointing to other data sources</h3></div></div></div><p>The xml2rfc plugin looks for various data using made up URI
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Customization</title><meta name="generator" content="DocBook XSL Stylesheets V1.78.1"><link rel="home" href="index.html" title="xml2rfc Plugin"><link rel="up" href="index.html" title="xml2rfc Plugin"><link rel="prev" href="ar01s06.html" title="Including External References"><link rel="next" href="ar01s08.html" title="Known Limitations"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="section"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp56591520"></a>Customization</h2></div></div></div><p>There are a variety of customizations that can be accomplished with
+    files in the addon/ directory.</p><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="idp56592656"></a>Pointing to other data sources</h3></div></div></div><p>The xml2rfc plugin looks for various data using made up URI
       prefixes; this allows for easy reconfiguration using XML Catalogs if you
       have, e.g., a local bibliography mirror. To customize these, create a
       file that looks like the following (with the URLs changed, of course) in
@@ -18,7 +18,7 @@
               rewritePrefix="http://www.fenron.com/~fenner/ietf/" /&gt;<br>
 <br>
 &lt;/catalog&gt;<br>
-</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="idp56406832"></a>Configuring HTTP proxy, web conversion service, custom xsl,
+</p></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="idp56596240"></a>Configuring HTTP proxy, web conversion service, custom xsl,
       etc.</h3></div></div></div><p>These items go in the user configuration file for xxe, which is
       named <code class="filename">addon/customize.xxe</code>. If you already have one,
       add the lines inside the &lt;configuration&gt;...&lt;/configuration&gt;
@@ -33,7 +33,7 @@
 <br>
 &lt;/configuration&gt;<br>
 </p></div><p>Properties that can be set:</p><div class="informaltable"><table border="1"><colgroup><col><col></colgroup><thead><tr><th align="center">Property</th><th align="center">Meaning</th></tr></thead><tbody><tr><td>http.proxyHost</td><td>Address or name of your HTTP proxy</td></tr><tr><td>http.proxyPort</td><td>Port number of your HTTP proxy</td></tr><tr><td>xml2rfc.cgi</td><td>URL for the online document converter</td></tr><tr><td>xml2rfc.formatter</td><td>Command to execute to convert documents locally</td></tr><tr><td>xml2rfc.library</td><td>XML_LIBRARY environment variable to set when using
-              xml2rfc.formatter</td></tr></tbody></table></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="idp56419904"></a>Customizing elements to add and other aspects of the
+              xml2rfc.formatter</td></tr></tbody></table></div></div><div class="section"><div class="titlepage"><div><div><h3 class="title"><a name="idp56609392"></a>Customizing elements to add and other aspects of the
       plugin</h3></div></div></div><p>For more info, see the xxe documentation which uses a sample of
       customizing docbook. This is a sample file, which would be installed as
       <code class="filename">addon/myxml2rfc/myxml2rfc.xxe</code>. It adds a sample
