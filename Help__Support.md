@@ -1,0 +1,3 @@
+# Support #
+
+Support for this plugin is available via the xml2rfc-xxe-users@googlegroups.com mailing list. See [http://groups.google.com/group/xml2rfc-xxe-users](http://rtg.ietf.org/mailman/listinfo/xml2rfc-xxe) for more info. The distribution page is [http://xml2rfc-xxe.googlecode.com/](http://xml2rfc-xxe.googlegroups.com/) . A bug/issue list is [http://code.google.com/p/xml2rfc-xxe/issues/list](http://rtg.ietf.org/Members/BillFenner/xml2rfc-xxe/) .

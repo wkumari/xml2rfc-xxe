@@ -1,0 +1,247 @@
+# Change Log #
+
+  * 0.7.8 - November 20, 2009
+  * Update DTD for xml2rfc 1.34
+
+  * 0.7.7 - February 24, 2009
+  * Update DTD for IETF Trust 2009 IPR
+
+  * 0.7.6 - November 6, 2008
+  * Layout changes from Thomas Morin
+
+  * 0.7.5 - July 27, 2008
+  * Fixed web form upload
+
+  * Fixed preview
+
+  * 0.7.4 - July 26, 2008
+  * Update DTD for xml2rfc 1.33
+
+  * Update plugin for xxe 4.0.0
+
+  * 0.7.3 - never released
+  * Update DTD and Entities to those supported in xml2rfc 1.32
+
+  * Display the inherited or implicit list style; display the list style in red and use a hanging text of "-?-" if it's using the xml2rfc inherited style, which this style sheet doesn't currently support. (This behavior, however, is probably an advancement from displaying it as empty.)
+
+  * Supports &rfc.number; and &rfc2629.processor; entities
+
+  * More support for images: teach xxe that images need to get saved with the document, and support figure src=
+
+  * Fix the Insert <?rfc include=''> menu item
+
+  * Switch to Java code to run a locally-installed xml2rfc. This allows us to control the executable and the environment, so Windows users can point to their xml2rfc installation.
+
+  * Support the "unpg" output type for conversions
+
+  * Add combo-box to select list style
+
+  * Make reference section titles directly editable
+
+  * Improved texttable rendering by setting the column properly
+
+  * Updated Julian's xslt
+
+  * 0.7.2 - February 20, 2006
+  * Change to .xxe\_addon deployment method
+
+  * Use ${http\_proxy} environment variable (commonly used on UNIX), if Java's proxy settings aren't set. This may only work with a 1.5 runtime, since getenv was deprecated for a while. If it doesn't work, it'll log something like
+
+  * Not trying to use ${http\_proxy} environment variable: java.lang.Error: getenv no longer supported, use properties and -D instead: http\_proxy
+
+  * The second half is the exception from the runtime. (And it may not work at all, since I don't yet have a 1.5 runtime to test it with.)
+
+  * Updated webform progress indicators to work with xxe-3.0's class hierarchy reshuffling. This means that it won't work on 2.x now.
+
+  * Added "xml2rfc.cgi" property to specify a different online conversion URL. Change with, e.g., ` <property name="xml2rfc.cgi">http://xml.resource.org/cgi-bin/xml2rfc-dev.cgi</property> ` in a customize.xxe file.
+
+  * Add summary.css for outline view. Need to decide whether split-screen is default or you have to add it.
+
+  * Update to Julian's 1.229 xslt (2005/10/27)
+
+  * Add configuration examples to help text.
+
+  * Support image on artwork (but not figure yet, depending on results of query on mailing list). Also support svg here, converting to png for html, if the xxe Batik plugin is installed.
+
+  * 0.7.1 - October 21, 2005
+  * Delete 
+
+&lt;load&gt;
+
+ element from configuration file, in order to work with xxe-3.0. This means the plugin now requires a minimum xxe version of 2.10.
+
+  * 0.7 - September 29, 2005
+  * Add entity support for the entities known by xml2rfc-1.30.
+
+  * Add GUI editor for <?rfc ?> PIs before the root element.
+
+  * Add "Insert as Paragraphs" menu item
+
+  * Add "Convert Selected Paragraphs to List" menu item
+
+  * Display row/column IDs in texttable
+
+  * Display "Preamble:" and "Postamble:" labels for figure and texttable
+
+  * Warn when using non-3978 IPR that it won't be accepted by the IETF
+
+  * Added shift-Enter binding to insert a new sibling section for riw.
+
+  * Changed to custom code for increasing and decreasing section level.
+
+  * Added command-hyphen and command-equals shortcuts for increasing and decreasing section level
+
+  * Updated to Julian's latest xslt.
+
+  * 0.6 - April 5, 2005
+  * Switch to line-based download in the web-based conversions, so that conversion results get the native line endings on Windows.
+
+  * Support 
+
+&lt;list style="format"&gt;
+
+ and counter="", including the implicit counter=. (Changing from one counter to another results in a gap in the other counter's space; deleting a list that's in a counter may cause exceptions; these limitations to be removed in a future version)
+
+  * Update DTD to xml2rfc 1.29's, including new IPR
+
+  * Update sample new document to default to new IPR
+
+  * Update ` Insert <?rfc include=''?> ` menu item to properly insert after the current PI if the cursor is in a PI
+
+  * Add ` Check IETF References ` menu item, which checks against RFC and I-D indexes for up to date references.
+
+  * Fix ` Edit In... ` command invocations on UNIX and Windows
+
+  * Made most common element attributes editable inline
+
+  * 0.5 - Mar 22, 2005
+  * Add web-based conversion, in ` ...using xml.resource.org ` submenu, using xml.resource.org
+
+  * Add web-based converter preview, in ` Text Preview using xml.resource.org ` menu item, using xml.resource.org
+
+  * Make comments the same size as surrounding text; having them smaller made them hard to edit.
+
+  * Make vspace blankLines editable inline
+
+  * Default to one blankLine for vspace
+
+  * Update vspace rendering to be less visually disruptive
+
+  * Update postal rendering to include labels
+
+  * Warn about long titles without abbreviations
+
+  * Update iref rendering
+
+  * Display artwork attributes (messily, but these are rare)
+
+  * Update Julian's XSL to 1.216
+
+  * Always save using charset US-ASCII; xml2rfc doesn't support UTF-8 but does support certain entities.
+
+  * Make the mozilla preview work using file:// and the full path to the file.
+
+  * Add ` Edit In... ` menu item to edit the active file in a different editor
+
+  * 0.4.1 - Feb 16, 2005
+  * Recompile plugin for xxe 2.9. This version only works with 2.9.
+
+  * 0.4 - Jan 28, 2005
+  * 
+
+&lt;artwork&gt;
+
+ is now always saved as [CDATA[..]] to assist external editing and ensure whitespace preservation.
+
+  * The anchor of a 
+
+&lt;reference&gt;
+
+ that's not referenced in the document turns red.
+
+  * <?rfc include...?> is now handled when using XSL for preview or conversion (thanks to Rob Austein / ISC for the script). [do: document configuring the local directory with a catalog](to.md)
+
+  * Changed HTML preview using xml2html to a process just like the one using xml2rfc - no longer strips out processing instructions.
+
+  * Updated XSL transforms to Julian's January 27, 2005 release.
+
+  * Added F6/menu option to insert an <?rfc include=''?> PI
+
+  * Added command-ENTER and command-shift-ENTER shortcuts to insert the same element after (before) the current one.
+
+  * Duplicate anchors are noted with [ANCHOR](DUPLICATE.md) in red.
+
+  * 0.3 - Dec 17, 2004
+  * Switched to file picker, not directory picker, for the results of conversions.
+
+  * Added increase/decrease section level with xxe's builtins.
+
+  * Added link end swaps
+
+  * PDF renderer via FOP verified to work (using the config distributed with 0.2). This requires xxe Professional Edition.
+
+  * Display "included" after an xref that seems to refer to an <?rfc include=...?>ed reference. This match triggers if a) the target= starts with RFC and the processing instruction includes "reference.RFC.N", or b) the target= starts with RFC and the processing instruction includes "reference.
+
+&lt;target&gt;
+
+". Boy did that make for a complex xpath function.
+
+  * Display the actual rfc processing instructions that occur before the root element.
+
+  * Display "[referenced](not.md)" next to an anchor that has no references (most significant in a references section)
+
+  * Display the format string (unformatted) in format-style lists.
+
+  * Claim (inside xxe) an XML document with no DOCTYPE and an 
+
+&lt;rfc&gt;
+
+ root element, and force the rfc2629.dtd on it. Also claim 
+
+&lt;reference&gt;
+
+, in case of editing a reference that's included via an entity reference.
+
+  * 0.2 - Nov 29, 2004
+  * Fixed section and appendix numbering, make a note when we know we can't auto-number properly because the indentation got too deep.
+
+  * Modified comment and figure coloring to match XSL transform's HTML output
+
+  * Support hangIndent in hanging lists
+
+  * Make hangText editable in the margin in hanging lists
+
+  * Note in the figure handle if the document uses the deprecated 
+
+&lt;t&gt;
+
+
+
+&lt;figure&gt;
+
+ construct.
+
+  * Slightly modify texttable rendering to give the preamble and postamble a consistent look. (Still can't render the body of the table as a table)
+
+  * Display "???" as the marker for lists with an invalid style
+
+  * Display warning inside 
+
+&lt;list&gt;
+
+ that's not a child of 
+
+&lt;t&gt;
+
+
+
+  * Fixed bugs in draft template; it validates now
+
+  * Include online help
+
+  * XSL HTML preview and HTML and (untested) PDF conversions
+
+  * Add template to ensure that added references contain all required elements.
+
+  * 0.1 - Nov 17, 2004
+    * First public release

@@ -1,0 +1,17 @@
+# xml2rfc-xxe 0.7.7 release notes #
+
+Released 2009-02-24.
+
+# Installation #
+
+Please see [Installation](Installation.md).
+
+# Changes #
+
+  * Support Trust IPR from 2009-02
+
+# NOTE #
+
+If you have previously installed the plugin, please check the URL
+in the plugin manager.  If it has /files/ in it, you must update it
+to the URL containing /svn/release/ as described in [Installation](Installation.md)

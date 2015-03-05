@@ -1,0 +1,19 @@
+##summary xml2rfc-xxe 0.8.0 release notes
+
+# xml2rfc-xxe 0.8.0 release notes #
+
+Released 2011-11-01.
+
+# Installation #
+
+Please see [Installation](Installation.md).
+
+# Changes #
+
+  * Modifications to support XMLmind XML Editor Version 5.x
+
+# NOTE #
+
+If you have previously installed the plugin, please check the URL
+in the plugin manager.  If it has /files/ in it, you must update it
+to the URL containing /svn/release/ as described in [Installation](Installation.md).
