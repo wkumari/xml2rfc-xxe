@@ -1,3 +1,25 @@
+A configuration to assist editing xml2rfc-format documents using XMLMind XML Editor.
+
+See Installation for how to install.
+Super-brief installation instructions: drag the .xxe_addon file for the version of xxe that
+you're running from the "External Links" section of this page to your addon preferences and use the xxe addon manager.
+
+Make sure you download and install XMLMind XML Editor first.
+This configuration works with both Personal and Professional editions.
+Some features (e.g., format using XSLT) only work with Professional edition.
+
+This is a WYSIKN (What You See Is Kinda Neat) addon for the very configurable XMLMind XML Editor (“xxe”).
+The personal version of xxe is free and very capable. It's also written in java, so one addon works on many 
+platforms (I've tested it on MacOS, Windows 2000 and FreeBSD).
+
+The addon is capable of graphical editing of sections, anchors, lists, cross-references, etc.
+and allows word processor-like behavior of "enter" to create a new paragraph or list item.
+It can use a locally-installed xml2rfc to format the document for preview or conversion, 
+or use xxe's built-in XSL transform or submit the document to the xml.resource.org web form. 
+It provides easy hooks to validate the references to other IETF documents in your document to make sure they're up to date.
+
+
+Note: This project was migrated from Google Code (https://code.google.com/archive/p/xml2rfc-xxe/) -- we have not really maintainted it after this.
 Prerequisites:
 
 - For building java help:
