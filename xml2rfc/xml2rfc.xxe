@@ -945,6 +945,9 @@ to do: work if there is more than one section selected-->
   </command>
 
   <menu label="XML2RFC">
+    <!-- Disabled the conversion functions. It looks like these will all need the Java to be recompiled, and that seems like a
+         large faff. Removing the menu entries for now... -->
+    <!-- 
     <item command="xml2rfc.previewViaFormatter" label="HTML Preview"
           parameter="html"/>
 
@@ -959,6 +962,7 @@ to do: work if there is more than one section selected-->
     <item command="xml2rfc.previewViaWebForm"
           label="HTML Preview using xml.resource.org" parameter="html"/>
 
+    --> 
     <item command="xml2rfc.addRFCInclude"
           label="Insert &lt;?rfc include=''?&gt;"/>
 
@@ -972,6 +976,7 @@ to do: work if there is more than one section selected-->
     <item command="xml2rfc.convertToList"
           label="Convert Selected Paragraphs to List"/>
 
+    <!-- Same as above - need some time to work on this - I *think* the java needs to be recompiled, but the XCode project no longer loads...
     <menu label="Convert">
       <menu label="...using xml.resource.org">
         <item command="xml2rfc.convertViaWebForm" label="Convert to Text"
@@ -1004,14 +1009,16 @@ to do: work if there is more than one section selected-->
       <item command="xml2rfc.convertViaFormatter"
             label="Convert to &quot;canonical&quot; XML" parameter="xml"/>
 
+      -->
       <!-- FOP's txt mode doesn't really work... maybe it would with more tuning.
       <item command="xml2rfc.toSomethingUsingXSLFO" label="Convert to TXT using XSL-FO"
             parameter="txt"/>
 -->
-
+      <!--
       <item command="xml2rfc.convertViaFormatter"
             label="Convert to unpaginated text" parameter="unpg"/>
-    </menu>
+            </menu>
+      -->      
   </menu>
 
   <!-- Toolbar ============================================================ -->
