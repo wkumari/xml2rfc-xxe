@@ -1,8 +1,17 @@
-A configuration to assist editing xml2rfc-format documents using XMLMind XML Editor.
+xml2rfc-xxe
+============
 
-See Installation for how to install.
-Super-brief installation instructions: drag the .xxe_addon file for the version of xxe that
-you're running from the "External Links" section of this page to your addon preferences and use the xxe addon manager.
+### A configuration to assist editing xml2rfc-format documents using XMLMind XML Editor.
+
+#### Super-brief installation instructions:
+* Install XMLmind!
+* Go to *Options* -> *Preferences...*, then *Install Add-ons*. 
+* Find the link for the version of XMLmind you have installed in the table below, copy and paste the link into the "Download add-ons from there servers:" box.
+* Click "OK"
+* Click *Options* -> *Install Add-ons...* (**NOTE**: This is **NOT** *Options* -> *Preferences...* -> *Install Add-ons*!)
+* Look for the "XML2RFC plug-in" (it is a "Configuration"), select it and click OK. If it isn't listed, check under the "Uninstall" tab (it may already be installed) and make sure you have the link for the correct version.
+* Now open a (valid!) Internet Draft. 
+
 
 Make sure you download and install XMLMind XML Editor first.
 This configuration works with both Personal and Professional editions.
