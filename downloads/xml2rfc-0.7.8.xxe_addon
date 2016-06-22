@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8689a5f2d38dcb437c49fdb3a5cd113bf5f2650582a169d31d78afe437184c59
-size 393
+<?xml version="1.0"?>
+<a:addon location="https://github.com/wkumari/xml2rfc-xxe/raw/master/downloads/xml2rfc-xxe-0.7.8.zip"
+         xmlns:a="http://www.xmlmind.com/xmleditor/schema/addon">
+  <a:category><a:configuration /></a:category>
+  <a:name>A configuration for creating RFC2629 (xml2rfc) documents</a:name>
+  <a:version>0.7.8</a:version>
+  <a:xxeVersion>4.0.0+</a:xxeVersion>
+</a:addon>
