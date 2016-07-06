@@ -3,6 +3,10 @@ xml2rfc-xxe
 
 ### A configuration to assist editing xml2rfc-format documents using XMLMind XML Editor.
 
+XMLMind has kindly brought back their Personal edition. The license file is [here](http://www.xmlmind.com/xmleditor/license_xxe_perso.html). Pleare review it and confirm that it meets your usage.
+
+The XMLMind downloads are here: [http://www.xmlmind.com/xmleditor/download.shtml](http://www.xmlmind.com/xmleditor/download.shtml)
+
 #### Super-brief installation instructions:
 * Install XMLmind!
 * Go to *Options* -> *Preferences...*, then *Install Add-ons*. 
@@ -11,6 +15,17 @@ xml2rfc-xxe
 * Click *Options* -> *Install Add-ons...* (**NOTE**: This is **NOT** *Options* -> *Preferences...* -> *Install Add-ons*!)
 * Look for the "XML2RFC plug-in" (it is a "Configuration"), select it and click OK. If it isn't listed, check under the "Uninstall" tab (it may already be installed) and make sure you have the link for the correct version.
 * Now open a (valid!) Internet Draft. 
+
+
+###### Plugin Version
+
+| XMLMind Version | XML2RFC Addon |
+| --------------- | ------------- |
+| 7.x             | [xml2rfc-0.8.3](https://raw.githubusercontent.com/wkumari/xml2rfc-xxe/master/downloads/xml2rfc-0.8.3.xxe_addon) |
+| 6.x             | [xml2rfc-0.8.2](https://raw.githubusercontent.com/wkumari/xml2rfc-xxe/master/downloads/xml2rfc-0.8.2.xxe_addon) |
+| 5.x             | [xml2rfc-0.8.0](https://raw.githubusercontent.com/wkumari/xml2rfc-xxe/master/downloads/xml2rfc-0.8.0.xxe_addon) |
+| 4.x             | [xml2rfc-0.7.9](https://raw.githubusercontent.com/wkumari/xml2rfc-xxe/master/downloads/xml2rfc-0.7.9.xxe_addon) |
+
 
 
 Make sure you download and install XMLMind XML Editor first.
