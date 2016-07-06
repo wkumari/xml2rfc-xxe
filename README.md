@@ -5,15 +5,16 @@ xml2rfc-xxe
 
 XMLMind has kindly brought back their Personal edition. The license file is [here](http://www.xmlmind.com/xmleditor/license_xxe_perso.html). Pleare review it and confirm that it meets your usage.
 
-The XMLMind downloads are here: [http://www.xmlmind.com/xmleditor/download.shtml](http://www.xmlmind.com/xmleditor/download.shtml)
+The XMLMind XML Editor downloads are here: [http://www.xmlmind.com/xmleditor/download.shtml](http://www.xmlmind.com/xmleditor/download.shtml)
 
 #### Super-brief installation instructions:
 * Install XMLmind!
-* Go to *Options* -> *Preferences...*, then *Install Add-ons*. 
-* Find the link for the version of XMLmind you have installed in the table below, copy and paste the link into the "Download add-ons from there servers:" box.
-* Click "OK"
+* Go to *Options* -> *Preferences...*, then *Install Add-ons*. (**NOTE**: *Options* -> **Preferences...** -> *Install Add-ons*. This trips many people up! )
+* Find the link for the version of XMLmind you have installed in the table below, click "Add", copy and paste the link into the "Download add-ons from these servers:" box. 
+* Click "OK".
 * Click *Options* -> *Install Add-ons...* (**NOTE**: This is **NOT** *Options* -> *Preferences...* -> *Install Add-ons*!)
 * Look for the "XML2RFC plug-in" (it is a "Configuration"), select it and click OK. If it isn't listed, check under the "Uninstall" tab (it may already be installed) and make sure you have the link for the correct version.
+* Restart XML Editor.
 * Now open a (valid!) Internet Draft. 
 
 
