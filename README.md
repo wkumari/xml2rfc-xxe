@@ -8,7 +8,7 @@ XMLMind has kindly brought back their Personal edition. The license file is [her
 The XMLMind XML Editor downloads are here: [http://www.xmlmind.com/xmleditor/download.shtml](http://www.xmlmind.com/xmleditor/download.shtml)
 
 #### Super-brief installation instructions:
-* Install XMLmind!
+* Install XMLmind! (8.0 was released Mar 5, 2018, previous verions are available http://www.xmlmind.com/archive/xmleditor/ )
 * Go to *Options* -> *Preferences...*, then *Install Add-ons*. (**NOTE**: *Options* -> **Preferences...** -> *Install Add-ons*. This trips many people up! )
 * Find the link for the version of XMLmind you have installed in the table below, click "Add", copy and paste the link into the "Download add-ons from these servers:" box. 
 * Click "OK".
