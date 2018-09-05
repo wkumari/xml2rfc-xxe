@@ -22,6 +22,7 @@ The XMLMind XML Editor downloads are here: [http://www.xmlmind.com/xmleditor/dow
 
 | XMLMind Version | XML2RFC Addon |
 | --------------- | ------------- |
+| 8.x             | [xml2rfc-0.8.4](https://raw.githubusercontent.com/wkumari/xml2rfc-xxe/master/downloads/xml2rfc-0.8.4.xxe_addon) |
 | 7.x             | [xml2rfc-0.8.3](https://raw.githubusercontent.com/wkumari/xml2rfc-xxe/master/downloads/xml2rfc-0.8.3.xxe_addon) |
 | 6.x             | [xml2rfc-0.8.2](https://raw.githubusercontent.com/wkumari/xml2rfc-xxe/master/downloads/xml2rfc-0.8.2.xxe_addon) |
 | 5.x             | [xml2rfc-0.8.0](https://raw.githubusercontent.com/wkumari/xml2rfc-xxe/master/downloads/xml2rfc-0.8.0.xxe_addon) |
