@@ -18,4 +18,3 @@ Check if you have git-lfs by running `git lfs env`. If not, install it with (Mac
 * Zip to new name (```zip -r xml2rfc-xxe-0.8.4.zip xml2rfc```, copy xml2rfc.xxe_addon to new name.
 * Add these to the repo, commit and push. Also edit the README.md file.
 * Profit!
-
