@@ -10,10 +10,20 @@ The XMLMind XML Editor downloads are here: [http://www.xmlmind.com/xmleditor/dow
 #### Super-brief installation instructions:
 * Install XMLmind! (8.0 was released Mar 5, 2018, previous verions are available http://www.xmlmind.com/archive/xmleditor/ )
 * Go to *Options* -> *Preferences...*, then *Install Add-ons*. (**NOTE**: *Options* -> **Preferences...** -> *Install Add-ons*. This trips many people up! )
+
+![XMLMIND Menu](./images/XMLMind_Menu.png)
+
 * Find the link for the version of XMLmind you have installed in the table below, click "Add", copy and paste the link into the "Download add-ons from these servers:" box. 
+
+![XMLmind Prefs](./images/XMLMind_Prefs.png)
+![XMLmind URL](./images/XMLMind_URL.png)
+
 * Click "OK".
 * Click *Options* -> *Install Add-ons...* (**NOTE**: This is **NOT** *Options* -> *Preferences...* -> *Install Add-ons*!)
 * Look for the "XML2RFC plug-in" (it is a "Configuration"), select it and click OK. If it isn't listed, check under the "Uninstall" tab (it may already be installed) and make sure you have the link for the correct version.
+
+![XMLmind Install](./images/XMLMind_Install.png)
+
 * Restart XML Editor.
 * Now open a (valid!) Internet Draft. 
 
