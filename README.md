@@ -32,6 +32,7 @@ The XMLMind XML Editor downloads are here: [http://www.xmlmind.com/xmleditor/dow
 
 | XMLMind Version | XML2RFC Addon |
 | --------------- | ------------- |
+| 9.x             | [xml2rfc-0.8.5](https://raw.githubusercontent.com/wkumari/xml2rfc-xxe/master/downloads/xml2rfc-0.8.5.xxe_addon) |
 | 8.x             | [xml2rfc-0.8.4](https://raw.githubusercontent.com/wkumari/xml2rfc-xxe/master/downloads/xml2rfc-0.8.4.xxe_addon) |
 | 7.x             | [xml2rfc-0.8.3](https://raw.githubusercontent.com/wkumari/xml2rfc-xxe/master/downloads/xml2rfc-0.8.3.xxe_addon) |
 | 6.x             | [xml2rfc-0.8.2](https://raw.githubusercontent.com/wkumari/xml2rfc-xxe/master/downloads/xml2rfc-0.8.2.xxe_addon) |
@@ -44,7 +45,7 @@ Make sure you download and install XMLMind XML Editor first.
 This configuration works with both Personal and Professional editions.
 Some features (e.g., format using XSLT) only work with Professional edition.
 
-This is a WYSIKN (What You See Is Kinda Neat) addon for the very configurable XMLMind XML Editor (“xxe”).
+This is a WYSIKN ("What You See Is Kinda Neat") addon for the very configurable XMLMind XML Editor (“xxe”).
 The personal version of xxe is free and very capable. It's also written in java, so one addon works on many 
 platforms (I've tested it on MacOS, Windows 2000 and FreeBSD).
 
@@ -64,4 +65,6 @@ Prerequisites:
   javahelp-2.0 (possibly earlier)
 
 - As there is no Makefile for the xml2rfc.jar file I simply copied if from
-  a previous version. -- Warren Kumari
+  a previous version.
+  
+     -- Warren Kumari
