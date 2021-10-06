@@ -2,7 +2,7 @@ xml2rfc-xxe
 ============
 
 ### A configuration to assist editing xml2rfc-format documents using XMLMind XML Editor.
-> ☝️ xml2rfc-xxe does not (currently) support [Version 3](https://www.rfc-editor.org/rse/format-faq/#14) format. Pull Requests / help fixing this would be appreciated. See https://github.com/wkumari/xml2rfc-xxe/commit/0e8049e74a74655545303ff07fcd48e09c640721 for some background. For now, you can stick  with v2 rfc2xml, which works just fine as an editing format, and then convert to v3 rfc2xml before submitting each draft revision.
+> ☝️ xml2rfc-xxe does not (currently) support [Version 3](https://www.rfc-editor.org/rse/format-faq/#14) format. Pull Requests / help fixing this would be appreciated. See https://github.com/wkumari/xml2rfc-xxe/commit/0e8049e74a74655545303ff07fcd48e09c640721 for some background. 
 
 
 
