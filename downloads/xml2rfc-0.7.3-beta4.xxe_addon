@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<a:addon location="https://github.com/wkumari/xml2rfc-xxe/raw/master/downloads/xml2rfc-xxe-0.7.3-beta4.zip"
-         xmlns:a="http://www.xmlmind.com/xmleditor/schema/addon">
-  <a:category><a:configuration /></a:category>
-  <a:name>A configuration for creating RFC2629 (xml2rfc) documents</a:name>
-  <a:version>0.7.3-beta4</a:version>
-  <a:xxeVersion>3.0+</a:xxeVersion>
-</a:addon>
